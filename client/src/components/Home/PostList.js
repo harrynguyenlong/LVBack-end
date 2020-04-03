@@ -117,7 +117,9 @@ const data = [
 const useStyles = makeStyles(theme => ({
     container: {
         ...theme.layouts.container,
-        marginTop: '30px'
+        marginTop: '30px',
+        marginBottom: '30px',
+        padding: 0
     }
 }));
 
@@ -125,7 +127,7 @@ const PostList = () => {
     const classes = useStyles();
     return (
         <section className={classes.container}>
-            <Grid container spacing={3}>
+            <Grid container spacing={4}>
                 {data.map(post => {
                     return (
                         <Grid item xs={4} key={post._id}>

@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => ({
         // maxHeight: 250
         boxShadow: '0rem 0.5rem 1rem rgba(0,0,0, 0.3)',
         cursor: 'pointer',
+
         position: 'relative',
         '&:hover': {
             '& img': {
@@ -34,7 +35,8 @@ const useStyles = makeStyles(theme => ({
     },
     headerTitle: {
         fontSize: '16px',
-        lineHeight: '0.8'
+        lineHeight: '0.8',
+        letterSpacing: '1px'
     },
     headerDate: {
         margin: 0,
@@ -42,13 +44,18 @@ const useStyles = makeStyles(theme => ({
         fontSize: '12px',
         color: theme.palette.common.colorGreyDark
     },
-    postImage: {
-        display: 'table',
+    imageContainer: {
         width: '100%',
         height: '100%',
-        maxWidth: '298px',
-        maxHeight: '298px',
-        overflow: 'hidden',
+        // maxWidth: '300px',
+        maxHeight: '300px',
+        overflow: 'hidden'
+    },
+    postImage: {
+        display: 'block',
+        width: '100%',
+        height: '100%',
+        // objectFit: 'cover',
         transition: 'all 0.3s ease'
         // '&:hover': {
         //     cursor: 'pointer',
@@ -92,13 +99,15 @@ const PostItem = ({ post }) => {
                     <span className={classes.headerDate}>{post.createdAt}</span>
                 </div>
             </div>
-            <img
-                src={post.postImageUrl}
-                alt="post"
-                className={classes.postImage}
-                // onMouseOver={() => setOnHover(true)}
-                // onMouseOut={() => setOnHover(false)}
-            />
+            <div className={classes.imageContainer}>
+                <img
+                    src={post.postImageUrl}
+                    alt="post"
+                    className={classes.postImage}
+                    // onMouseOver={() => setOnHover(true)}
+                    // onMouseOut={() => setOnHover(false)}
+                />
+            </div>
             <div className={classes.info}>
                 <div className={classes.commentLike}>
                     <div className={classes.commentContainer}>
