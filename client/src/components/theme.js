@@ -38,6 +38,26 @@ const theme = createMuiTheme({
         sectionPadding: {
             padding: '56px 0'
         }
+    },
+    shared: {
+        btn: {
+            padding: '6px 16px',
+            fontSize: '14px',
+            fontWeight: 500,
+            textTransform: 'capitalize',
+            letterSpacing: '1px',
+            cursor: 'pointer',
+            outline: 'none',
+            background: colorGreen,
+            color: colorWhite,
+            border: `1px solid ${colorGreen}`,
+            transition: 'all 0.3s ease',
+            borderRadius: '5px'
+        },
+        btnHover: {
+            background: 'transparent',
+            color: colorGreen
+        }
     }
 });
 

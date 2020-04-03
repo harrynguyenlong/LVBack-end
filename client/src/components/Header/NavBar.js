@@ -67,9 +67,7 @@ const NavBar = () => {
                     <span className={classes.logoText}>hare</span>
                 </div>
                 <div className={classes.actionIcons}>
-                    {/* <Badge className={classes.icon}> */}
-                    <HomeIcon className={classes.icon} style={{ fontSize: '24px' }} />
-                    {/* </Badge> */}
+                    <HomeIcon className={classes.icon} style={{ fontSize: '26px' }} />
                     <Badge badgeContent={4} color="secondary" className={classes.icon}>
                         <CommentIcon />
                     </Badge>
