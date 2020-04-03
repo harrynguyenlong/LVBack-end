@@ -55,6 +55,9 @@ const useStyles = makeStyles(theme => ({
         ...theme.shared.btn,
         '&:hover': {
             ...theme.shared.btnHover
+        },
+        '&:active': {
+            ...theme.shared.btnActive
         }
     }
 }));

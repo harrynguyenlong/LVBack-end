@@ -1,7 +1,13 @@
 import React from 'react';
 
+import TabBar from '../Home/TabBar';
+
 const Home = () => {
-    return <div>Home Page</div>;
+    return (
+        <main>
+            <TabBar />
+        </main>
+    );
 };
 
 export default Home;

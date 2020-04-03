@@ -57,6 +57,9 @@ const theme = createMuiTheme({
         btnHover: {
             background: 'transparent',
             color: colorGreen
+        },
+        btnActive: {
+            transform: 'translateY(2px)'
         }
     }
 });
