@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 // import { Link } from 'react-router-dom';
-import { Tabs, Tab } from '@material-ui/core';
+import { Tabs, Tab, Fab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -9,7 +10,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'center',
         height: '50px'
-        // background: 'grey'
+        // position: 'relative'
     },
     tab: {
         margin: theme.spacing(1)
@@ -19,29 +20,6 @@ const useStyles = makeStyles(theme => ({
 const TabBar = () => {
     const classes = useStyles();
     const [tabValue, setTabValue] = useState(0);
-    // const pathname = window.location.pathname;
-    // useEffect(() => {
-    //     switch (pathname) {
-    //         case '/':
-    //             if (tabValue !== 0) {
-    //                 setTabValue(0);
-    //             }
-    //             break;
-    //         case '/top-comments':
-    //             if (tabValue !== 1) {
-    //                 setTabValue(1);
-    //             }
-    //             break;
-    //         case '/top-likes':
-    //             if (tabValue !== 2) {
-    //                 setTabValue(2);
-    //             }
-    //             break;
-
-    //         default:
-    //             break;
-    //     }
-    // }, [tabValue, pathname, setTabValue]);
 
     return (
         <div className={classes.container}>

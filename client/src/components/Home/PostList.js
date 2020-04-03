@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Grid } from '@material-ui/core';
+import { Grid, Fab, Hidden } from '@material-ui/core';
 import PostItem from './PostItem';
+import PostForm from './PostForm';
+import AddIcon from '@material-ui/icons/Add';
 
 const data = [
     {
@@ -120,13 +122,30 @@ const useStyles = makeStyles(theme => ({
         marginTop: '30px',
         marginBottom: '30px',
         padding: 0
+        // position: 'relative'
+    },
+    buttonContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        marginBottom: '30px'
     }
 }));
 
 const PostList = () => {
     const classes = useStyles();
+    const [isPostFormOpen, setIsPostFormOpen] = useState(false);
+
+    const handlePostFormClose = () => {
+        setIsPostFormOpen(false);
+    };
+
     return (
         <section className={classes.container}>
+            <div className={classes.buttonContainer}>
+                <Fab color="primary" arial-label="add" size="medium" className={classes.addButton}>
+                    <AddIcon onClick={() => setIsPostFormOpen(true)} />
+                </Fab>
+            </div>
             <Grid container spacing={4}>
                 {data.map(post => {
                     return (
@@ -136,6 +155,8 @@ const PostList = () => {
                     );
                 })}
             </Grid>
+
+            <PostForm isPostFormOpen={isPostFormOpen} handlePostFormClose={handlePostFormClose} />
         </section>
     );
 };
