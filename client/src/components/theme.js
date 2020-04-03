@@ -30,7 +30,7 @@ const theme = createMuiTheme({
     },
     layouts: {
         container: {
-            maxWidth: '1140px',
+            maxWidth: '975px',
             margin: '0 auto',
             height: '100%',
             padding: '0 16px'
