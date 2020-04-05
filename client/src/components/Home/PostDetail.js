@@ -40,14 +40,18 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.common.colorWhite,
     },
     imageContainer: {
-        padding: '10px 40px',
+        padding: '10px 40px 0 40px',
+        maxHeight: 'calc(100vh - 88px)',
     },
     image: {
         display: 'block',
         width: '100%',
+        height: '100%',
+        objectFit: 'cover',
     },
     infoContainer: {
         padding: '10px 0 0 20px',
+        position: 'relative',
     },
     postHeader: {
         display: 'flex',
@@ -99,9 +103,16 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     commentForm: {
+        position: 'absolute',
+        left: 20,
+        bottom: 0,
+        width: '100%',
+        paddingTop: '10px',
+        paddingRight: '24px',
         display: 'flex',
         alignItems: 'center',
         marginTop: '10px',
+        // borderTop: `1px solid ${theme.palette.common.colorGreyLight}`,
     },
     commentInputContainer: {
         width: '100%',
