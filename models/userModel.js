@@ -36,16 +36,20 @@ const userSchema = mongoose.Schema(
             type: Number,
             default: 0,
         },
-        postIds: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Post',
-            autopopulate: true,
-        },
-        likeIds: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Post',
-            autopopulate: true,
-        },
+        postIds: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Post',
+                autopopulate: true,
+            },
+        ],
+        likeIds: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Post',
+                autopopulate: true,
+            },
+        ],
     },
     {
         timestamps: true,

@@ -28,8 +28,14 @@ module.exports = buildSchema(`
         updatedAt: String!
     }
 
+    enum FilterPostType {
+        NEWEST
+        TOPCOMMENTS
+        TOPLIKES
+    }
+
     type RootQuery {
-        posts: [Post]
+        posts(type: FilterPostType, limit: Int): [Post!]
     }
 
     type RootMutation {

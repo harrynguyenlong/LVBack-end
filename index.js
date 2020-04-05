@@ -15,7 +15,9 @@ app.use(express.urlencoded({ extended: true }));
 // dummy authentication middleware
 app.use((req, res, next) => {
     req.isAuth = true;
-    req.userId = '5e89d609098dcb277f87d1ed';
+    req.userId = '5e89d609098dcb277f87d1ed'; // Viet Tran
+    // req.userId = '5e89ebe0098dcb277f87d1ee'; // David
+    // req.userId = '5e89ec15098dcb277f87d1ef'; // Naomi Watts
     next();
 });
 
