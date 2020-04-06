@@ -1,5 +1,6 @@
 const Post = require('../../models/postModel');
 const User = require('../../models/userModel');
+const Like = require('../../models/likeModel');
 
 module.exports = {
     // create post
@@ -40,7 +41,7 @@ module.exports = {
     },
 
     // get all post sort by newest
-    posts: async (args) => {
+    posts: async (args, req) => {
         try {
             const limit = args.limit ? args.limit * 1 : 10;
             let sort = {};
@@ -59,9 +60,21 @@ module.exports = {
 
             const posts = await Post.find().sort(sort).limit(limit);
 
+            // console.log('POST', posts);
+
             if (!posts) {
                 throw new Error('Get all posts failed, please try again');
             }
+
+            posts.map((post) => {
+                // console.log('userLikeIds', post.userLikeIds);
+                const isLike = post.userLikeIds.find((item) => item._id.toString() === req.userId);
+                if (isLike) {
+                    return (post.isLiked = true);
+                } else {
+                    return (post.isLiked = false);
+                }
+            });
 
             return posts;
         } catch (error) {

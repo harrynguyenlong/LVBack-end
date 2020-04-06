@@ -43,13 +43,13 @@ const userSchema = mongoose.Schema(
                 autopopulate: true,
             },
         ],
-        likeIds: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Post',
-                autopopulate: true,
-            },
-        ],
+        // likeIds: [
+        //     {
+        //         type: mongoose.Schema.Types.ObjectId,
+        //         ref: 'Post',
+        //         // autopopulate: true,
+        //     },
+        // ],
     },
     {
         timestamps: true,

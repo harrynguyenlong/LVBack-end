@@ -11,7 +11,7 @@ module.exports = buildSchema(`
         numberOfComments: Int!
         numberOfLikes: Int
         postIds: [Post!]
-        likeIds: [Post!]
+        # likeIds: [Post!]
         createdAt: String!
         updatedAt: String!
     }
@@ -24,6 +24,15 @@ module.exports = buildSchema(`
         numberOfLikes: Int!
         numberOfComments: Int!
         userLikeIds: [User!]
+        isLiked: Boolean!
+        createdAt: String!
+        updatedAt: String!
+    }
+
+    type Like {
+        _id: ID!
+        postId: Post!
+        userId: User!
         createdAt: String!
         updatedAt: String!
     }
@@ -39,7 +48,8 @@ module.exports = buildSchema(`
     }
 
     type RootMutation {
-        createPost(contentText: String!, postImageUrl: String!): Post
+        createPost(contentText: String!, postImageUrl: String!): Post!
+        likePost(postId: ID!): Post!
     }
 
     schema {
