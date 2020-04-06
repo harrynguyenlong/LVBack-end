@@ -6,10 +6,12 @@ const commentSchema = mongoose.Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
+            autopopulate: true,
         },
         postId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Post',
+            autopopulate: true,
         },
         contentText: {
             type: String,

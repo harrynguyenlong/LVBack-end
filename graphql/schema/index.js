@@ -37,6 +37,15 @@ module.exports = buildSchema(`
         updatedAt: String!
     }
 
+    type Comment {
+        _id: ID!
+        userId: User!
+        postId: Post!
+        contentText: String!
+        createdAt: String!
+        updatedAt: String!
+    }
+
     enum FilterPostType {
         NEWEST
         TOPCOMMENTS
@@ -49,6 +58,7 @@ module.exports = buildSchema(`
 
     type RootMutation {
         createPost(contentText: String!, postImageUrl: String!): Post!
+        createComment(postId: ID!, contentText: String!): Comment!
         likePost(postId: ID!): Post!
     }
 

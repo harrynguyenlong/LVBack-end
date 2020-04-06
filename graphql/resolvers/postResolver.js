@@ -31,6 +31,7 @@ module.exports = {
             }
 
             user.postIds.push(post._id);
+            user.numberOfPosts += 1;
             await user.save();
 
             return post;
