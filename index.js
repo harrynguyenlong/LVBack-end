@@ -6,6 +6,7 @@ const graphqlHTTP = require('express-graphql');
 
 const rootSchema = require('./graphql/schema');
 const rootResolver = require('./graphql/resolvers');
+const auth = require('./Authentication/auth');
 
 const app = express();
 
@@ -15,9 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 // dummy authentication middleware
 app.use((req, res, next) => {
     req.isAuth = true;
-    req.userId = '5e89d609098dcb277f87d1ed'; // Viet Tran
-    // req.userId = '5e89ebe0098dcb277f87d1ee'; // David
-    // req.userId = '5e89ec15098dcb277f87d1ef'; // Naomi Watts
+    req.userId = '5e8b8d971c9d44000060ef0b'; // Long Nguyen
     next();
 });
 
