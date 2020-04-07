@@ -95,7 +95,7 @@ const Banner = () => {
                             className={classes.button}
                             onClick={() => setIsEditProfileOpen(true)}
                         >
-                            Edit Profile
+                            Profile
                         </button>
                     </div>
                     <div className={classes.info}>
