@@ -13,10 +13,13 @@
     "author": "Viet Tran - Long Nguyen",
     "license": "ISC",
     "dependencies": {
+        "bcrypt": "^4.0.1",
         "concurrently": "^5.1.0",
         "dotenv": "^8.2.0",
+        "easygraphql-format-error": "0.0.3",
         "express": "^4.17.1",
         "express-graphql": "^0.9.0",
+        "express-jwt": "^5.3.3",
         "graphql": "^15.0.0",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.9.7",

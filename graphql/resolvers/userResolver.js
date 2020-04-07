@@ -1,9 +1,12 @@
 const User = require('../../models/userModel');
+const jwttoken = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 module.exports = {
     createUser: async (args, req) => {
         try {
-            const { name, password, email } = args;
+            let { name, password, email } = args;
+            password = await bcrypt.hash(password, 12);
             const newUser = {
                 name,
                 email,
@@ -12,15 +15,20 @@ module.exports = {
 
             const user = await User.create(newUser);
 
-            console.log(user);
+            let token = jwttoken.sign(newUser, 'secretKey', { expiresIn: '1d'});
 
             if (!user) {
                 throw new Error('Created user failed, please try again');
             }
 
-            return user;
+            return {
+                token, 
+                message: 'User created successfully!'
+            };
         } catch (error) {
-            console.log(error);
+            return {
+                message: 'User created failed!'
+            }; 
         }
     }
 };

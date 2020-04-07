@@ -6,7 +6,7 @@ const graphqlHTTP = require('express-graphql');
 
 const rootSchema = require('./graphql/schema');
 const rootResolver = require('./graphql/resolvers');
-const auth = require('./Authentication/auth');
+const auth = require('./graphql/Authentication/auth');
 
 const app = express();
 
