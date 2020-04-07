@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Fab, Hidden } from '@material-ui/core';
 import PostItem from './PostItem';
 import PostForm from './PostForm';
 
 import AddIcon from '@material-ui/icons/Add';
+
+import { AuthContext } from '../../context';
 
 const data = [
     {
@@ -136,6 +138,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PostList = () => {
     const classes = useStyles();
+    const { token, userId } = useContext(AuthContext);
     const [isPostFormOpen, setIsPostFormOpen] = useState(false);
 
     const handlePostFormClose = () => {
@@ -144,11 +147,18 @@ const PostList = () => {
 
     return (
         <section className={classes.container}>
-            <div className={classes.buttonContainer}>
-                <Fab color="primary" arial-label="add" size="medium" className={classes.addButton}>
-                    <AddIcon onClick={() => setIsPostFormOpen(true)} />
-                </Fab>
-            </div>
+            {token && userId && (
+                <div className={classes.buttonContainer}>
+                    <Fab
+                        color="primary"
+                        arial-label="add"
+                        size="medium"
+                        className={classes.addButton}
+                    >
+                        <AddIcon onClick={() => setIsPostFormOpen(true)} />
+                    </Fab>
+                </div>
+            )}
             <Grid container spacing={4}>
                 <Grid item xs={4} key={1}>
                     <PostItem post={data[0]} edit={true} />

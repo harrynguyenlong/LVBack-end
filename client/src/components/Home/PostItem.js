@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/styles';
+import React, { useState, useContext } from 'react';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import { Avatar, Typography } from '@material-ui/core';
 
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -7,6 +7,8 @@ import CommentIcon from '@material-ui/icons/Comment';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PostDetail from './PostDetail';
+
+import { AuthContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
     postItem: {
@@ -50,6 +52,21 @@ const useStyles = makeStyles((theme) => ({
     headerIcons: {
         display: 'flex',
         alignItems: 'center',
+    },
+    actionIcons: {
+        cursor: 'pointer',
+        color: theme.palette.common.colorGreyDark,
+        transition: 'all 0.3s ease',
+    },
+    editIcon: {
+        '&:hover': {
+            color: theme.palette.common.colorGreen,
+        },
+    },
+    deleteIcon: {
+        '&:hover': {
+            color: theme.palette.secondary.main,
+        },
     },
     imageContainer: {
         width: '100%',
@@ -114,7 +131,9 @@ const useStyles = makeStyles((theme) => ({
 const PostItem = ({ post, edit }) => {
     const classes = useStyles();
     // const [onHover, setOnHover] = useState(false);
+    const { token, userId } = useContext(AuthContext);
     const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
+    const theme = useTheme();
 
     const handlePostDetailClose = () => {
         setIsPostDetailOpen(false);
@@ -128,10 +147,15 @@ const PostItem = ({ post, edit }) => {
                     <h2 className={classes.headerTitle}>{post.userId.name}</h2>
                     <span className={classes.headerDate}>{post.createdAt}</span>
                 </div>
-                {edit && (
+                {edit && token && userId && (
                     <div className={classes.headerIcons}>
-                        <EditIcon color="primary" />
-                        <DeleteIcon color="secondary" style={{ marginLeft: '10px' }} />
+                        <EditIcon className={`${classes.actionIcons} ${classes.editIcon}`} />
+                        <DeleteIcon
+                            className={`${classes.actionIcons} ${classes.deleteIcon}`}
+                            style={{
+                                marginLeft: '10px',
+                            }}
+                        />
                     </div>
                 )}
             </div>

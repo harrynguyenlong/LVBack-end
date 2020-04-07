@@ -5,11 +5,12 @@ import { Avatar, Badge } from '@material-ui/core';
 import logo from '../../assets/images/iShare-logo1.png';
 import avatarViet from '../../assets/images/avatar-viet.jpg';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 // import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 // import CommentIcon from '@material-ui/icons/Comment';
 // import HomeIcon from '@material-ui/icons/Home';
 
-import { UIContext } from '../../context/uiContext';
+import { UIContext, AuthContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
     navbar: {
@@ -58,6 +59,10 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         paddingRight: '20px',
         borderRight: `1px solid ${theme.palette.common.colorGreyLight}`,
+        '&:hover': {
+            cursor: 'pointer',
+            color: theme.palette.common.colorGreen,
+        },
     },
     avatar: {
         width: theme.spacing(4),
@@ -82,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
 const NavBar = () => {
     const classes = useStyles();
     const { setTabValue } = useContext(UIContext);
+    const { userId, token, login, logout } = useContext(AuthContext);
     return (
         <div className={classes.navbar}>
             <div className={classes.container}>
@@ -104,14 +110,27 @@ const NavBar = () => {
                     <Badge badgeContent={19} color="secondary" className={classes.icon}>
                         <FavoriteBorderIcon />
                     </Badge> */}
-                    <div className={classes.avatarContainer}>
-                        <Avatar src={avatarViet} alt="avatar" className={classes.avatar} />
-                        <p className={classes.actionText}>Viet Tran</p>
-                    </div>
-                    <div className={classes.authContainer}>
-                        <ExitToAppIcon />
-                        <p className={classes.actionText}>Logout</p>
-                    </div>
+                    {token && userId && (
+                        <React.Fragment>
+                            <div className={classes.avatarContainer}>
+                                <Avatar src={avatarViet} alt="avatar" className={classes.avatar} />
+                                <p className={classes.actionText}>Viet Tran</p>
+                            </div>
+                            <div className={classes.authContainer} onClick={() => logout()}>
+                                <ExitToAppIcon />
+                                <p className={classes.actionText}>Logout</p>
+                            </div>
+                        </React.Fragment>
+                    )}
+                    {(!token || !userId) && (
+                        <div
+                            className={classes.authContainer}
+                            onClick={() => login('this is dummy token', '5e89d609098dcb277f87d1ed')}
+                        >
+                            <LockOpenIcon />
+                            <p className={classes.actionText}>Login</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 // import { Link } from 'react-router-dom';
 import { Tabs, Tab, Fab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { UIContext } from '../../context/uiContext';
+import { UIContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
     container: {

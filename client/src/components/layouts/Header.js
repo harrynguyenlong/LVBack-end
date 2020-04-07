@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import NavBar from '../Header/NavBar';
 import Banner from '../Header/Banner';
 
+import { AuthContext } from '../../context';
+
 const Header = () => {
+    const { token, userId } = useContext(AuthContext);
     return (
         <header>
             <NavBar />
-            <Banner />
+            {token && userId && <Banner />}
         </header>
     );
 };
