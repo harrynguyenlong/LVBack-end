@@ -1,25 +1,26 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 // import { Link } from 'react-router-dom';
 import { Tabs, Tab, Fab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import AddIcon from '@material-ui/icons/Add';
+import { UIContext } from '../../context/uiContext';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     container: {
         ...theme.layouts.container,
         display: 'flex',
         justifyContent: 'center',
-        height: '50px'
+        height: '50px',
         // position: 'relative'
     },
     tab: {
-        margin: theme.spacing(1)
-    }
+        margin: theme.spacing(1),
+    },
 }));
 
 const TabBar = () => {
     const classes = useStyles();
-    const [tabValue, setTabValue] = useState(0);
+    // const [tabValue, setTabValue] = useState(0);
+    const { tabValue, setTabValue } = useContext(UIContext);
 
     return (
         <div className={classes.container}>

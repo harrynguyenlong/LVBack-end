@@ -1,80 +1,117 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar, Badge } from '@material-ui/core';
 
 import logo from '../../assets/images/iShare-logo1.png';
 import avatarViet from '../../assets/images/avatar-viet.jpg';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import CommentIcon from '@material-ui/icons/Comment';
-import HomeIcon from '@material-ui/icons/Home';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+// import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+// import CommentIcon from '@material-ui/icons/Comment';
+// import HomeIcon from '@material-ui/icons/Home';
 
-const useStyles = makeStyles(theme => ({
+import { UIContext } from '../../context/uiContext';
+
+const useStyles = makeStyles((theme) => ({
     navbar: {
         height: '54px',
         borderBottom: `1px solid ${theme.palette.common.colorGreyLight}`,
-        backgroundColor: theme.palette.common.colorWhite
+        backgroundColor: theme.palette.common.colorWhite,
     },
     container: {
         ...theme.layouts.container,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     logoContainer: {
         height: '100%',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        cursor: 'pointer',
     },
     logo: {
         display: 'inline-block',
         height: '60%',
-        marginRight: '5px'
+        marginRight: '5px',
     },
     logoText: {
         fontSize: '24px',
         fontWeight: 700,
         color: theme.palette.common.colorBlack,
-        letterSpacing: '2px'
+        letterSpacing: '2px',
     },
     logoTextSpec: {
         fontWeight: '900',
-        color: theme.palette.common.colorGreen
+        color: theme.palette.common.colorGreen,
     },
     actionIcons: {
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     icon: {
         fontSize: '24px',
         marginRight: '32px',
-        color: theme.palette.common.colorBlack
+        color: theme.palette.common.colorBlack,
+    },
+    avatarContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        paddingRight: '20px',
+        borderRight: `1px solid ${theme.palette.common.colorGreyLight}`,
     },
     avatar: {
         width: theme.spacing(4),
-        height: theme.spacing(4)
-    }
+        height: theme.spacing(4),
+    },
+    actionText: {
+        marginLeft: '5px',
+        fontSize: '14px',
+        fontWeight: '500',
+    },
+    authContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        paddingLeft: '20px',
+        '&:hover': {
+            cursor: 'pointer',
+            color: theme.palette.common.colorGreen,
+        },
+    },
 }));
 
 const NavBar = () => {
     const classes = useStyles();
+    const { setTabValue } = useContext(UIContext);
     return (
         <div className={classes.navbar}>
             <div className={classes.container}>
-                <div className={classes.logoContainer}>
+                <div
+                    className={classes.logoContainer}
+                    onClick={() => {
+                        setTabValue(0);
+                    }}
+                >
                     <img src={logo} alt="logo" className={classes.logo} />
                     <span className={classes.logoText}>i</span>
                     <span className={`${classes.logoText} ${classes.logoTextSpec}`}>S</span>
                     <span className={classes.logoText}>hare</span>
                 </div>
                 <div className={classes.actionIcons}>
-                    <HomeIcon className={classes.icon} style={{ fontSize: '26px' }} />
+                    {/* <HomeIcon className={classes.icon} style={{ fontSize: '26px' }} />
                     <Badge badgeContent={4} color="secondary" className={classes.icon}>
                         <CommentIcon />
                     </Badge>
                     <Badge badgeContent={19} color="secondary" className={classes.icon}>
                         <FavoriteBorderIcon />
-                    </Badge>
-                    <Avatar src={avatarViet} alt="avatar" className={classes.avatar} />
+                    </Badge> */}
+                    <div className={classes.avatarContainer}>
+                        <Avatar src={avatarViet} alt="avatar" className={classes.avatar} />
+                        <p className={classes.actionText}>Viet Tran</p>
+                    </div>
+                    <div className={classes.authContainer}>
+                        <ExitToAppIcon />
+                        <p className={classes.actionText}>Logout</p>
+                    </div>
                 </div>
             </div>
         </div>
