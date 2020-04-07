@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { makeStyles, useTheme } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 import { Avatar, Typography } from '@material-ui/core';
 
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -133,7 +133,6 @@ const PostItem = ({ post, edit }) => {
     // const [onHover, setOnHover] = useState(false);
     const { token, userId } = useContext(AuthContext);
     const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
-    const theme = useTheme();
 
     const handlePostDetailClose = () => {
         setIsPostDetailOpen(false);

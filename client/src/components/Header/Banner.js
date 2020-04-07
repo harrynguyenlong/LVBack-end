@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar } from '@material-ui/core';
 
@@ -6,6 +6,8 @@ import avatarViet from '../../assets/images/avatar-viet.jpg';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import CommentIcon from '@material-ui/icons/Comment';
+
+import EditProfile from '../Profile/EditProfile';
 
 const useStyles = makeStyles((theme) => ({
     banner: {
@@ -65,6 +67,12 @@ const useStyles = makeStyles((theme) => ({
 const Banner = () => {
     const classes = useStyles();
 
+    const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+
+    const handleEditProfileClose = () => {
+        setIsEditProfileOpen(false);
+    };
+
     return (
         <div className={classes.banner}>
             <div className={classes.container}>
@@ -83,7 +91,12 @@ const Banner = () => {
                         >
                             Viet Tran
                         </h1>
-                        <button className={classes.button}>Edit Profile</button>
+                        <button
+                            className={classes.button}
+                            onClick={() => setIsEditProfileOpen(true)}
+                        >
+                            Edit Profile
+                        </button>
                     </div>
                     <div className={classes.info}>
                         <div className={classes.infoItem}>
@@ -107,6 +120,10 @@ const Banner = () => {
                     </div>
                 </div>
             </div>
+            <EditProfile
+                isEditProfileOpen={isEditProfileOpen}
+                handleEditProfileClose={handleEditProfileClose}
+            />
         </div>
     );
 };
