@@ -101,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
     },
     contentText: {
-        height: '36.8px',
+        height: '38px',
         padding: ' 0 10px',
         marginBottom: '10px',
         fontSize: '14px',

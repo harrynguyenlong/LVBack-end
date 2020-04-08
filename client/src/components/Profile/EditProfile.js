@@ -32,6 +32,24 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import CommentIcon from '@material-ui/icons/Comment';
 
 import { DropzoneArea } from 'material-ui-dropzone';
+import PostsProfile from './PostsProfile';
+import CommentsProfile from './CommentsProfile';
+import LikesProfile from './LikesProfile';
+import PostItem from '../Home/PostItem';
+
+const dummyPost = {
+    _id: '1',
+    userId: {
+        name: 'Viet Tran',
+        avatarUrl: 'https://i.ibb.co/BPvgb3V/avatar-viet.jpg',
+    },
+    contentText:
+        'this is content of the post. this is content of the post. this is content of the post. this is content of the post',
+    postImageUrl: 'http://placekitten.com/400/400',
+    numberOfLikes: 14,
+    numberOfComments: 9,
+    createdAt: '01.04.2020',
+};
 
 const useStyles = makeStyles((theme) => ({
     dialogTitleWrapper: {
@@ -50,6 +68,25 @@ const useStyles = makeStyles((theme) => ({
         ...theme.layouts.container,
         width: '100%',
         padding: '30px 0',
+    },
+    headerAvatarContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        paddingRight: '20px',
+
+        '&:hover': {
+            cursor: 'pointer',
+            color: theme.palette.common.colorGreen,
+        },
+    },
+    headerAvatar: {
+        width: theme.spacing(4),
+        height: theme.spacing(4),
+    },
+    headerActionText: {
+        marginLeft: '5px',
+        fontSize: '14px',
+        fontWeight: '500',
     },
     gridContainer: {
         // marginTop: '30px',
@@ -79,6 +116,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '20px',
         color: theme.palette.common.colorGreen,
         letterSpacing: '1px',
+        // textTransform: 'uppercase',
     },
     formControl: {
         display: 'flex',
@@ -133,11 +171,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const EditProfile = ({ isEditProfileOpen, handleEditProfileClose }) => {
+const EditProfile = ({
+    isEditProfileOpen,
+    handleEditProfileClose,
+    isListSelected,
+    setIsListSelected,
+}) => {
     const classes = useStyles();
     const theme = useTheme();
 
-    const [isListSelected, setIsListSelected] = useState(0);
+    // const [isListSelected, setIsListSelected] = useState(0);
 
     const [imageUpload, setImageUpload] = useState([]);
 
@@ -158,7 +201,14 @@ const EditProfile = ({ isEditProfileOpen, handleEditProfileClose }) => {
                     className={classes.dialogTitleWrapper}
                 >
                     <div className={classes.dialogTitle}>
-                        <Typography style={{ fontWeight: '500' }}>Edit Profile</Typography>
+                        <div className={classes.headerAvatarContainer}>
+                            <Avatar
+                                src="https://i.ibb.co/BPvgb3V/avatar-viet.jpg"
+                                alt="avatar"
+                                className={classes.headerAvatar}
+                            />
+                            <p className={classes.headerActionText}>Viet Tran</p>
+                        </div>
 
                         <IconButton onClick={handleEditProfileClose}>
                             <CloseIcon style={{ color: 'white' }} />
@@ -256,13 +306,13 @@ const EditProfile = ({ isEditProfileOpen, handleEditProfileClose }) => {
                                         />
                                     </ListItemIcon>
                                     <ListItemText
-                                        primary="Posts"
+                                        primary="My Posts"
                                         classes={{ root: classes.listItemText }}
                                     />
                                 </ListItem>
                                 <Divider />
 
-                                <ListItem
+                                {/* <ListItem
                                     button
                                     selected={isListSelected === 3}
                                     onClick={() => handleListSelected(3)}
@@ -322,10 +372,11 @@ const EditProfile = ({ isEditProfileOpen, handleEditProfileClose }) => {
                                         classes={{ root: classes.listItemText }}
                                     />
                                 </ListItem>
-                                <Divider />
+                                <Divider /> */}
                             </List>
                         </Grid>
                         <Grid item xs={9} className={classes.profileDetail}>
+                            {/* Change infomation */}
                             {isListSelected === 0 && (
                                 <div className={classes.changeContainer}>
                                     <h2 className={classes.mainTitle}>Change Your Infomation</h2>
@@ -373,6 +424,7 @@ const EditProfile = ({ isEditProfileOpen, handleEditProfileClose }) => {
                                     </div>
                                 </div>
                             )}
+                            {/* Change Password */}
                             {isListSelected === 1 && (
                                 <div className={classes.changeContainer}>
                                     <h2 className={classes.mainTitle}>Change Your Password</h2>
@@ -391,6 +443,44 @@ const EditProfile = ({ isEditProfileOpen, handleEditProfileClose }) => {
                                     <div className={classes.formActions}>
                                         <button className={classes.button}>Save</button>
                                     </div>
+                                </div>
+                            )}
+
+                            {/* Posts Profile */}
+                            {isListSelected === 2 && (
+                                <div className={classes.changeContainer}>
+                                    <h2 className={classes.mainTitle}>Posts: 120</h2>
+                                    {/* <PostsProfile /> */}
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={6}>
+                                            <PostItem post={dummyPost} />
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <PostItem post={dummyPost} />
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <PostItem post={dummyPost} />
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <PostItem post={dummyPost} />
+                                        </Grid>
+                                    </Grid>
+                                </div>
+                            )}
+
+                            {/* Comments Profile */}
+                            {isListSelected === 3 && (
+                                <div className={classes.changeContainer}>
+                                    <h2 className={classes.mainTitle}>Comments</h2>
+                                    <CommentsProfile />
+                                </div>
+                            )}
+
+                            {/* Likes Profile */}
+                            {isListSelected === 4 && (
+                                <div className={classes.changeContainer}>
+                                    <h2 className={classes.mainTitle}>Likes</h2>
+                                    <LikesProfile />
                                 </div>
                             )}
                         </Grid>

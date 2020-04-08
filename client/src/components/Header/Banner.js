@@ -42,10 +42,10 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
         marginRight: theme.spacing(6),
-        cursor: 'pointer',
-        '&:hover': {
-            color: theme.palette.common.colorGreen,
-        },
+        // cursor: 'pointer',
+        // '&:hover': {
+        //     color: theme.palette.common.colorGreen,
+        // },
     },
     infoText: {
         // marginRight: theme.spacing(2)
@@ -68,6 +68,7 @@ const Banner = () => {
     const classes = useStyles();
 
     const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+    const [isListSelected, setIsListSelected] = useState(0);
 
     const handleEditProfileClose = () => {
         setIsEditProfileOpen(false);
@@ -93,25 +94,46 @@ const Banner = () => {
                         </h1>
                         <button
                             className={classes.button}
-                            onClick={() => setIsEditProfileOpen(true)}
+                            onClick={() => {
+                                setIsEditProfileOpen(true);
+                                setIsListSelected(0);
+                            }}
                         >
                             Profile
                         </button>
                     </div>
                     <div className={classes.info}>
-                        <div className={classes.infoItem}>
+                        <div
+                            className={classes.infoItem}
+                            // onClick={() => {
+                            //     setIsEditProfileOpen(true);
+                            //     setIsListSelected(2);
+                            // }}
+                        >
                             <AddAPhotoIcon />
                             <p className={classes.infoText}>
                                 <span className={classes.infoNumber}>132</span> posts
                             </p>
                         </div>
-                        <div className={classes.infoItem}>
+                        <div
+                            className={classes.infoItem}
+                            // onClick={() => {
+                            //     setIsEditProfileOpen(true);
+                            //     setIsListSelected(3);
+                            // }}
+                        >
                             <CommentIcon />
                             <p className={classes.infoText}>
                                 <span className={classes.infoNumber}>78</span> comments
                             </p>
                         </div>
-                        <div className={classes.infoItem}>
+                        <div
+                            className={classes.infoItem}
+                            // onClick={() => {
+                            //     setIsEditProfileOpen(true);
+                            //     setIsListSelected(4);
+                            // }}
+                        >
                             <FavoriteIcon />
                             <p className={classes.infoText}>
                                 <span className={classes.infoNumber}>239</span> likes
@@ -123,6 +145,8 @@ const Banner = () => {
             <EditProfile
                 isEditProfileOpen={isEditProfileOpen}
                 handleEditProfileClose={handleEditProfileClose}
+                isListSelected={isListSelected}
+                setIsListSelected={setIsListSelected}
             />
         </div>
     );
