@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar, Badge } from '@material-ui/core';
 
@@ -11,6 +11,8 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 // import HomeIcon from '@material-ui/icons/Home';
 
 import { UIContext, AuthContext } from '../../context';
+
+import LoginRegisterForm from '../LoginRegister/LoginRegisterForm';
 
 const useStyles = makeStyles((theme) => ({
     navbar: {
@@ -88,6 +90,12 @@ const NavBar = () => {
     const classes = useStyles();
     const { setTabValue } = useContext(UIContext);
     const { userId, token, login, logout } = useContext(AuthContext);
+    const [loginOpen, setLoginOpen] = useState(false);
+
+    const handleLoginClose = () => {
+        setLoginOpen(false);
+    };
+
     return (
         <div className={classes.navbar}>
             <div className={classes.container}>
@@ -125,7 +133,8 @@ const NavBar = () => {
                     {(!token || !userId) && (
                         <div
                             className={classes.authContainer}
-                            onClick={() => login('this is dummy token', '5e89d609098dcb277f87d1ed')}
+                            // onClick={() => login('this is dummy token', '5e89d609098dcb277f87d1ed')}
+                            onClick={() => setLoginOpen(true)}
                         >
                             <LockOpenIcon />
                             <p className={classes.actionText}>Login</p>
@@ -133,6 +142,7 @@ const NavBar = () => {
                     )}
                 </div>
             </div>
+            <LoginRegisterForm loginOpen={loginOpen} handleLoginClose={handleLoginClose} />
         </div>
     );
 };
