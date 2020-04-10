@@ -21,6 +21,7 @@
         "express-graphql": "^0.9.0",
         "express-jwt": "^5.3.3",
         "graphql": "^15.0.0",
+        "graphql-passport": "^0.6.3",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.9.7",
         "mongoose-autopopulate": "^0.12.1",

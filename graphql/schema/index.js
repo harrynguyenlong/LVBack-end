@@ -66,6 +66,7 @@ module.exports = buildSchema(`
         createComment(postId: ID!, contentText: String!): Comment!
         likePost(postId: ID!): Post!
         createUser(name: String!, password: String!, email: String!): Token!
+        signIn(email: String!, password: String!): Token!
     }
 
     schema {
