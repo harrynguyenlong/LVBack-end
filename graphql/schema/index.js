@@ -46,6 +46,11 @@ module.exports = buildSchema(`
         updatedAt: String!
     }
 
+    type Token {
+        token: String
+        message: String!
+    }
+
     enum FilterPostType {
         NEWEST
         TOPCOMMENTS
@@ -60,6 +65,8 @@ module.exports = buildSchema(`
         createPost(contentText: String!, postImageUrl: String!): Post!
         createComment(postId: ID!, contentText: String!): Comment!
         likePost(postId: ID!): Post!
+        createUser(name: String!, password: String!, email: String!): Token!
+        signIn(email: String!, password: String!): Token!
     }
 
     schema {

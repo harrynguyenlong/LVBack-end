@@ -3,32 +3,38 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const graphqlHTTP = require('express-graphql');
-
+const passport = require('passport');
 const rootSchema = require('./graphql/schema');
 const rootResolver = require('./graphql/resolvers');
-
+const auth = require('./graphql/Authentication/auth');
+const GraphQLLocalStrategy = require('graphql-passport').GraphQLLocalStrategy;
+const buildContext = require('graphql-passport').buildContext;
+const User = require('./models/userModel');
+require('./graphql/Authentication/passport');
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize())
 
 // dummy authentication middleware
-app.use((req, res, next) => {
-    req.isAuth = true;
-    req.userId = '5e89d609098dcb277f87d1ed'; // Viet Tran
-    // req.userId = '5e89ebe0098dcb277f87d1ee'; // David
-    // req.userId = '5e89ec15098dcb277f87d1ef'; // Naomi Watts
-    next();
-});
+// app.use((req, res, next) => {
+//     req.isAuth = true;
+//     req.userId = '5e8b8d971c9d44000060ef0b'; // Long Nguyen
+//     next();
+// });
 
 // graphql
+app.use('/auth', auth);
+
 app.use(
     '/graphql',
     graphqlHTTP({
         schema: rootSchema,
         rootValue: rootResolver,
         graphiql: true,
-    })
+    }
+    )
 );
 
 // start server

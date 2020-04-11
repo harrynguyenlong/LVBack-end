@@ -40,7 +40,7 @@ const userSchema = mongoose.Schema(
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Post',
-                autopopulate: true,
+                //autopopulate: true,
             },
         ],
         // likeIds: [
