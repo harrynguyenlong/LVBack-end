@@ -78,7 +78,9 @@ const useStyles = makeStyles((theme) => ({
     postImage: {
         display: 'block',
         width: '100%',
-        height: '100%',
+        height: '250px',
+        maxWidth: '300px',
+        maxHeight: '300px',
         // objectFit: 'cover',
         transition: 'all 0.3s ease',
         '&:hover': {
@@ -144,7 +146,9 @@ const PostItem = ({ post, edit }) => {
                 <Avatar src={post.userId.avatarUrl} alt={post.userId.name} />
                 <div style={{ paddingLeft: '10px', margin: 0, width: '100%', height: '100%' }}>
                     <h2 className={classes.headerTitle}>{post.userId.name}</h2>
-                    <span className={classes.headerDate}>{post.createdAt}</span>
+                    <span className={classes.headerDate}>
+                        {new Date(post.createdAt * 1).toLocaleString()}
+                    </span>
                 </div>
                 {edit && token && userId && (
                     <div className={classes.headerIcons}>
@@ -160,7 +164,7 @@ const PostItem = ({ post, edit }) => {
             </div>
             <div className={classes.imageContainer}>
                 <img
-                    src={post.postImageUrl}
+                    src={'http://localhost:5000/' + post.postImageUrl}
                     alt="post"
                     className={classes.postImage}
                     onClick={() => {

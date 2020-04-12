@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Fab, Hidden } from '@material-ui/core';
 import PostItem from './PostItem';
@@ -140,10 +140,54 @@ const PostList = () => {
     const classes = useStyles();
     const { token, userId } = useContext(AuthContext);
     const [isPostFormOpen, setIsPostFormOpen] = useState(false);
+    const [posts, setPosts] = useState([]);
 
     const handlePostFormClose = () => {
         setIsPostFormOpen(false);
     };
+
+    useEffect(() => {
+        const requestBody = {
+            query: `
+                query{
+                    posts(type: NEWEST,limit: 20){
+                        _id
+                        userId{
+                            name
+                            avatarUrl
+                            roles
+                        }
+                        contentText
+                        postImageUrl
+                        numberOfLikes
+                        numberOfComments
+                        isLiked
+                        createdAt
+                    }
+                }
+            `,
+        };
+        fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((res) => {
+                if (res.status !== 200 && res.status !== 201) {
+                    throw new Error('Failed!');
+                }
+                return res.json();
+            })
+            .then((resData) => {
+                const posts = resData.data.posts;
+                setPosts(posts);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
 
     return (
         <section className={classes.container}>
@@ -160,17 +204,15 @@ const PostList = () => {
                 </div>
             )}
             <Grid container spacing={4}>
-                <Grid item xs={4} key={1}>
-                    <PostItem post={data[0]} edit={true} />
-                </Grid>
-                {data.map((post) => {
-                    if (post._id !== '1')
-                        return (
-                            <Grid item xs={4} key={post._id}>
-                                <PostItem post={post} />
-                            </Grid>
-                        );
-                })}
+                {posts &&
+                    posts.map((post) => {
+                        if (post._id !== '1')
+                            return (
+                                <Grid item xs={4} key={post._id}>
+                                    <PostItem post={post} />
+                                </Grid>
+                            );
+                    })}
             </Grid>
 
             <PostForm isPostFormOpen={isPostFormOpen} handlePostFormClose={handlePostFormClose} />
