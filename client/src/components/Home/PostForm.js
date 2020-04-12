@@ -83,21 +83,66 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
         console.log('submited...');
         console.log('content text:', contentTextRef.current.value);
         console.log('image upload', imageUpload);
+
         const formData = new FormData();
-        formData.append('contentText', contentTextRef.current.value);
-        formData.append('postImageUrl', imageUpload[0]);
+        formData.append('image', imageUpload[0]);
 
-        console.log('form data', formData);
+        fetch('http://localhost:5000/upload-image', {
+            method: 'POST',
+            headers: {
+                // Authorization: 'Bearer ' + token,
+            },
+            body: formData,
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((resData) => {
+                console.log('resData', resData);
+                if (resData.status === 'success' && resData.filePath) {
+                    const requestBody = {
+                        query: `
+                            mutation {
+                                createPost(
+                                    contentText: "${contentTextRef.current.value}",
+                                    postImageUrl: "${resData.filePath}"
+                                ) {
+                                    _id
+                                    contentText
+                                }
+                            }
+                        `,
+                    };
 
-        // const requestBody = {
-        //     query: `
-        //         mutation {
-        //             createPost(
-        //                 contentText:
-        //             )
-        //         }
-        //     `
-        // }
+                    // console.log(requestBody);
+                    fetch('http://localhost:5000/graphql', {
+                        method: 'POST',
+                        body: JSON.stringify(requestBody),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // Authorization: 'Bearer ' + token,
+                        },
+                    })
+                        .then((res) => {
+                            if (res.status !== 200 && res.status !== 201) {
+                                throw new Error('Failed!');
+                            }
+                            return res.json();
+                        })
+                        .then((resData) => {
+                            console.log('create post resData', resData);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                } else {
+                    // upload file error
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        handlePostFormClose();
     };
 
     return (
