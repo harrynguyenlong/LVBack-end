@@ -27,14 +27,14 @@ app.use(cors());
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
 // dummy authentication middleware
-app.use((req, res, next) => {
-    req.isAuth = true;
-    req.userId = '5e89d609098dcb277f87d1ed';
-    next();
-});
+// app.use((req, res, next) => {
+//     req.isAuth = true;
+//     req.userId = '5e89d609098dcb277f87d1ed';
+//     next();
+// });
 
 // graphql
-// app.use('/auth', auth);
+app.use('/auth', auth);
 
 app.use('/upload-image', uploadRoute);
 

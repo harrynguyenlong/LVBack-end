@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 const NavBar = () => {
     const classes = useStyles();
     const { setTabValue } = useContext(UIContext);
-    const { userId, token, login, logout } = useContext(AuthContext);
+    const { user, token, login, logout } = useContext(AuthContext);
     const [loginOpen, setLoginOpen] = useState(false);
 
     const handleLoginClose = () => {
@@ -118,11 +118,15 @@ const NavBar = () => {
                     <Badge badgeContent={19} color="secondary" className={classes.icon}>
                         <FavoriteBorderIcon />
                     </Badge> */}
-                    {token && userId && (
+                    {token && user.userId && (
                         <React.Fragment>
                             <div className={classes.avatarContainer}>
-                                <Avatar src={avatarViet} alt="avatar" className={classes.avatar} />
-                                <p className={classes.actionText}>Viet Tran</p>
+                                <Avatar
+                                    src={user.avatarUrl}
+                                    alt="avatar"
+                                    className={classes.avatar}
+                                />
+                                <p className={classes.actionText}>{user.name}</p>
                             </div>
                             <div className={classes.authContainer} onClick={() => logout()}>
                                 <ExitToAppIcon />
@@ -130,7 +134,7 @@ const NavBar = () => {
                             </div>
                         </React.Fragment>
                     )}
-                    {(!token || !userId) && (
+                    {(!token || !user.userId) && (
                         <div
                             className={classes.authContainer}
                             // onClick={() => login('this is dummy token', '5e89d609098dcb277f87d1ed')}

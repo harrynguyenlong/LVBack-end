@@ -133,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
 const PostItem = ({ post, edit }) => {
     const classes = useStyles();
     // const [onHover, setOnHover] = useState(false);
-    const { token, userId } = useContext(AuthContext);
+    const { token, user } = useContext(AuthContext);
     const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
 
     const handlePostDetailClose = () => {
@@ -150,7 +150,7 @@ const PostItem = ({ post, edit }) => {
                         {new Date(post.createdAt * 1).toLocaleString()}
                     </span>
                 </div>
-                {edit && token && userId && (
+                {edit && token && user && (
                     <div className={classes.headerIcons}>
                         <EditIcon className={`${classes.actionIcons} ${classes.editIcon}`} />
                         <DeleteIcon

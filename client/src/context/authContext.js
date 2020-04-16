@@ -4,20 +4,23 @@ export const AuthContext = createContext();
 
 const AuthContextProvider = (props) => {
     const [token, setToken] = useState(null);
-    const [userId, setUserId] = useState(null);
+    // const [userId, setUserId] = useState(null);
+    // const [name, setName] = useState(null);
+    // const [avatarUrl, setAvatarUrl] = useState(null);
+    const [user, setUser] = useState(null);
 
-    const login = (token, userId) => {
+    const login = (token, user) => {
         setToken(token);
-        setUserId(userId);
+        setUser(user);
     };
 
     const logout = () => {
         setToken(null);
-        setUserId(null);
+        setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ token, userId, login, logout }}>
+        <AuthContext.Provider value={{ token, user, login, logout }}>
             {props.children}
         </AuthContext.Provider>
     );

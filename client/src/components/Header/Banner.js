@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar } from '@material-ui/core';
 
@@ -8,6 +8,8 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import CommentIcon from '@material-ui/icons/Comment';
 
 import EditProfile from '../Profile/EditProfile';
+
+import { AuthContext } from '../../context/authContext';
 
 const useStyles = makeStyles((theme) => ({
     banner: {
@@ -64,8 +66,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Banner = () => {
+const Banner = ({ userData }) => {
     const classes = useStyles();
+
+    const { token, user } = useContext(AuthContext);
 
     const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
     const [isListSelected, setIsListSelected] = useState(0);
@@ -74,74 +78,87 @@ const Banner = () => {
         setIsEditProfileOpen(false);
     };
 
+    console.log(token, user);
+
     return (
         <div className={classes.banner}>
-            <div className={classes.container}>
-                <div className={classes.imageContainer}>
-                    <Avatar src={avatarViet} alt="avatar" className={classes.avatar} />
-                </div>
-                <div className={classes.infoContainer}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
-                        <h1
-                            style={{
-                                margin: 0,
-                                marginRight: 20,
-                                fontSize: '24px',
-                                letterSpacing: '2px',
-                            }}
-                        >
-                            Viet Tran
-                        </h1>
-                        <button
-                            className={classes.button}
-                            onClick={() => {
-                                setIsEditProfileOpen(true);
-                                setIsListSelected(0);
-                            }}
-                        >
-                            Profile
-                        </button>
+            {userData && (
+                <div className={classes.container}>
+                    <div className={classes.imageContainer}>
+                        <Avatar src={userData.avatarUrl} alt="avatar" className={classes.avatar} />
                     </div>
-                    <div className={classes.info}>
-                        <div
-                            className={classes.infoItem}
-                            // onClick={() => {
-                            //     setIsEditProfileOpen(true);
-                            //     setIsListSelected(2);
-                            // }}
-                        >
-                            <AddAPhotoIcon />
-                            <p className={classes.infoText}>
-                                <span className={classes.infoNumber}>132</span> posts
-                            </p>
+                    <div className={classes.infoContainer}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
+                            <h1
+                                style={{
+                                    margin: 0,
+                                    marginRight: 20,
+                                    fontSize: '24px',
+                                    letterSpacing: '2px',
+                                }}
+                            >
+                                {userData.name}
+                            </h1>
+                            <button
+                                className={classes.button}
+                                onClick={() => {
+                                    setIsEditProfileOpen(true);
+                                    setIsListSelected(0);
+                                }}
+                            >
+                                Profile
+                            </button>
                         </div>
-                        <div
-                            className={classes.infoItem}
-                            // onClick={() => {
-                            //     setIsEditProfileOpen(true);
-                            //     setIsListSelected(3);
-                            // }}
-                        >
-                            <CommentIcon />
-                            <p className={classes.infoText}>
-                                <span className={classes.infoNumber}>78</span> comments
-                            </p>
-                        </div>
-                        <div
-                            className={classes.infoItem}
-                            // onClick={() => {
-                            //     setIsEditProfileOpen(true);
-                            //     setIsListSelected(4);
-                            // }}
-                        >
-                            <FavoriteIcon />
-                            <p className={classes.infoText}>
-                                <span className={classes.infoNumber}>239</span> likes
-                            </p>
+                        <div className={classes.info}>
+                            <div
+                                className={classes.infoItem}
+                                // onClick={() => {
+                                //     setIsEditProfileOpen(true);
+                                //     setIsListSelected(2);
+                                // }}
+                            >
+                                <AddAPhotoIcon />
+                                <p className={classes.infoText}>
+                                    <span className={classes.infoNumber}>
+                                        {userData.numberOfPosts}
+                                    </span>{' '}
+                                    posts
+                                </p>
+                            </div>
+                            <div
+                                className={classes.infoItem}
+                                // onClick={() => {
+                                //     setIsEditProfileOpen(true);
+                                //     setIsListSelected(3);
+                                // }}
+                            >
+                                <CommentIcon />
+                                <p className={classes.infoText}>
+                                    <span className={classes.infoNumber}>
+                                        {userData.numberOfComments}
+                                    </span>{' '}
+                                    comments
+                                </p>
+                            </div>
+                            <div
+                                className={classes.infoItem}
+                                // onClick={() => {
+                                //     setIsEditProfileOpen(true);
+                                //     setIsListSelected(4);
+                                // }}
+                            >
+                                <FavoriteIcon />
+                                <p className={classes.infoText}>
+                                    <span className={classes.infoNumber}>
+                                        {userData.numberOfLikes}
+                                    </span>{' '}
+                                    likes
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            )}
             <EditProfile
                 isEditProfileOpen={isEditProfileOpen}
                 handleEditProfileClose={handleEditProfileClose}

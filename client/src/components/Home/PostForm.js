@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -17,6 +17,7 @@ import {
 import { makeStyles } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { DropzoneArea } from 'material-ui-dropzone';
+import { AuthContext } from '../../context/authContext';
 
 const useStyles = makeStyles((theme) => ({
     postForm: {
@@ -70,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
     const classes = useStyles();
+    const { token } = useContext(AuthContext);
     const [imageUpload, setImageUpload] = useState([]);
     const contentTextRef = useRef();
 
@@ -90,7 +92,7 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
         fetch('http://localhost:5000/upload-image', {
             method: 'POST',
             headers: {
-                // Authorization: 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
             },
             body: formData,
         })
@@ -120,7 +122,7 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
                         body: JSON.stringify(requestBody),
                         headers: {
                             'Content-Type': 'application/json',
-                            // Authorization: 'Bearer ' + token,
+                            Authorization: 'Bearer ' + token,
                         },
                     })
                         .then((res) => {

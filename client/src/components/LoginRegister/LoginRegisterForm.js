@@ -173,7 +173,14 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                             <button
                                 className={classes.button}
                                 onClick={() => {
-                                    login('this is dummy token', '5e89d609098dcb277f87d1ed');
+                                    const token =
+                                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlOTMxNDU4OTA4MTJmM2UwYmJhOGZjNiIsImVtYWlsIjoia2l0QGtpdC5maSIsIm5hbWUiOiJLaXQiLCJpYXQiOjE1ODY3MDIxNzN9.an8zU1z2TOEnguwlPy7Cexc9dLZJ8KWBFPSDvx2-0XQ';
+                                    const user = {
+                                        userId: '5e93145890812f3e0bba8fc6',
+                                        name: 'Kit',
+                                        avatarUrl: '',
+                                    };
+                                    login(token, user);
                                     handleLoginClose();
                                 }}
                             >

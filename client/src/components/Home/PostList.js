@@ -138,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PostList = () => {
     const classes = useStyles();
-    const { token, userId } = useContext(AuthContext);
+    const { token, user } = useContext(AuthContext);
     const [isPostFormOpen, setIsPostFormOpen] = useState(false);
     const [posts, setPosts] = useState([]);
 
@@ -191,7 +191,7 @@ const PostList = () => {
 
     return (
         <section className={classes.container}>
-            {token && userId && (
+            {token && user && (
                 <div className={classes.buttonContainer}>
                     <Fab
                         color="primary"
