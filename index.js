@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 });
 
 // graphql
-// app.use('/auth', auth);
+app.use('/auth', auth);
 
 app.use('/upload-image', uploadRoute);
 

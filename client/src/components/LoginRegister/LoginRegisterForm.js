@@ -124,6 +124,40 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
         setIsLogin((isLogin) => !isLogin);
     };
 
+    const handleLogin = (email, password) => {
+        let details = {
+            'email': email,
+            'password': password
+        };
+    
+        let formBody = [];
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+
+        fetch('http://localhost:5000/auth/login', {
+            method: 'POST',
+            headers: {
+                // Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formBody,
+        })
+        .then((response) => {
+            console.log(response);
+            return response.json();
+        })
+        .then((responseData) => {
+            console.log(responseData);
+        })
+        .catch((error) => {
+            console.log(error);
+        }) 
+    };
+
     return (
         <div className={classes.loginRegisterForm}>
             <Dialog
@@ -173,7 +207,8 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                             <button
                                 className={classes.button}
                                 onClick={() => {
-                                    login('this is dummy token', '5e89d609098dcb277f87d1ed');
+                                    // login('this is dummy token', '5e89d609098dcb277f87d1ed');
+                                    handleLogin('harrynguyen@gmail.com', '123123');
                                     handleLoginClose();
                                 }}
                             >
