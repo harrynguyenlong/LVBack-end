@@ -146,7 +146,6 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
             body: formBody,
         })
         .then((response) => {
-            console.log(response);
             if (!(response.status >= 200 && response.status <= 201)) {
                 throw new Error('Failed!');
             }
