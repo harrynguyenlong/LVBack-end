@@ -141,19 +141,23 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
         fetch('http://localhost:5000/auth/login', {
             method: 'POST',
             headers: {
-                // Authorization: 'Bearer ' + token,
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: formBody,
         })
         .then((response) => {
             console.log(response);
+            if (!(response.status >= 200 && response.status <= 201)) {
+                throw new Error('Failed!');
+            }
             return response.json();
         })
         .then((responseData) => {
-            console.log(responseData);
+            login(responseData.token, responseData.userObj.id);
+            handleToggleLogin();
         })
         .catch((error) => {
+            // Show error dialog?
             console.log(error);
         }) 
     };
@@ -191,6 +195,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     className={classes.formInput}
                                     // value="Viet Tran"
                                     // onChange={() => {}}
+                                    id='email_login'
                                     placeholder="Enter your email"
                                 />
                             </div>
@@ -201,6 +206,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     className={classes.formInput}
                                     // value="Viet Tran"
                                     // onChange={() => {}}
+                                    id='password_login'
                                     placeholder="Enter your password"
                                 />
                             </div>
@@ -208,7 +214,9 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                 className={classes.button}
                                 onClick={() => {
                                     // login('this is dummy token', '5e89d609098dcb277f87d1ed');
-                                    handleLogin('harrynguyen@gmail.com', '123123');
+                                    let email = document.getElementById('email_login').value;
+                                    let password = document.getElementById('password_login').value;
+                                    handleLogin(email, password);
                                     handleLoginClose();
                                 }}
                             >
