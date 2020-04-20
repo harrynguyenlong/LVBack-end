@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
     Dialog,
@@ -107,14 +107,21 @@ const useStyles = makeStyles((theme) => ({
     dropzone: {
         fontSize: '10px',
     },
+    errorInfo: {
+        ...theme.shared.errorInfo,
+    },
 }));
 
 const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
     const classes = useStyles();
     const { token, userId, login } = useContext(AuthContext);
     const [isLogin, setIsLogin] = useState(true);
+    const [showErrorText, setShowErrorText] = useState(false);
 
     const [imageUpload, setImageUpload] = useState([]);
+
+    const emailLoginRef = useRef();
+    const passwordLoginRef = useRef();
 
     const handeChangeImageUpload = (files) => {
         setImageUpload(files);
@@ -122,6 +129,37 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
 
     const handleToggleLogin = () => {
         setIsLogin((isLogin) => !isLogin);
+    };
+
+    const handleLogin = async (event) => {
+        event.preventDefault();
+        const email = emailLoginRef.current.value;
+        const password = passwordLoginRef.current.value;
+        // console.log(email, password);
+
+        const response = await fetch('http://localhost:5000/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
+
+        if (response.status !== 200 && response.status !== 201) {
+            setShowErrorText(true);
+            return;
+        }
+
+        const responseData = await response.json();
+        const token = responseData.token;
+        const user = responseData.userObj;
+
+        console.log(token, user);
+
+        if (!token || !user) {
+            throw new Error('Something went wrong');
+        }
+
+        login(token, user);
+        handleLoginClose();
     };
 
     return (
@@ -158,6 +196,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     // value="Viet Tran"
                                     // onChange={() => {}}
                                     placeholder="Enter your email"
+                                    ref={emailLoginRef}
                                 />
                             </div>
                             <div className={classes.formControl}>
@@ -168,20 +207,26 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     // value="Viet Tran"
                                     // onChange={() => {}}
                                     placeholder="Enter your password"
+                                    ref={passwordLoginRef}
                                 />
                             </div>
+                            {showErrorText && (
+                                <p className={classes.errorInfo}>
+                                    Your email or password is not correct.
+                                </p>
+                            )}
                             <button
                                 className={classes.button}
-                                onClick={() => {
-                                    const token =
-                                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlOTMxNDU4OTA4MTJmM2UwYmJhOGZjNiIsImVtYWlsIjoia2l0QGtpdC5maSIsIm5hbWUiOiJLaXQiLCJpYXQiOjE1ODY3MDIxNzN9.an8zU1z2TOEnguwlPy7Cexc9dLZJ8KWBFPSDvx2-0XQ';
-                                    const user = {
-                                        userId: '5e93145890812f3e0bba8fc6',
-                                        name: 'Kit',
-                                        avatarUrl: '',
-                                    };
-                                    login(token, user);
-                                    handleLoginClose();
+                                onClick={(event) => {
+                                    // const token =
+                                    //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlOTMxNDU4OTA4MTJmM2UwYmJhOGZjNiIsImVtYWlsIjoia2l0QGtpdC5maSIsIm5hbWUiOiJLaXQiLCJpYXQiOjE1ODY3MDIxNzN9.an8zU1z2TOEnguwlPy7Cexc9dLZJ8KWBFPSDvx2-0XQ';
+                                    // const user = {
+                                    //     userId: '5e93145890812f3e0bba8fc6',
+                                    //     name: 'Kit',
+                                    //     avatarUrl: '',
+                                    // };
+                                    // login(token, user);
+                                    handleLogin(event);
                                 }}
                             >
                                 Login

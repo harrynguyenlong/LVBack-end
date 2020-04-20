@@ -15,7 +15,7 @@ const Header = () => {
             const requestBody = {
                 query: `
                     query{
-                        user(userId: "${user.userId}"){
+                        user(userId: "${user.id}"){
                             _id
                             name
                             email

@@ -96,6 +96,7 @@ const NavBar = () => {
         setLoginOpen(false);
     };
 
+    console.log('navbar', user, token);
     return (
         <div className={classes.navbar}>
             <div className={classes.container}>
@@ -118,7 +119,7 @@ const NavBar = () => {
                     <Badge badgeContent={19} color="secondary" className={classes.icon}>
                         <FavoriteBorderIcon />
                     </Badge> */}
-                    {token && user.userId && (
+                    {token && user && (
                         <React.Fragment>
                             <div className={classes.avatarContainer}>
                                 <Avatar
@@ -134,7 +135,7 @@ const NavBar = () => {
                             </div>
                         </React.Fragment>
                     )}
-                    {(!token || !user.userId) && (
+                    {!token && (
                         <div
                             className={classes.authContainer}
                             // onClick={() => login('this is dummy token', '5e89d609098dcb277f87d1ed')}

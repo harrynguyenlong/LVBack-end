@@ -8,6 +8,7 @@ const colorGreyDark1 = '#888888';
 const colorGreyLight = '#dbdbdb';
 const colorDarkBg = '#2b2b35';
 const colorLightBg = '#f8f8f8';
+const colorRed = '#ff3232';
 
 const theme = createMuiTheme({
     palette: {
@@ -19,25 +20,25 @@ const theme = createMuiTheme({
             colorGreyLight,
             colorDarkBg,
             colorLightBg,
-            colorGreyDark1
+            colorGreyDark1,
         },
         primary: {
-            main: colorGreen
+            main: colorGreen,
         },
         secondary: {
-            main: '#FF3346'
-        }
+            main: '#FF3346',
+        },
     },
     layouts: {
         container: {
             maxWidth: '975px',
             margin: '0 auto',
             height: '100%',
-            padding: '0 16px'
+            padding: '0 16px',
         },
         sectionPadding: {
-            padding: '56px 0'
-        }
+            padding: '56px 0',
+        },
     },
     shared: {
         btn: {
@@ -52,16 +53,21 @@ const theme = createMuiTheme({
             color: colorWhite,
             border: `1px solid ${colorGreen}`,
             transition: 'all 0.3s ease',
-            borderRadius: '5px'
+            borderRadius: '5px',
         },
         btnHover: {
             background: 'transparent',
-            color: colorGreen
+            color: colorGreen,
         },
         btnActive: {
-            transform: 'translateY(2px)'
-        }
-    }
+            transform: 'translateY(2px)',
+        },
+        errorInfo: {
+            color: colorRed,
+            fontSize: '12px',
+            marginBottom: '10px',
+        },
+    },
 });
 
 export default theme;
