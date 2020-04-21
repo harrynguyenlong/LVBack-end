@@ -1,13 +1,13 @@
 const Post = require('../../models/postModel');
 const User = require('../../models/userModel');
 const Like = require('../../models/likeModel');
+const fs = require('fs');
 
 module.exports = {
     // create post
     createPost: async (args, req) => {
         try {
-            // console.log(req.userId, req.isAuth);
-            if (!req.userId && !req.isAuth === true) {
+            if (!req.userId && !req.isAuth) {
                 throw new Error('Unauthenticated');
             }
 
@@ -78,6 +78,43 @@ module.exports = {
             });
 
             return posts;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+
+    // delete post
+    deletePost: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+
+            const isPostByUser = await Post.findById(args.postId);
+
+            if (!isPostByUser) {
+                throw new Error('Can not find the post');
+            }
+
+            if (isPostByUser.userId._id.toString() !== req.userId.toString()) {
+                throw new Error('You have not permistion to delete this post');
+            }
+
+            const imagePath = isPostByUser.postImageUrl;
+
+            const post = await Post.findByIdAndDelete(args.postId);
+
+            if (!post) {
+                throw new Error('Delete post failed');
+            }
+
+            // delete image file in folder uploads/images
+            fs.unlink(imagePath, (err) => {
+                console.log(err);
+            });
+
+            return `Deleted post id: ${post._id} successfully`;
         } catch (error) {
             console.log(error);
             throw error;

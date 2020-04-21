@@ -18,20 +18,41 @@ module.exports = {
 
             newUser.id = user.id;
 
-            let token = jwttoken.sign(newUser, 'secretKey', { expiresIn: '1d'});
+            let token = jwttoken.sign(newUser, 'secretKey', { expiresIn: '1d' });
 
             if (!user) {
                 throw new Error('Created user failed, please try again');
             }
 
             return {
-                token, 
-                message: 'User created successfully!'
+                token,
+                message: 'User created successfully!',
             };
         } catch (error) {
             return {
-                message: 'User created failed!'
-            }; 
+                message: 'User created failed!',
+            };
         }
-    }
+    },
+
+    // get user by Id
+    user: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+            const userId = args.userId;
+
+            const user = await User.findById(userId);
+
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            return user;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
 };

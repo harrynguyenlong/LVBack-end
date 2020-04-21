@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
     Dialog,
@@ -107,14 +107,21 @@ const useStyles = makeStyles((theme) => ({
     dropzone: {
         fontSize: '10px',
     },
+    errorInfo: {
+        ...theme.shared.errorInfo,
+    },
 }));
 
 const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
     const classes = useStyles();
     const { token, userId, login } = useContext(AuthContext);
     const [isLogin, setIsLogin] = useState(true);
+    const [showErrorText, setShowErrorText] = useState(false);
 
     const [imageUpload, setImageUpload] = useState([]);
+
+    const emailLoginRef = useRef();
+    const passwordLoginRef = useRef();
 
     const handeChangeImageUpload = (files) => {
         setImageUpload(files);
@@ -124,41 +131,35 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
         setIsLogin((isLogin) => !isLogin);
     };
 
-    const handleLogin = (email, password) => {
-        let details = {
-            'email': email,
-            'password': password
-        };
-    
-        let formBody = [];
-        for (let property in details) {
-            let encodedKey = encodeURIComponent(property);
-            let encodedValue = encodeURIComponent(details[property]);
-            formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
+    const handleLogin = async (event) => {
+        event.preventDefault();
+        const email = emailLoginRef.current.value;
+        const password = passwordLoginRef.current.value;
+        // console.log(email, password);
 
-        fetch('http://localhost:5000/auth/login', {
+        const response = await fetch('http://localhost:5000/auth/login', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: formBody,
-        })
-        .then((response) => {
-            if (!(response.status >= 200 && response.status <= 201)) {
-                throw new Error('Failed!');
-            }
-            return response.json();
-        })
-        .then((responseData) => {
-            login(responseData.token, responseData.userObj.id);
-            handleToggleLogin();
-        })
-        .catch((error) => {
-            // Show error dialog?
-            console.log(error);
-        }) 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
+
+        if (response.status !== 200 && response.status !== 201) {
+            setShowErrorText(true);
+            return;
+        }
+
+        const responseData = await response.json();
+        const token = responseData.token;
+        const userId = responseData.userId;
+
+        // console.log(token, user);
+
+        if (!token || !userId) {
+            throw new Error('Something went wrong');
+        }
+
+        login(token, userId);
+        handleLoginClose();
     };
 
     return (
@@ -196,6 +197,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     // onChange={() => {}}
                                     id='email_login'
                                     placeholder="Enter your email"
+                                    ref={emailLoginRef}
                                 />
                             </div>
                             <div className={classes.formControl}>
@@ -207,16 +209,26 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     // onChange={() => {}}
                                     id='password_login'
                                     placeholder="Enter your password"
+                                    ref={passwordLoginRef}
                                 />
                             </div>
+                            {showErrorText && (
+                                <p className={classes.errorInfo}>
+                                    Your email or password is not correct.
+                                </p>
+                            )}
                             <button
                                 className={classes.button}
-                                onClick={() => {
-                                    // login('this is dummy token', '5e89d609098dcb277f87d1ed');
-                                    let email = document.getElementById('email_login').value;
-                                    let password = document.getElementById('password_login').value;
-                                    handleLogin(email, password);
-                                    handleLoginClose();
+                                onClick={(event) => {
+                                    // const token =
+                                    //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlOTMxNDU4OTA4MTJmM2UwYmJhOGZjNiIsImVtYWlsIjoia2l0QGtpdC5maSIsIm5hbWUiOiJLaXQiLCJpYXQiOjE1ODY3MDIxNzN9.an8zU1z2TOEnguwlPy7Cexc9dLZJ8KWBFPSDvx2-0XQ';
+                                    // const user = {
+                                    //     userId: '5e93145890812f3e0bba8fc6',
+                                    //     name: 'Kit',
+                                    //     avatarUrl: '',
+                                    // };
+                                    // login(token, user);
+                                    handleLogin(event);
                                 }}
                             >
                                 Login

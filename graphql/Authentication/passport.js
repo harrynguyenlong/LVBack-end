@@ -1,61 +1,85 @@
+'use strict';
 const passport = require('passport');
-const passportJWT = require("passport-jwt");
-
-const ExtractJWT = passportJWT.ExtractJwt;
-
 const LocalStrategy = require('passport-local').Strategy;
-const JWTStrategy   = passportJWT.Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const { ExtractJwt } = require('passport-jwt');
+
 const User = require('../../models/userModel');
-const bcrypt = require('bcrypt');
 
-passport.use(new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password'
-}, function(email, password, callback) {
-    let user = User.findOne({email}).then(user => {
-        if (!user) {
-            return callback(null, false, { message: 'Invalid email or password'});
-        }
-    
-        let userPassword = user.password;
-        
-        bcrypt.compare(password, userPassword).then(isPasswordMatch => {
-            if (isPasswordMatch) {
-                return callback(null, user, {
-                    message: 'Logged In successfully!'
-                });
-            } else {
-                return  callback(null, false, { message: 'Invalid email or password'});
+// serialize: store user id in session
+passport.serializeUser((id, done) => {
+    done(null, id);
+});
+
+// deserialize: get user id from session and get all user data
+passport.deserializeUser(async (id, done) => {
+    // const user = User.getUser('id', id);
+    const user = User.findById(id);
+
+    if (user) {
+        done(null, user);
+    }
+});
+
+// LOCAL STRATEGY
+passport.use(
+    new LocalStrategy(
+        {
+            usernameField: 'email',
+        },
+        async (email, password, done) => {
+            try {
+                const user = await User.findOne({ email });
+
+                // if not found the user
+                if (!user) {
+                    return done(null, false);
+                }
+
+                // if found the user, check password is correct to login
+                const isCorrectPassword = await user.isValidPassword(password);
+
+                // if password is not correct
+                if (!isCorrectPassword) {
+                    return done(null, false);
+                }
+
+                // if everything ok (email and password are correct)
+                const secureUser = { ...user._doc };
+                delete secureUser.password;
+
+                done(null, secureUser);
+            } catch (error) {
+                done(error, false);
             }
-        }).catch(error => {
-            return callback(null, false, { message: 'Invalid email or password'});
-        });
-    }).catch(error => {
-        return callback(null, false, { message: 'Invalid email or password'});
-    });
-}));
+        }
+    )
+);
 
-// passport.use(new JWTStrategy({
-//     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-//     secretOrKey   : 'secretKey'
-// },
-// function (jwtPayload, callback) {
+// JSON WEB TOKEN STRATEGY
+passport.use(
+    new JwtStrategy(
+        {
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            secretOrKey: process.env.JWT_SECRET,
+        },
+        async (payload, done) => {
+            try {
+                const user = await User.findById(payload.sub);
 
-// }
-// ));
-passport.use(new JWTStrategy({
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey   : 'secretKey'
-},
-function (jwtPayload, callback) {
+                // if user does not exists
+                if (!user) {
+                    return done(null, false);
+                }
 
-    //find the user in db if needed
-    return User.findOneById(jwtPayload.id)
-    .then(user => {
-        return callback(null, user);
-    })
-    .catch(err => {
-        return callback(err);
-    });
-}
-));
+                // everything ok
+                const secureUser = { ...user._doc };
+                delete secureUser.password;
+
+                done(null, secureUser);
+            } catch (error) {
+                done(error, false);
+            }
+        }
+    )
+);

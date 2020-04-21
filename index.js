@@ -5,14 +5,13 @@ const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const graphqlHTTP = require('express-graphql');
+
 const passport = require('passport');
+require('./graphql/Authentication/passport');
+
 const rootSchema = require('./graphql/schema');
 const rootResolver = require('./graphql/resolvers');
-const auth = require('./graphql/Authentication/auth');
-const GraphQLLocalStrategy = require('graphql-passport').GraphQLLocalStrategy;
-const buildContext = require('graphql-passport').buildContext;
-const User = require('./models/userModel');
-require('./graphql/Authentication/passport');
+const auth = require('./routes/authRoute');
 
 const uploadRoute = require('./routes/uploadRoute');
 
@@ -20,26 +19,34 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(passport.initialize());
+// app.use(passport.initialize());
 app.use(cors());
 
 // handling image direction
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
-// dummy authentication middleware
-app.use((req, res, next) => {
-    req.isAuth = true;
-    req.userId = '5e89d609098dcb277f87d1ed';
-    next();
-});
+const checkAuth = (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user) => {
+        if (err || !user) {
+            req.isAuth = false;
+            req.userId = undefined;
+        } else {
+            // console.log('NOT ERRORRRRR', user._id);
+            req.isAuth = true;
+            req.userId = user._id;
+        }
+        next();
+    })(req, res);
+};
 
 // graphql
 app.use('/auth', auth);
 
-app.use('/upload-image', uploadRoute);
+app.use('/upload-image', checkAuth, uploadRoute);
 
 app.use(
     '/graphql',
+    checkAuth,
     graphqlHTTP({
         schema: rootSchema,
         rootValue: rootResolver,

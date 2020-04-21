@@ -59,6 +59,7 @@ module.exports = buildSchema(`
 
     type RootQuery {
         posts(type: FilterPostType, limit: Int): [Post!]
+        user(userId: ID!): User!
     }
 
     type RootMutation {
@@ -67,6 +68,7 @@ module.exports = buildSchema(`
         likePost(postId: ID!): Post!
         createUser(name: String!, password: String!, email: String!): Token!
         signIn(email: String!, password: String!): Token!
+        deletePost(postId: ID!): String!
     }
 
     schema {

@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
     },
     infoContainer: {
         padding: '10px 0 0 20px',
+        minHeight: '200px',
         position: 'relative',
     },
     postHeader: {
@@ -111,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: '24px',
         display: 'flex',
         alignItems: 'center',
-        marginTop: '10px',
+        marginTop: '50px',
         // borderTop: `1px solid ${theme.palette.common.colorGreyLight}`,
     },
     commentInputContainer: {
@@ -168,7 +169,11 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, post, edit }) => 
                 <DialogContent dividers>
                     <Grid container>
                         <Grid item xs={7} className={classes.imageContainer}>
-                            <img src={post.postImageUrl} alt="post" className={classes.image} />
+                            <img
+                                src={'http://localhost:5000/' + post.postImageUrl}
+                                alt="post"
+                                className={classes.image}
+                            />
                         </Grid>
                         <Grid item xs={5} className={classes.infoContainer}>
                             <div className={classes.postHeader}>
@@ -182,7 +187,9 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, post, edit }) => 
                                     }}
                                 >
                                     <h2 className={classes.headerTitle}>{post.userId.name}</h2>
-                                    <span className={classes.headerDate}>{post.createdAt}</span>
+                                    <span className={classes.headerDate}>
+                                        {new Date(post.createdAt * 1).toLocaleString()}
+                                    </span>
                                 </div>
                                 {edit && (
                                     <div className={classes.headerIcons}>

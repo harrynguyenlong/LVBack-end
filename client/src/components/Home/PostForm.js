@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -13,10 +13,12 @@ import {
     Select,
     MenuItem,
     Typography,
+    Snackbar,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { DropzoneArea } from 'material-ui-dropzone';
+import { AuthContext } from '../../context/authContext';
 
 const useStyles = makeStyles((theme) => ({
     postForm: {
@@ -70,79 +72,83 @@ const useStyles = makeStyles((theme) => ({
 
 const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
     const classes = useStyles();
+    const { token } = useContext(AuthContext);
     const [imageUpload, setImageUpload] = useState([]);
     const contentTextRef = useRef();
+
+    const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
     const handeChangeImageUpload = (files) => {
         setImageUpload(files);
         console.log(files);
     };
 
-    const handleSubmit = (e) => {
+    const handleSnackbarClose = () => {
+        setIsSnackbarOpen(false);
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('submited...');
-        console.log('content text:', contentTextRef.current.value);
-        console.log('image upload', imageUpload);
+        try {
+            console.log('submited...');
+            console.log('content text:', contentTextRef.current.value);
+            console.log('image upload', imageUpload);
 
-        const formData = new FormData();
-        formData.append('image', imageUpload[0]);
+            const formData = new FormData();
+            formData.append('image', imageUpload[0]);
 
-        fetch('http://localhost:5000/upload-image', {
-            method: 'POST',
-            headers: {
-                // Authorization: 'Bearer ' + token,
-            },
-            body: formData,
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((resData) => {
-                console.log('resData', resData);
-                if (resData.status === 'success' && resData.filePath) {
-                    const requestBody = {
-                        query: `
-                            mutation {
-                                createPost(
-                                    contentText: "${contentTextRef.current.value}",
-                                    postImageUrl: "${resData.filePath}"
-                                ) {
-                                    _id
-                                    contentText
-                                }
-                            }
-                        `,
-                    };
-
-                    // console.log(requestBody);
-                    fetch('http://localhost:5000/graphql', {
-                        method: 'POST',
-                        body: JSON.stringify(requestBody),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            // Authorization: 'Bearer ' + token,
-                        },
-                    })
-                        .then((res) => {
-                            if (res.status !== 200 && res.status !== 201) {
-                                throw new Error('Failed!');
-                            }
-                            return res.json();
-                        })
-                        .then((resData) => {
-                            console.log('create post resData', resData);
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-                } else {
-                    // upload file error
-                }
-            })
-            .catch((error) => {
-                console.log(error);
+            const imageRes = await fetch('http://localhost:5000/upload-image', {
+                method: 'POST',
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                },
+                body: formData,
             });
-        handlePostFormClose();
+
+            if (imageRes.status !== 200 && imageRes.status !== 201) {
+                // console.log('upload image error');
+                setIsSnackbarOpen(true);
+                return;
+            }
+
+            const imageResData = await imageRes.json();
+
+            const requestBody = {
+                query: `
+                    mutation {
+                        createPost(
+                            contentText: "${contentTextRef.current.value}",
+                            postImageUrl: "${imageResData.filePath}"
+                        ) {
+                            _id
+                            contentText
+                        }
+                    }
+                `,
+            };
+
+            const postRes = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+
+            if (postRes.status !== 200 && postRes.status !== 201) {
+                // console.log('post error');
+                setIsSnackbarOpen(true);
+                return;
+            }
+
+            const postResData = await postRes.json();
+
+            handlePostFormClose();
+        } catch (error) {
+            console.log(error);
+            setIsSnackbarOpen(true);
+        }
     };
 
     return (
@@ -201,6 +207,26 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
                     </DialogActions>
                 </form>
             </Dialog>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={isSnackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                message="Something went wrong, please try again"
+                action={
+                    <IconButton
+                        size="small"
+                        aria-label="close"
+                        color="inherit"
+                        onClick={handleSnackbarClose}
+                    >
+                        <CloseIcon fontSize="small" />
+                    </IconButton>
+                }
+            />
         </div>
     );
 };
