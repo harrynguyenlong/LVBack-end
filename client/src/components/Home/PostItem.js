@@ -1,6 +1,17 @@
 import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Avatar, Typography } from '@material-ui/core';
+import {
+    Avatar,
+    Typography,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+    Button,
+    Divider,
+    Snackbar,
+} from '@material-ui/core';
 
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import CommentIcon from '@material-ui/icons/Comment';
@@ -8,29 +19,14 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PostDetail from './PostDetail';
 
-import { AuthContext } from '../../context';
+import { PostContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
     postItem: {
         width: '100%',
         color: theme.palette.common.colorBlack,
-        // minWidth: 250,
-        // maxHeight: 250
         boxShadow: '0rem 0.5rem 1rem rgba(0,0,0, 0.3)',
-        // cursor: 'pointer',
-
         position: 'relative',
-        // '&:hover': {
-        //     '& img': {
-        //         filter: 'brightness(60%)',
-        //     },
-        //     '& $info': {
-        //         opacity: 1,
-        //     },
-        //     '& $headerTitle': {
-        //         color: theme.palette.common.colorGreen,
-        //     },
-        // },
     },
     postHeader: {
         display: 'flex',
@@ -128,16 +124,59 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
     },
+    snackbar: {
+        background: theme.palette.common.colorGreen,
+        fontSize: '14px',
+    },
 }));
 
-const PostItem = ({ post }) => {
+const PostItem = ({ post, userId, token }) => {
     const classes = useStyles();
     // const [onHover, setOnHover] = useState(false);
-    const { token, user } = useContext(AuthContext);
+    // const { token, user } = useContext(AuthContext);
+    const { deletePost } = useContext(PostContext);
     const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
+    const [isDeleteConfirm, setIsDeleteConfirm] = useState(false);
+    const [isShowSnackbar, setIsShowSnackbar] = useState(true);
 
     const handlePostDetailClose = () => {
         setIsPostDetailOpen(false);
+    };
+
+    const handleDeleteConfirmClose = () => {
+        setIsDeleteConfirm(false);
+    };
+
+    const handleDeletePost = async (event, postId) => {
+        event.preventDefault();
+        try {
+            const requestBody = {
+                query: `
+                mutation{
+                    deletePost(postId: "${postId}")
+                }
+            `,
+            };
+
+            const resDeletePost = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+
+            if (resDeletePost.status !== 200 && resDeletePost.status !== 201) {
+                throw new Error('Delete post failed');
+            }
+
+            const resDeletePostData = await resDeletePost.json();
+            // console.log(resDeletePostData.data);
+            deletePost(postId);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -150,7 +189,7 @@ const PostItem = ({ post }) => {
                         {new Date(post.createdAt * 1).toLocaleString()}
                     </span>
                 </div>
-                {user && user.id === post.userId._id && (
+                {userId && userId === post.userId._id && (
                     <div className={classes.headerIcons}>
                         <EditIcon className={`${classes.actionIcons} ${classes.editIcon}`} />
                         <DeleteIcon
@@ -158,6 +197,8 @@ const PostItem = ({ post }) => {
                             style={{
                                 marginLeft: '10px',
                             }}
+                            // onClick={(event) => handleDeletePost(event, post._id)}
+                            onClick={() => setIsDeleteConfirm(true)}
                         />
                     </div>
                 )}
@@ -194,6 +235,46 @@ const PostItem = ({ post }) => {
                 // edit={edit}
                 isPostDetailOpen={isPostDetailOpen}
                 handlePostDetailClose={handlePostDetailClose}
+            />
+
+            {/* Show confirm dialog when delete button clicked */}
+            <Dialog
+                open={isDeleteConfirm}
+                onClose={handleDeleteConfirmClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title" style={{ padding: '10px 16px', margin: 0 }}>
+                    <p style={{ fontSize: '16px' }}>Are you sure to delete this post?</p>
+                </DialogTitle>
+                <Divider />
+                <DialogActions>
+                    <Button onClick={handleDeleteConfirmClose}>No</Button>
+                    <Button
+                        onClick={(event) => {
+                            handleDeletePost(event, post._id);
+                            handleDeleteConfirmClose();
+                            setIsShowSnackbar(true);
+                        }}
+                    >
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Show snackbar if delete success */}
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={isShowSnackbar}
+                autoHideDuration={3000}
+                onClose={() => setIsShowSnackbar(false)}
+                message="Delete post successfully!"
+                ContentProps={{
+                    classes: { root: classes.snackbar },
+                }}
             />
         </div>
     );

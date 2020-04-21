@@ -6,8 +6,6 @@ module.exports = {
     // create post
     createPost: async (args, req) => {
         try {
-            console.log('args', args);
-            console.log('create req', req.isAuth);
             if (!req.userId && !req.isAuth) {
                 throw new Error('Unauthenticated');
             }
@@ -79,6 +77,38 @@ module.exports = {
             });
 
             return posts;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+
+    // delete post
+    deletePost: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+
+            const isPostByUser = await Post.findById(args.postId);
+
+            if (!isPostByUser) {
+                throw new Error('Can not find the post');
+            }
+            console.log('req id:', req.userId);
+            console.log('post user id:', isPostByUser.userId._id);
+
+            if (isPostByUser.userId._id.toString() !== req.userId.toString()) {
+                throw new Error('You have not permistion to delete this post');
+            }
+
+            const post = await Post.findByIdAndDelete(args.postId);
+
+            if (!post) {
+                throw new Error('Delete post failed');
+            }
+
+            return `Deleted post id: ${post._id} successfully`;
         } catch (error) {
             console.log(error);
             throw error;
