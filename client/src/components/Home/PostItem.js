@@ -137,7 +137,7 @@ const PostItem = ({ post, userId, token }) => {
     const { deletePost } = useContext(PostContext);
     const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
     const [isDeleteConfirm, setIsDeleteConfirm] = useState(false);
-    const [isShowSnackbar, setIsShowSnackbar] = useState(true);
+    const [isShowSnackbar, setIsShowSnackbar] = useState(false);
 
     const handlePostDetailClose = () => {
         setIsPostDetailOpen(false);
