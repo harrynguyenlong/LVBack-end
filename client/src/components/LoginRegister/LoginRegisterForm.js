@@ -150,15 +150,15 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
 
         const responseData = await response.json();
         const token = responseData.token;
-        const user = responseData.userObj;
+        const userId = responseData.userId;
 
         // console.log(token, user);
 
-        if (!token || !user) {
+        if (!token || !userId) {
             throw new Error('Something went wrong');
         }
 
-        login(token, user);
+        login(token, userId);
         handleLoginClose();
     };
 

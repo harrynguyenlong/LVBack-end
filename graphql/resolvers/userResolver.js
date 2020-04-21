@@ -38,9 +38,9 @@ module.exports = {
     // get user by Id
     user: async (args, req) => {
         try {
-            // if (!req.userId && !req.isAuth === true) {
-            //     throw new Error('Unauthenticated');
-            // }
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
             const userId = args.userId;
 
             const user = await User.findById(userId);
@@ -49,7 +49,6 @@ module.exports = {
                 throw new Error('User not found');
             }
 
-            // console.log(user);
             return user;
         } catch (error) {
             console.log(error);

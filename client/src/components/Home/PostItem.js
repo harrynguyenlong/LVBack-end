@@ -140,9 +140,6 @@ const PostItem = ({ post }) => {
         setIsPostDetailOpen(false);
     };
 
-    console.log('post', post.userId);
-    console.log('user context', user);
-
     return (
         <div className={classes.postItem}>
             <div className={classes.postHeader}>

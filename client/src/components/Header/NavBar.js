@@ -86,17 +86,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const NavBar = () => {
+const NavBar = ({ userData, token, login, logout }) => {
     const classes = useStyles();
     const { setTabValue } = useContext(UIContext);
-    const { user, token, login, logout } = useContext(AuthContext);
+    // const { user, token, login, logout } = useContext(AuthContext);
     const [loginOpen, setLoginOpen] = useState(false);
 
     const handleLoginClose = () => {
         setLoginOpen(false);
     };
 
-    // console.log('navbar', user, token);
+    console.log('navbar', userData, token);
     return (
         <div className={classes.navbar}>
             <div className={classes.container}>
@@ -119,15 +119,15 @@ const NavBar = () => {
                     <Badge badgeContent={19} color="secondary" className={classes.icon}>
                         <FavoriteBorderIcon />
                     </Badge> */}
-                    {token && user && (
+                    {token && userData && (
                         <React.Fragment>
                             <div className={classes.avatarContainer}>
                                 <Avatar
-                                    src={user.avatarUrl}
+                                    src={userData.avatarUrl}
                                     alt="avatar"
                                     className={classes.avatar}
                                 />
-                                <p className={classes.actionText}>{user.name}</p>
+                                <p className={classes.actionText}>{userData.name}</p>
                             </div>
                             <div className={classes.authContainer} onClick={() => logout()}>
                                 <ExitToAppIcon />
@@ -136,11 +136,7 @@ const NavBar = () => {
                         </React.Fragment>
                     )}
                     {!token && (
-                        <div
-                            className={classes.authContainer}
-                            // onClick={() => login('this is dummy token', '5e89d609098dcb277f87d1ed')}
-                            onClick={() => setLoginOpen(true)}
-                        >
+                        <div className={classes.authContainer} onClick={() => setLoginOpen(true)}>
                             <LockOpenIcon />
                             <p className={classes.actionText}>Login</p>
                         </div>
