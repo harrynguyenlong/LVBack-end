@@ -78,7 +78,7 @@ const Banner = ({ userData }) => {
         setIsEditProfileOpen(false);
     };
 
-    console.log(token, user);
+    // console.log(token, user);
 
     return (
         <div className={classes.banner}>

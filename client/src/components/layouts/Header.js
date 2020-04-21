@@ -43,7 +43,7 @@ const Header = () => {
                     return res.json();
                 })
                 .then((resData) => {
-                    console.log(resData.data.user);
+                    // console.log(resData.data.user);
                     setUserData(resData.data.user);
                 })
                 .catch((error) => {

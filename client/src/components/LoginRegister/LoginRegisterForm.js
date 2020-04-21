@@ -152,7 +152,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
         const token = responseData.token;
         const user = responseData.userObj;
 
-        console.log(token, user);
+        // console.log(token, user);
 
         if (!token || !user) {
             throw new Error('Something went wrong');

@@ -1,37 +1,34 @@
-const express = require('express');
-const router = express.Router();
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
+'use strict';
+const JWT = require('jsonwebtoken');
 
-router.post('/login', function (req, res, next) {
-    passport.authenticate('local', { session: false }, (err, user, info) => {
-        if (err || !user) {
-            return res.status(400).json({
-                message: 'Something is not right',
-                user: user,
-            });
-        }
-        req.login(user, { session: false }, (err) => {
-            if (err) {
-                res.send(err);
-            }
+const signToken = (user) => {
+    return JWT.sign(
+        {
+            iss: 'iShare',
+            sub: user._id,
+            iat: new Date().getTime(), // current time
+            exp: new Date().setDate(new Date().getDate() + 1), // current time + 1 day ahead
+        },
+        process.env.JWT_SECRET
+    );
+};
 
-            console.log('backend user', user);
-            let userObj = {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                avatarUrl: user.avatarUrl,
-                numberOfPosts: user.numberOfPosts,
-                numberOfComments: user.numberOfComments,
-                numberOfLikes: user.numberOfLikes,
-                roles: user.roles,
-            };
+exports.login = async (req, res, next) => {
+    const token = signToken(req.user);
 
-            const token = jwt.sign(userObj, 'secretKey');
-            return res.json({ userObj, token });
-        });
-    })(req, res);
-});
+    const userObj = {
+        id: req.user._id,
+        name: req.user.name,
+        roles: req.user.roles,
+        numberOfPosts: req.user.numberOfPosts,
+        numberOfComments: req.user.numberOfComments,
+        numberOfLikes: req.user.numberOfLikes,
+        email: req.user.email,
+    };
 
-module.exports = router;
+    res.status(200).json({
+        status: 'login success',
+        token,
+        userObj,
+    });
+};

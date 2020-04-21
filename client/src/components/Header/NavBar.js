@@ -96,7 +96,7 @@ const NavBar = () => {
         setLoginOpen(false);
     };
 
-    console.log('navbar', user, token);
+    // console.log('navbar', user, token);
     return (
         <div className={classes.navbar}>
             <div className={classes.container}>

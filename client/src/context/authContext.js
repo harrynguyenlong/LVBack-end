@@ -10,7 +10,7 @@ const AuthContextProvider = (props) => {
     const [user, setUser] = useState(null);
 
     const login = (token, user) => {
-        console.log('context', user);
+        // console.log('context', user);
         setToken(token);
         setUser(user);
     };

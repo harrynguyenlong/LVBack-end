@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const autopopulate = require('mongoose-autopopulate');
+const bcrypt = require('bcrypt');
 
 const userSchema = mongoose.Schema(
     {
@@ -57,6 +58,14 @@ const userSchema = mongoose.Schema(
 );
 
 userSchema.plugin(autopopulate);
+
+userSchema.methods.isValidPassword = async function (newPassword) {
+    try {
+        return await bcrypt.compare(newPassword, this.password);
+    } catch (error) {
+        throw new Error(error);
+    }
+};
 
 const User = mongoose.model('User', userSchema);
 

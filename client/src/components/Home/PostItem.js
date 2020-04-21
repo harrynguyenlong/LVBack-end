@@ -130,7 +130,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const PostItem = ({ post, edit }) => {
+const PostItem = ({ post }) => {
     const classes = useStyles();
     // const [onHover, setOnHover] = useState(false);
     const { token, user } = useContext(AuthContext);
@@ -139,6 +139,9 @@ const PostItem = ({ post, edit }) => {
     const handlePostDetailClose = () => {
         setIsPostDetailOpen(false);
     };
+
+    console.log('post', post.userId);
+    console.log('user context', user);
 
     return (
         <div className={classes.postItem}>
@@ -150,7 +153,7 @@ const PostItem = ({ post, edit }) => {
                         {new Date(post.createdAt * 1).toLocaleString()}
                     </span>
                 </div>
-                {edit && token && user && (
+                {user && user.id === post.userId._id && (
                     <div className={classes.headerIcons}>
                         <EditIcon className={`${classes.actionIcons} ${classes.editIcon}`} />
                         <DeleteIcon
@@ -191,7 +194,7 @@ const PostItem = ({ post, edit }) => {
             </div>
             <PostDetail
                 post={post}
-                edit={edit}
+                // edit={edit}
                 isPostDetailOpen={isPostDetailOpen}
                 handlePostDetailClose={handlePostDetailClose}
             />

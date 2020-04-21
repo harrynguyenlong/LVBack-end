@@ -6,9 +6,11 @@ module.exports = {
     // create post
     createPost: async (args, req) => {
         try {
-            // if (!req.userId && !req.isAuth === true) {
-            //     throw new Error('Unauthenticated');
-            // }
+            console.log('args', args);
+            console.log('create req', req.isAuth);
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
 
             const { contentText, postImageUrl } = args;
             const newPost = {

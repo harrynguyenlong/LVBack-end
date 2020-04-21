@@ -153,6 +153,7 @@ const PostList = () => {
                     posts(type: NEWEST,limit: 20){
                         _id
                         userId{
+                            _id
                             name
                             avatarUrl
                             roles
@@ -167,26 +168,29 @@ const PostList = () => {
                 }
             `,
         };
-        fetch('http://localhost:5000/graphql', {
-            method: 'POST',
-            body: JSON.stringify(requestBody),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((res) => {
+        const loadPosts = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/graphql', {
+                    method: 'POST',
+                    body: JSON.stringify(requestBody),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
                 if (res.status !== 200 && res.status !== 201) {
                     throw new Error('Failed!');
                 }
-                return res.json();
-            })
-            .then((resData) => {
-                const posts = resData.data.posts;
-                setPosts(posts);
-            })
-            .catch((error) => {
+
+                const resData = await res.json();
+
+                if (resData) {
+                    setPosts(resData.data.posts);
+                }
+            } catch (error) {
                 console.log(error);
-            });
+            }
+        };
+        loadPosts();
     }, []);
 
     return (
@@ -205,14 +209,11 @@ const PostList = () => {
             )}
             <Grid container spacing={4}>
                 {posts &&
-                    posts.map((post) => {
-                        if (post._id !== '1')
-                            return (
-                                <Grid item xs={4} key={post._id}>
-                                    <PostItem post={post} />
-                                </Grid>
-                            );
-                    })}
+                    posts.map((post) => (
+                        <Grid item xs={4} key={post._id}>
+                            <PostItem post={post} />
+                        </Grid>
+                    ))}
             </Grid>
 
             <PostForm isPostFormOpen={isPostFormOpen} handlePostFormClose={handlePostFormClose} />
