@@ -148,9 +148,9 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
             const requestBody = {
                 query: `
                     mutation {
-                        createUser(name: "Long", password:"123123", email:"harrynguyen2@gmail.com") {
-                        token 
-                        message
+                        createUser(name: "${name}", password:"${password}", email:"${email}") {
+                            token 
+                            message
                         }
                     }
                 `,
@@ -171,9 +171,32 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
 
             let resp = await postRes.json()
 
-            // const postResData = await postRes.json();
+            login(resp.data.createUser.token, resp.data.createUser.userId);
+
+            let uploadResp = await handleUploadProfilePicture(resp.data.createUser.token);
 
             handleLoginClose();
+        } else {
+            // Show that the password mismatch?
+        }
+    };
+
+    const handleUploadProfilePicture = async (token) => {
+        const formData = new FormData();
+        formData.append('image', imageUpload[0]);
+
+        const imageRes = await fetch('http://localhost:5000/upload-image', {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + token,
+            },
+            body: formData,
+        });
+
+        if ((imageRes.status >= 200 && imageRes.status <= 201)) {
+            return true;
+        } else {
+            return false;
         }
     };
 
