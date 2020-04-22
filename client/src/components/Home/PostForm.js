@@ -126,6 +126,7 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
                             numberOfLikes
                             numberOfComments
                             createdAt
+                            isLiked
                         }
                     }
                 `,

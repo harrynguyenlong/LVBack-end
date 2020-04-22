@@ -35,7 +35,7 @@ module.exports = {
             await user.save();
 
             console.log('create post server', post);
-
+            post.isLiked = false;
             return post;
         } catch (error) {
             console.log(error);

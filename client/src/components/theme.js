@@ -21,6 +21,7 @@ const theme = createMuiTheme({
             colorDarkBg,
             colorLightBg,
             colorGreyDark1,
+            colorRed,
         },
         primary: {
             main: colorGreen,

@@ -1,12 +1,9 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogContentText,
-    TextField,
-    DialogActions,
     IconButton,
     Typography,
     Grid,
@@ -20,6 +17,8 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import CommentIcon from '@material-ui/icons/Comment';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import SendIcon from '@material-ui/icons/Send';
+
+import { PostContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
     postDetail: {},
@@ -103,6 +102,9 @@ const useStyles = makeStyles((theme) => ({
             cursor: 'pointer',
         },
     },
+    liked: {
+        color: theme.palette.common.colorRed,
+    },
     commentForm: {
         position: 'absolute',
         left: 20,
@@ -140,9 +142,26 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, post, edit }) => {
+const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, token }) => {
     const classes = useStyles();
 
+    const [post, setPost] = useState();
+
+    useEffect(() => {
+        console.log('post detail effect');
+        setPost(postItem);
+    }, []);
+
+    // const { token } = useContext(AuthContext);
+    const { fetchLike, setPosts } = useContext(PostContext);
+
+    const handleLikeSubmit = async (postId) => {
+        const res = await fetchLike(postId, token);
+        // console.log('like', res);
+        setPost(res);
+    };
+
+    if (post) console.log('POST DETAIL RENDER', post.isLiked);
     return (
         <div classes={classes.postDetail}>
             <Dialog
@@ -167,70 +186,80 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, post, edit }) => 
                     </div>
                 </DialogTitle>
                 <DialogContent dividers>
-                    <Grid container>
-                        <Grid item xs={7} className={classes.imageContainer}>
-                            <img
-                                src={'http://localhost:5000/' + post.postImageUrl}
-                                alt="post"
-                                className={classes.image}
-                            />
+                    {post && (
+                        <Grid container>
+                            <Grid item xs={7} className={classes.imageContainer}>
+                                <img
+                                    src={'http://localhost:5000/' + post.postImageUrl}
+                                    alt="post"
+                                    className={classes.image}
+                                />
+                            </Grid>
+                            <Grid item xs={5} className={classes.infoContainer}>
+                                <div className={classes.postHeader}>
+                                    <Avatar src={post.userId.avatarUrl} alt={post.userId.name} />
+                                    <div
+                                        style={{
+                                            paddingLeft: '10px',
+                                            margin: 0,
+                                            width: '100%',
+                                            height: '100%',
+                                        }}
+                                    >
+                                        <h2 className={classes.headerTitle}>{post.userId.name}</h2>
+                                        <span className={classes.headerDate}>
+                                            {new Date(post.createdAt * 1).toLocaleString()}
+                                        </span>
+                                    </div>
+                                    {edit && (
+                                        <div className={classes.headerIcons}>
+                                            <EditIcon color="primary" />
+                                            <DeleteIcon
+                                                color="secondary"
+                                                style={{ marginLeft: '10px' }}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className={classes.postContentText}>
+                                    <p>{post.contentText}</p>
+                                </div>
+                                <div className={classes.commentLikeContainer}>
+                                    <div className={classes.commentLike}>
+                                        <div className={classes.commentContainer}>
+                                            <FavoriteIcon style={{ marginRight: '5px' }} />
+                                            <span>{post.numberOfLikes}</span>
+                                        </div>
+                                        <div className={classes.commentContainer}>
+                                            <CommentIcon style={{ marginRight: '5px' }} />
+                                            <span>{post.numberOfComments}</span>
+                                        </div>
+                                    </div>
+                                    <div
+                                        onClick={() => handleLikeSubmit(post._id)}
+                                        className={classes.like}
+                                    >
+                                        {post.isLiked === true ? (
+                                            <FavoriteIcon className={classes.liked} />
+                                        ) : (
+                                            <FavoriteBorderIcon />
+                                        )}
+                                    </div>
+                                </div>
+                                <div className={classes.commentForm}>
+                                    <Avatar src={post.userId.avatarUrl} alt={post.userId.name} />
+                                    <div className={classes.commentInputContainer}>
+                                        <input type="text" className={classes.commentInput} />
+                                        <SendIcon className={classes.commentInputButton} />
+                                    </div>
+                                </div>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={5} className={classes.infoContainer}>
-                            <div className={classes.postHeader}>
-                                <Avatar src={post.userId.avatarUrl} alt={post.userId.name} />
-                                <div
-                                    style={{
-                                        paddingLeft: '10px',
-                                        margin: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                    }}
-                                >
-                                    <h2 className={classes.headerTitle}>{post.userId.name}</h2>
-                                    <span className={classes.headerDate}>
-                                        {new Date(post.createdAt * 1).toLocaleString()}
-                                    </span>
-                                </div>
-                                {edit && (
-                                    <div className={classes.headerIcons}>
-                                        <EditIcon color="primary" />
-                                        <DeleteIcon
-                                            color="secondary"
-                                            style={{ marginLeft: '10px' }}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                            <div className={classes.postContentText}>
-                                <p>{post.contentText}</p>
-                            </div>
-                            <div className={classes.commentLikeContainer}>
-                                <div className={classes.commentLike}>
-                                    <div className={classes.commentContainer}>
-                                        <FavoriteIcon style={{ marginRight: '5px' }} />
-                                        <span>{post.numberOfLikes}</span>
-                                    </div>
-                                    <div className={classes.commentContainer}>
-                                        <CommentIcon style={{ marginRight: '5px' }} />
-                                        <span>{post.numberOfComments}</span>
-                                    </div>
-                                </div>
-
-                                <FavoriteBorderIcon className={classes.like} />
-                            </div>
-                            <div className={classes.commentForm}>
-                                <Avatar src={post.userId.avatarUrl} alt={post.userId.name} />
-                                <div className={classes.commentInputContainer}>
-                                    <input type="text" className={classes.commentInput} />
-                                    <SendIcon className={classes.commentInputButton} />
-                                </div>
-                            </div>
-                        </Grid>
-                    </Grid>
+                    )}
                 </DialogContent>
             </Dialog>
         </div>
     );
 };
 
-export default PostDetail;
+export default React.memo(PostDetail);

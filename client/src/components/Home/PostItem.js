@@ -134,13 +134,16 @@ const PostItem = ({ post, userId, token }) => {
     const classes = useStyles();
     // const [onHover, setOnHover] = useState(false);
     // const { token } = useContext(AuthContext);
-    const { deletePost, setUserData } = useContext(PostContext);
+    const { deletePost, setUserData, fetchPosts, fetchUser } = useContext(PostContext);
     const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
     const [isDeleteConfirm, setIsDeleteConfirm] = useState(false);
     const [isShowSnackbar, setIsShowSnackbar] = useState(false);
 
     const handlePostDetailClose = () => {
         setIsPostDetailOpen(false);
+        // console.log('detail close');
+        fetchPosts();
+        fetchUser(userId, token);
     };
 
     const handleDeleteConfirmClose = () => {
@@ -239,12 +242,17 @@ const PostItem = ({ post, userId, token }) => {
                     </div>
                 </div>
             </div>
-            <PostDetail
-                post={post}
-                // edit={edit}
-                isPostDetailOpen={isPostDetailOpen}
-                handlePostDetailClose={handlePostDetailClose}
-            />
+            {isPostDetailOpen && (
+                <PostDetail
+                    postItem={post}
+                    // edit={edit}
+
+                    isPostDetailOpen={isPostDetailOpen}
+                    handlePostDetailClose={handlePostDetailClose}
+                    userId={userId}
+                    token={token}
+                />
+            )}
 
             {/* Show confirm dialog when delete button clicked */}
             <Dialog
@@ -289,4 +297,4 @@ const PostItem = ({ post, userId, token }) => {
     );
 };
 
-export default PostItem;
+export default React.memo(PostItem);

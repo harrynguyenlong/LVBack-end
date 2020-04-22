@@ -114,6 +114,53 @@ const PostContextProvider = (props) => {
 
     // const fetchAddPost = async () => {};
 
+    const fetchLike = async (postId, token) => {
+        try {
+            const requestBody = {
+                query: `
+                mutation{
+                    likePost(postId: "${postId}"){
+                        _id
+                        userId{
+                            _id
+                            name
+                            avatarUrl
+                            roles
+                        }
+                        contentText
+                        postImageUrl
+                        numberOfLikes
+                        numberOfComments
+                        isLiked
+                        createdAt
+                    }
+                }
+            `,
+            };
+            const res = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+
+            const resData = await res.json();
+
+            // if (resData) {
+            //     setPosts(resData.data.posts);
+            // }
+            // console.log(resData.data.likePost);
+            return resData.data.likePost;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <PostContext.Provider
             value={{
@@ -125,6 +172,7 @@ const PostContextProvider = (props) => {
                 setUserData,
                 fetchUser,
                 fetchPosts,
+                fetchLike,
             }}
         >
             {props.children}
