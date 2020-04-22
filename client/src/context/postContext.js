@@ -1,4 +1,4 @@
-import React, { createContext, useState, useCallback } from 'react';
+import React, { createContext, useState } from 'react';
 
 export const PostContext = createContext();
 
@@ -13,19 +13,20 @@ const PostContextProvider = (props) => {
     };
 
     const deletePost = (postId) => {
-        const filtedPosts = posts.filter((post) => {
-            return post._id.toString !== postId.toString();
+        const tempPost = [...posts];
+        const filtedPosts = tempPost.filter((post) => {
+            return post._id.toString() !== postId.toString();
         });
         setPosts(filtedPosts);
     };
 
-    const updateUserData = useCallback((newUserData) => {
-        setUserData(newUserData);
-    }, []);
+    // const updateUserData = useCallback((newUserData) => {
+    //     setUserData(newUserData);
+    // }, []);
 
-    const getUserData = useCallback(() => {
-        return userData;
-    }, []);
+    // const getUserData = useCallback(() => {
+    //     return userData;
+    // }, []);
 
     const fetchUser = async (userId, token) => {
         try {
@@ -111,7 +112,7 @@ const PostContextProvider = (props) => {
         }
     };
 
-    const fetchAddPost = async () => {};
+    // const fetchAddPost = async () => {};
 
     return (
         <PostContext.Provider

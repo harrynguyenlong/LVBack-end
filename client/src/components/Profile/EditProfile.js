@@ -2,17 +2,7 @@ import React, { useState } from 'react';
 import {
     Dialog,
     DialogTitle,
-    DialogContent,
-    DialogContentText,
-    TextField,
-    DialogActions,
-    Button,
     IconButton,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Typography,
     Grid,
     List,
     ListItem,
@@ -28,11 +18,11 @@ import CloseIcon from '@material-ui/icons/Close';
 import PersonIcon from '@material-ui/icons/Person';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import CommentIcon from '@material-ui/icons/Comment';
+// import FavoriteIcon from '@material-ui/icons/Favorite';
+// import CommentIcon from '@material-ui/icons/Comment';
 
 import { DropzoneArea } from 'material-ui-dropzone';
-import PostsProfile from './PostsProfile';
+// import PostsProfile from './PostsProfile';
 import CommentsProfile from './CommentsProfile';
 import LikesProfile from './LikesProfile';
 import PostItem from '../Home/PostItem';
