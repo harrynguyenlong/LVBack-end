@@ -174,6 +174,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     className={classes.formInput}
                                     // value="Viet Tran"
                                     // onChange={() => {}}
+                                    id='email_login'
                                     placeholder="Enter your email"
                                     ref={emailLoginRef}
                                 />
@@ -185,6 +186,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     className={classes.formInput}
                                     // value="Viet Tran"
                                     // onChange={() => {}}
+                                    id='password_login'
                                     placeholder="Enter your password"
                                     ref={passwordLoginRef}
                                 />

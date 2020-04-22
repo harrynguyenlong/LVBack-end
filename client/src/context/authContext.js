@@ -9,6 +9,7 @@ const AuthContextProvider = (props) => {
     const login = (token, userId) => {
         setToken(token);
         setUserId(userId);
+
         localStorage.setItem('ishare-token', token);
         localStorage.setItem('ishare-userId', userId);
         // console.log('login', userId, token);
