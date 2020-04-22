@@ -18,6 +18,8 @@ import CommentIcon from '@material-ui/icons/Comment';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import SendIcon from '@material-ui/icons/Send';
 
+import Spinner from '../Spinner/Spinner';
+
 import { PostContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
@@ -146,24 +148,28 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, t
     const classes = useStyles();
 
     const [post, setPost] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         console.log('post detail effect');
         setPost(postItem);
     }, []);
 
-    // const { token } = useContext(AuthContext);
-    const { fetchLike, setPosts } = useContext(PostContext);
+    const { fetchLike } = useContext(PostContext);
 
     const handleLikeSubmit = async (postId) => {
+        setIsLoading(true);
         const res = await fetchLike(postId, token);
-        // console.log('like', res);
         setPost(res);
+        setIsLoading(false);
     };
 
-    if (post) console.log('POST DETAIL RENDER', post.isLiked);
+    if (post) console.log('POST DETAIL RENDER');
     return (
         <div classes={classes.postDetail}>
+            <Dialog open={isLoading}>
+                <Spinner />
+            </Dialog>
             <Dialog
                 open={isPostDetailOpen}
                 onClose={handlePostDetailClose}
