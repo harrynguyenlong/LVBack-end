@@ -34,6 +34,8 @@ module.exports = {
             user.numberOfPosts += 1;
             await user.save();
 
+            console.log('create post server', post);
+
             return post;
         } catch (error) {
             console.log(error);
@@ -109,12 +111,34 @@ module.exports = {
                 throw new Error('Delete post failed');
             }
 
+            // delete postId from User
+            const user = await User.findById(req.userId);
+
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            user.numberOfPosts -= 1;
+
+            let updatedPostIds = [...user.postIds];
+            console.log('before', updatedPostIds);
+            updatedPostIds = updatedPostIds.filter((postId) => {
+                // console.log(postId.toString(), post._id.toString())
+                return postId.toString() !== post._id.toString();
+            });
+
+            console.log('after', updatedPostIds);
+            user.postIds = updatedPostIds;
+
+            await user.save();
+
             // delete image file in folder uploads/images
             fs.unlink(imagePath, (err) => {
                 console.log(err);
             });
 
-            return `Deleted post id: ${post._id} successfully`;
+            console.log(user);
+            return user;
         } catch (error) {
             console.log(error);
             throw error;

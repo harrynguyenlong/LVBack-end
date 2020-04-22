@@ -1,27 +1,6 @@
 import React, { useState, useContext, useRef } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    TextField,
-    DialogActions,
-    Button,
-    IconButton,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Typography,
-    Grid,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Divider,
-    Avatar,
-} from '@material-ui/core';
+import { Dialog, DialogTitle, IconButton } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';

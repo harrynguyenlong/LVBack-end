@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 const PostList = () => {
     const classes = useStyles();
     const { token, userId } = useContext(AuthContext);
-    const { posts, setPosts } = useContext(PostContext);
+    const { posts, fetchPosts } = useContext(PostContext);
     const [isPostFormOpen, setIsPostFormOpen] = useState(false);
     // const [posts, setPosts] = useState([]);
 
@@ -35,52 +35,10 @@ const PostList = () => {
     };
 
     useEffect(() => {
-        const requestBody = {
-            query: `
-                query{
-                    posts(type: NEWEST,limit: 20){
-                        _id
-                        userId{
-                            _id
-                            name
-                            avatarUrl
-                            roles
-                        }
-                        contentText
-                        postImageUrl
-                        numberOfLikes
-                        numberOfComments
-                        isLiked
-                        createdAt
-                    }
-                }
-            `,
-        };
-        const loadPosts = async () => {
-            try {
-                const res = await fetch('http://localhost:5000/graphql', {
-                    method: 'POST',
-                    body: JSON.stringify(requestBody),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                if (res.status !== 200 && res.status !== 201) {
-                    throw new Error('Failed!');
-                }
+        fetchPosts();
+    }, []);
 
-                const resData = await res.json();
-
-                if (resData) {
-                    setPosts(resData.data.posts);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        loadPosts();
-    }, [posts]);
-
+    console.log('POSTLIST RENDER');
     return (
         <section className={classes.container}>
             {token && userId && (

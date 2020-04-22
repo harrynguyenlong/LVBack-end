@@ -68,7 +68,7 @@ module.exports = buildSchema(`
         likePost(postId: ID!): Post!
         createUser(name: String!, password: String!, email: String!): Token!
         signIn(email: String!, password: String!): Token!
-        deletePost(postId: ID!): String!
+        deletePost(postId: ID!): User!
     }
 
     schema {

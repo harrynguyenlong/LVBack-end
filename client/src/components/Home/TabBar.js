@@ -20,9 +20,8 @@ const useStyles = makeStyles((theme) => ({
 
 const TabBar = () => {
     const classes = useStyles();
-    // const [tabValue, setTabValue] = useState(0);
     const { tabValue, setTabValue } = useContext(UIContext);
-
+    console.log('TABBAR RENDER');
     return (
         <div className={classes.container}>
             <Tabs

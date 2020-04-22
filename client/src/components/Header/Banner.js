@@ -1,15 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar } from '@material-ui/core';
 
-import avatarViet from '../../assets/images/avatar-viet.jpg';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import CommentIcon from '@material-ui/icons/Comment';
 
 import EditProfile from '../Profile/EditProfile';
-
-import { AuthContext } from '../../context/authContext';
 
 const useStyles = makeStyles((theme) => ({
     banner: {
@@ -69,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 const Banner = ({ userData }) => {
     const classes = useStyles();
 
-    const { token, user } = useContext(AuthContext);
+    // const { token, user } = useContext(AuthContext);
 
     const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
     const [isListSelected, setIsListSelected] = useState(0);
@@ -78,7 +75,7 @@ const Banner = ({ userData }) => {
         setIsEditProfileOpen(false);
     };
 
-    // console.log(token, user);
+    console.log('BANNER RENDER');
 
     return (
         <div className={classes.banner}>

@@ -3,22 +3,15 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogContentText,
-    TextField,
     DialogActions,
-    Button,
     IconButton,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
     Typography,
     Snackbar,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { DropzoneArea } from 'material-ui-dropzone';
-import { AuthContext } from '../../context/authContext';
+import { AuthContext, PostContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
     postForm: {
@@ -72,7 +65,8 @@ const useStyles = makeStyles((theme) => ({
 
 const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
     const classes = useStyles();
-    const { token } = useContext(AuthContext);
+    const { token, userId } = useContext(AuthContext);
+    const { addPost, fetchUser } = useContext(PostContext);
     const [imageUpload, setImageUpload] = useState([]);
     const contentTextRef = useRef();
 
@@ -121,7 +115,17 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
                             postImageUrl: "${imageResData.filePath}"
                         ) {
                             _id
+                            userId{
+                                _id
+                                name
+                                avatarUrl
+                                roles
+                            }
                             contentText
+                            postImageUrl
+                            numberOfLikes
+                            numberOfComments
+                            createdAt
                         }
                     }
                 `,
@@ -143,7 +147,9 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
             }
 
             const postResData = await postRes.json();
-
+            console.log('addpost', postResData.data.createPost);
+            addPost(postResData.data.createPost);
+            fetchUser(userId, token);
             handlePostFormClose();
         } catch (error) {
             console.log(error);
@@ -151,6 +157,7 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
         }
     };
 
+    console.log('POSTFORM RENDER');
     return (
         <div className={classes.postForm}>
             <Dialog

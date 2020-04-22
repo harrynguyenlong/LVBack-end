@@ -1,16 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Avatar, Badge } from '@material-ui/core';
+import { Avatar } from '@material-ui/core';
 
 import logo from '../../assets/images/iShare-logo1.png';
-import avatarViet from '../../assets/images/avatar-viet.jpg';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
-// import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-// import CommentIcon from '@material-ui/icons/Comment';
-// import HomeIcon from '@material-ui/icons/Home';
 
-import { UIContext, AuthContext } from '../../context';
+import { UIContext, PostContext } from '../../context';
 
 import LoginRegisterForm from '../LoginRegister/LoginRegisterForm';
 
@@ -86,17 +82,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const NavBar = ({ userData, token, login, logout }) => {
+const NavBar = ({ token, logout, userData }) => {
     const classes = useStyles();
     const { setTabValue } = useContext(UIContext);
-    // const { user, token, login, logout } = useContext(AuthContext);
+    // const { token, logout } = useContext(AuthContext);
+    // const { userData } = useContext(PostContext);
     const [loginOpen, setLoginOpen] = useState(false);
 
     const handleLoginClose = () => {
         setLoginOpen(false);
     };
 
-    console.log('navbar', userData, token);
+    console.log('NAVBAR RENDER');
     return (
         <div className={classes.navbar}>
             <div className={classes.container}>

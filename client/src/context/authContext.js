@@ -11,7 +11,7 @@ const AuthContextProvider = (props) => {
         setUserId(userId);
         localStorage.setItem('ishare-token', token);
         localStorage.setItem('ishare-userId', userId);
-        console.log('login', userId, token);
+        // console.log('login', userId, token);
     };
 
     const logout = () => {

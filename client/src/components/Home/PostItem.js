@@ -133,8 +133,8 @@ const useStyles = makeStyles((theme) => ({
 const PostItem = ({ post, userId, token }) => {
     const classes = useStyles();
     // const [onHover, setOnHover] = useState(false);
-    // const { token, user } = useContext(AuthContext);
-    const { deletePost } = useContext(PostContext);
+    // const { token } = useContext(AuthContext);
+    const { deletePost, setUserData } = useContext(PostContext);
     const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
     const [isDeleteConfirm, setIsDeleteConfirm] = useState(false);
     const [isShowSnackbar, setIsShowSnackbar] = useState(false);
@@ -153,7 +153,15 @@ const PostItem = ({ post, userId, token }) => {
             const requestBody = {
                 query: `
                 mutation{
-                    deletePost(postId: "${postId}")
+                    deletePost(postId: "${postId}"){
+                        name
+                        email
+                        avatarUrl
+                        roles
+                        numberOfPosts
+                        numberOfComments
+                        numberOfLikes
+                    }
                 }
             `,
             };
@@ -172,8 +180,9 @@ const PostItem = ({ post, userId, token }) => {
             }
 
             const resDeletePostData = await resDeletePost.json();
-            // console.log(resDeletePostData.data);
+            // console.log(resDeletePostData.data.deletePost);
             deletePost(postId);
+            setUserData(resDeletePostData.data.deletePost);
         } catch (error) {
             console.log(error);
         }
