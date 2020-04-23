@@ -70,6 +70,7 @@ module.exports = buildSchema(`
         createUser(name: String!, password: String!, email: String!): Token!
         signIn(email: String!, password: String!): Token!
         deletePost(postId: ID!): User!
+        deleteComment(commentId: ID!): Comment!
     }
 
     schema {

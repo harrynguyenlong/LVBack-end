@@ -145,7 +145,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, token }) => {
+const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, userId, token }) => {
     const classes = useStyles();
 
     const [post, setPost] = useState();
@@ -154,17 +154,33 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, t
 
     const commentRefText = useRef();
 
-    const { fetchLike, fetchAddComment, fetchComments } = useContext(PostContext);
+    const { fetchLike, fetchAddComment, fetchComments, fetchDeleteComment } = useContext(
+        PostContext
+    );
 
     const addComment = (comment) => {
         const tempComment = [...comments];
         const tempPost = { ...post };
         tempComment.push(comment);
-        console.log('Post num comments:', post.numberOfComments);
-        console.log('comment return num:', comment.postId.numberOfComments);
+
         tempPost.numberOfComments = comment.postId.numberOfComments;
         setComments(tempComment);
         setPost(tempPost);
+    };
+
+    const deleteComment = async (commentId) => {
+        setIsLoading(true);
+        const res = await fetchDeleteComment(commentId, token);
+        console.log('delete comment', res);
+        const tempComment = [...comments];
+        const tempPost = { ...post };
+        const updatedComment = tempComment.filter(
+            (comment) => comment._id.toString() !== commentId.toString()
+        );
+        setComments(updatedComment);
+        tempPost.numberOfComments = res.postId.numberOfComments;
+        setPost(tempPost);
+        setIsLoading(false);
     };
 
     const handleLikeSubmit = async (postId) => {
@@ -186,7 +202,7 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, t
     };
 
     useEffect(() => {
-        console.log('post detail effect', postItem);
+        // console.log('post detail effect', postItem);
         setPost(postItem);
     }, [setPost, postItem]);
 
@@ -206,7 +222,7 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, t
         loadComments();
     }, [token, fetchComments, postItem._id]);
 
-    if (post) console.log('POST DETAIL RENDER', post.isLiked, postItem.isLiked);
+    if (post) console.log('POST DETAIL RENDER');
     return (
         <div classes={classes.postDetail}>
             <Dialog open={isLoading}>
@@ -323,7 +339,13 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, t
                                             }}
                                         >
                                             {comments.map((comment) => (
-                                                <Comment comment={comment} key={comment._id} />
+                                                <Comment
+                                                    comment={comment}
+                                                    key={comment._id}
+                                                    userId={userId}
+                                                    token={token}
+                                                    deleteComment={deleteComment}
+                                                />
                                             ))}
                                         </ul>
                                     )}

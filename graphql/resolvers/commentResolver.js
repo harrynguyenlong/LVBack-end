@@ -6,6 +6,9 @@ module.exports = {
     // create comment
     createComment: async (args, req) => {
         try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
             const user = await User.findById(req.userId);
             const post = await Post.findById(args.postId);
 
@@ -47,6 +50,45 @@ module.exports = {
             }
 
             return comments;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+
+    // delete comments
+    deleteComment: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+            const user = await User.findById(req.userId);
+            const comment = await Comment.findById(args.commentId);
+
+            if (!comment || !user) {
+                throw new Error('Could not found');
+            }
+
+            const post = await Post.findById(comment.postId._id);
+
+            if (!post) {
+                throw new Error('Could not found');
+            }
+
+            user.numberOfComments -= 1;
+            post.numberOfComments -= 1;
+
+            await user.save();
+            await post.save();
+
+            const commentDelete = await Comment.findByIdAndDelete(args.commentId).populate(
+                'postId'
+            );
+            if (!commentDelete) {
+                throw new Error('Delete comment failed');
+            }
+
+            return commentDelete;
         } catch (error) {
             console.log(error);
             throw error;

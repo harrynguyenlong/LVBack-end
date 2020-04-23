@@ -201,7 +201,7 @@ const PostContextProvider = (props) => {
             }
 
             const resData = await res.json();
-            console.log('cac', resData);
+
             return resData.data.comments;
         } catch (error) {
             console.log(error);
@@ -253,6 +253,43 @@ const PostContextProvider = (props) => {
         }
     };
 
+    const fetchDeleteComment = async (commentId, token) => {
+        try {
+            const requestBody = {
+                query: `
+                mutation{
+                    deleteComment(commentId: "${commentId}"){
+                        _id
+                        contentText
+                        createdAt
+                        postId{
+                            numberOfComments
+                        }
+                    }
+                }
+            `,
+            };
+            const res = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+
+            const resData = await res.json();
+
+            return resData.data.deleteComment;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <PostContext.Provider
             value={{
@@ -267,6 +304,7 @@ const PostContextProvider = (props) => {
                 fetchLike,
                 fetchAddComment,
                 fetchComments,
+                fetchDeleteComment,
             }}
         >
             {props.children}

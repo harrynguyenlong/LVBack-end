@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { AuthContext } from '../../context/authContext';
 
 const useStyles = makeStyles((theme) => ({
     comment: {
@@ -15,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
+        marginRight: 'auto',
     },
     contentText: {
         fontSize: '14px',
@@ -24,10 +27,25 @@ const useStyles = makeStyles((theme) => ({
         marginTop: '10px',
         color: theme.palette.common.colorGreyDark,
     },
+    deleteIcon: {
+        color: theme.palette.common.colorGreyDark,
+        cursor: 'pointer',
+        '&:hover': {
+            color: theme.palette.common.colorRed,
+        },
+    },
 }));
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, userId, token, deleteComment }) => {
     const classes = useStyles();
+    // const { userId } = useContext(AuthContext);
+
+    // const handleDeleteComment = async (id) => {
+    //     console.log('delete', id);
+    //     const res = await fetchDeleteComment(id, token);
+    //     console.log('delete comment res', res);
+    // };
+
     console.log('COMMENT RENDER');
     return (
         <li className={classes.comment}>
@@ -41,6 +59,14 @@ const Comment = ({ comment }) => {
                 </p>
                 <p className={classes.date}>{new Date(comment.createdAt * 1).toLocaleString()}</p>
             </div>
+            {userId && userId.toString() === comment.userId._id.toString() && (
+                <div>
+                    <DeleteIcon
+                        className={classes.deleteIcon}
+                        onClick={() => deleteComment(comment._id)}
+                    />
+                </div>
+            )}
         </li>
     );
 };
