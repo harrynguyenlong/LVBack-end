@@ -13,7 +13,7 @@ const imageUpload = multer({
             cb(null, 'uploads/images');
         },
         filename: (req, file, cb) => {
-            const filename = `${req.userId}-${new Date().getTime()}-${file.originalname}`;
+            const filename = `${req.userId}-${new Date().getTime()}`;
             const ext = MIME_TYPE_MAP[file.mimetype];
             cb(null, filename + '.' + ext);
         },

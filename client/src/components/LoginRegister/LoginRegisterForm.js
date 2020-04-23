@@ -101,6 +101,11 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
     const emailLoginRef = useRef();
     const passwordLoginRef = useRef();
 
+    const emailSignUpRef = useRef(null);
+    const passwordSignUpRef = useRef(null);
+    const confirmedPasswordSignUpRef = useRef(null);
+    const nameSignUpRef = useRef(null);
+
     const handeChangeImageUpload = (files) => {
         setImageUpload(files);
     };
@@ -109,11 +114,74 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
         setIsLogin((isLogin) => !isLogin);
     };
 
+    const handleSignUp = async (event) => {
+        event.preventDefault();
+
+        let email = emailSignUpRef.current.value;
+        let name = nameSignUpRef.current.value;
+        let password = passwordSignUpRef.current.value;
+        let confirmedPassword = passwordSignUpRef.current.value;
+
+        if (password === confirmedPassword) {
+            const requestBody = {
+                query: `
+                    mutation {
+                        createUser(name: "${name}", password:"${password}", email:"${email}") {
+                            token 
+                            message
+                        }
+                    }
+                `,
+            };
+    
+            const postRes = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!(postRes.status >= 200 && postRes.status <= 201)) {
+                // Some error happend - Show banner?
+                return;
+            }
+
+            let resp = await postRes.json()
+
+            login(resp.data.createUser.token, resp.data.createUser.userId);
+
+            let uploadResp = await handleUploadProfilePicture(resp.data.createUser.token);
+
+            handleLoginClose();
+        } else {
+            // Show that the password mismatch?
+        }
+    };
+
+    const handleUploadProfilePicture = async (token) => {
+        const formData = new FormData();
+        formData.append('image', imageUpload[0]);
+
+        const imageRes = await fetch('http://localhost:5000/upload-image', {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + token,
+            },
+            body: formData,
+        });
+
+        if ((imageRes.status >= 200 && imageRes.status <= 201)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     const handleLogin = async (event) => {
         event.preventDefault();
         const email = emailLoginRef.current.value;
         const password = passwordLoginRef.current.value;
-        // console.log(email, password);
 
         const response = await fetch('http://localhost:5000/auth/login', {
             method: 'POST',
@@ -139,6 +207,8 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
         login(token, userId);
         handleLoginClose();
     };
+
+
 
     return (
         <div className={classes.loginRegisterForm}>
@@ -221,6 +291,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     type="text"
                                     className={classes.formInput}
                                     placeholder="Enter your name"
+                                    ref={nameSignUpRef}
                                 />
                             </div>
                             <div className={classes.formControl}>
@@ -228,6 +299,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     type="email"
                                     className={classes.formInput}
                                     placeholder="Enter your email"
+                                    ref={emailSignUpRef}
                                 />
                             </div>
                             <div className={classes.formControl}>
@@ -235,6 +307,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     type="password"
                                     className={classes.formInput}
                                     placeholder="Enter your password"
+                                    ref={passwordSignUpRef}
                                 />
                             </div>
                             <div className={classes.formControl}>
@@ -242,6 +315,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     type="password"
                                     className={classes.formInput}
                                     placeholder="Confirm your password"
+                                    ref={confirmedPasswordSignUpRef}
                                 />
                             </div>
                             <div className={classes.formControl}>
@@ -256,9 +330,10 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                             </div>
                             <button
                                 className={classes.button}
-                                onClick={() => {
-                                    login('this is dummy token', '5e89d609098dcb277f87d1ed');
-                                    handleLoginClose();
+                                onClick={(event) => {
+                                    handleSignUp(event);
+                                    // login('this is dummy token', '5e89d609098dcb277f87d1ed');
+                                    // handleLoginClose();
                                 }}
                             >
                                 Create New Account
