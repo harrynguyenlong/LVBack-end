@@ -68,12 +68,12 @@ const PostContextProvider = (props) => {
         }
     };
 
-    const fetchPosts = async () => {
+    const fetchPosts = async (userId) => {
         try {
             const requestBody = {
                 query: `
                 query{
-                    posts(type: NEWEST,limit: 20){
+                    posts(type: NEWEST,limit: 20, userId: "${userId}"){
                         _id
                         userId{
                             _id
@@ -161,6 +161,98 @@ const PostContextProvider = (props) => {
         }
     };
 
+    const fetchComments = async (postId, token) => {
+        try {
+            const requestBody = {
+                query: `
+                query{
+                    comments(postId: "${postId}"){
+                        _id
+                        userId{
+                            _id
+                            name
+                            avatarUrl
+                            roles
+                        }
+                        postId{
+                            _id
+                            numberOfLikes
+                            numberOfComments
+                            contentText
+                            postImageUrl
+                            createdAt
+                        }
+                        contentText
+                        createdAt
+                    }
+                }
+            `,
+            };
+            const res = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+
+            const resData = await res.json();
+            console.log('cac', resData);
+            return resData.data.comments;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchAddComment = async (postId, contentText, token) => {
+        try {
+            const requestBody = {
+                query: `
+                mutation{
+                    createComment(postId: "${postId}", contentText: "${contentText}"){
+                        _id
+                        userId{
+                            _id
+                            name
+                            avatarUrl
+                            roles
+                        }
+                        postId{
+                            _id
+                            numberOfLikes
+                            numberOfComments
+                            
+                        }
+                        contentText
+                        createdAt
+                    }
+                }
+            `,
+            };
+            const res = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+
+            const resData = await res.json();
+
+            return resData.data.createComment;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <PostContext.Provider
             value={{
@@ -173,6 +265,8 @@ const PostContextProvider = (props) => {
                 fetchUser,
                 fetchPosts,
                 fetchLike,
+                fetchAddComment,
+                fetchComments,
             }}
         >
             {props.children}

@@ -71,7 +71,9 @@ module.exports = {
 
             posts.map((post) => {
                 // console.log('userLikeIds', post.userLikeIds);
-                const isLike = post.userLikeIds.find((item) => item._id.toString() === req.userId);
+                const isLike = post.userLikeIds.find((item) => {
+                    return item._id.toString() === args.userId.toString();
+                });
                 if (isLike) {
                     return (post.isLiked = true);
                 } else {

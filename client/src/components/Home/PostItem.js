@@ -2,11 +2,8 @@ import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
     Avatar,
-    Typography,
     Dialog,
     DialogTitle,
-    DialogContent,
-    DialogContentText,
     DialogActions,
     Button,
     Divider,
@@ -128,6 +125,9 @@ const useStyles = makeStyles((theme) => ({
         background: theme.palette.common.colorGreen,
         fontSize: '14px',
     },
+    liked: {
+        color: theme.palette.common.colorRed,
+    },
 }));
 
 const PostItem = ({ post, userId, token }) => {
@@ -142,7 +142,7 @@ const PostItem = ({ post, userId, token }) => {
     const handlePostDetailClose = () => {
         setIsPostDetailOpen(false);
         // console.log('detail close');
-        fetchPosts();
+        fetchPosts(userId);
         fetchUser(userId, token);
     };
 
@@ -233,7 +233,10 @@ const PostItem = ({ post, userId, token }) => {
                 </p>
                 <div className={classes.commentLike}>
                     <div className={classes.commentContainer}>
-                        <FavoriteIcon style={{ marginRight: '5px' }} />
+                        <FavoriteIcon
+                            style={{ marginRight: '5px' }}
+                            className={post.isLiked ? classes.liked : null}
+                        />
                         <span>{post.numberOfLikes}</span>
                     </div>
                     <div className={classes.commentContainer}>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import NavBar from '../Header/NavBar';
 import Banner from '../Header/Banner';
@@ -8,12 +8,11 @@ import { AuthContext, PostContext } from '../../context';
 const Header = () => {
     const { token, userId, logout } = useContext(AuthContext);
     const { fetchUser, userData } = useContext(PostContext);
-    // const [userData, setUserData] = useState(null);
 
     useEffect(() => {
         console.log('header effect run');
         fetchUser(userId, token);
-    }, []);
+    }, [userId, token]);
 
     console.log('HEADER RENDER');
     return (

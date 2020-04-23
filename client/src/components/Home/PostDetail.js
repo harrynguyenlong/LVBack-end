@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
     Dialog,
@@ -19,6 +19,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import SendIcon from '@material-ui/icons/Send';
 
 import Spinner from '../Spinner/Spinner';
+import Comment from './Comment';
 
 import { PostContext } from '../../context';
 
@@ -86,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         height: '40px',
         borderTop: `1px solid ${theme.palette.common.colorGreyLight}`,
-        borderBottom: `1px solid ${theme.palette.common.colorGreyLight}`,
+        // borderBottom: `1px solid ${theme.palette.common.colorGreyLight}`,
     },
     commentLike: {
         display: 'flex',
@@ -108,16 +109,16 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.common.colorRed,
     },
     commentForm: {
-        position: 'absolute',
-        left: 20,
-        bottom: 0,
+        // position: 'absolute',
+        // left: 20,
+        // bottom: 0,
         width: '100%',
-        paddingTop: '10px',
-        paddingRight: '24px',
+        padding: '10px 0',
+        // paddingRight: '24px',
         display: 'flex',
         alignItems: 'center',
-        marginTop: '50px',
-        // borderTop: `1px solid ${theme.palette.common.colorGreyLight}`,
+
+        borderBottom: `1px solid ${theme.palette.common.colorGreyLight}`,
     },
     commentInputContainer: {
         width: '100%',
@@ -149,13 +150,22 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, t
 
     const [post, setPost] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [comments, setComments] = useState([]);
 
-    useEffect(() => {
-        console.log('post detail effect');
-        setPost(postItem);
-    }, []);
+    const commentRefText = useRef();
 
-    const { fetchLike } = useContext(PostContext);
+    const { fetchLike, fetchAddComment, fetchComments } = useContext(PostContext);
+
+    const addComment = (comment) => {
+        const tempComment = [...comments];
+        const tempPost = { ...post };
+        tempComment.push(comment);
+        console.log('Post num comments:', post.numberOfComments);
+        console.log('comment return num:', comment.postId.numberOfComments);
+        tempPost.numberOfComments = comment.postId.numberOfComments;
+        setComments(tempComment);
+        setPost(tempPost);
+    };
 
     const handleLikeSubmit = async (postId) => {
         setIsLoading(true);
@@ -164,7 +174,39 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, t
         setIsLoading(false);
     };
 
-    if (post) console.log('POST DETAIL RENDER');
+    const handleCommentSubmit = async () => {
+        // console.log('comment submit', post._id, commentRefText.current.value);
+        setIsLoading(true);
+        const resComment = await fetchAddComment(post._id, commentRefText.current.value, token);
+        // console.log('rescomment', resComment);
+        addComment(resComment);
+
+        setIsLoading(false);
+        commentRefText.current.value = '';
+    };
+
+    useEffect(() => {
+        console.log('post detail effect', postItem);
+        setPost(postItem);
+    }, [setPost, postItem]);
+
+    useEffect(() => {
+        const loadComments = async () => {
+            setIsLoading(true);
+            try {
+                const resComments = await fetchComments(postItem._id, token);
+                // console.log('COMMENTS', resComments);
+                setComments(resComments);
+                setIsLoading(false);
+            } catch (error) {
+                console.log(error);
+                setIsLoading(false);
+            }
+        };
+        loadComments();
+    }, [token, fetchComments, postItem._id]);
+
+    if (post) console.log('POST DETAIL RENDER', post.isLiked, postItem.isLiked);
     return (
         <div classes={classes.postDetail}>
             <Dialog open={isLoading}>
@@ -241,23 +283,50 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, t
                                             <span>{post.numberOfComments}</span>
                                         </div>
                                     </div>
-                                    <div
-                                        onClick={() => handleLikeSubmit(post._id)}
-                                        className={classes.like}
-                                    >
-                                        {post.isLiked === true ? (
-                                            <FavoriteIcon className={classes.liked} />
-                                        ) : (
-                                            <FavoriteBorderIcon />
-                                        )}
-                                    </div>
+                                    {token && (
+                                        <div
+                                            onClick={() => handleLikeSubmit(post._id)}
+                                            className={classes.like}
+                                        >
+                                            {post.isLiked === true ? (
+                                                <FavoriteIcon className={classes.liked} />
+                                            ) : (
+                                                <FavoriteBorderIcon />
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
-                                <div className={classes.commentForm}>
-                                    <Avatar src={post.userId.avatarUrl} alt={post.userId.name} />
-                                    <div className={classes.commentInputContainer}>
-                                        <input type="text" className={classes.commentInput} />
-                                        <SendIcon className={classes.commentInputButton} />
+                                {token && (
+                                    <div className={classes.commentForm}>
+                                        <Avatar
+                                            src={post.userId.avatarUrl}
+                                            alt={post.userId.name}
+                                        />
+                                        <div className={classes.commentInputContainer}>
+                                            <input
+                                                type="text"
+                                                className={classes.commentInput}
+                                                ref={commentRefText}
+                                            />
+                                            <SendIcon
+                                                className={classes.commentInputButton}
+                                                onClick={() => handleCommentSubmit()}
+                                            />
+                                        </div>
                                     </div>
+                                )}
+                                <div>
+                                    {comments && (
+                                        <ul
+                                            style={{
+                                                listStyle: 'none',
+                                            }}
+                                        >
+                                            {comments.map((comment) => (
+                                                <Comment comment={comment} key={comment._id} />
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
                             </Grid>
                         </Grid>

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Grid, Fab, Hidden } from '@material-ui/core';
+import { Grid, Fab } from '@material-ui/core';
 import PostItem from './PostItem';
 import PostForm from './PostForm';
 
@@ -35,8 +35,8 @@ const PostList = () => {
     };
 
     useEffect(() => {
-        fetchPosts();
-    }, []);
+        fetchPosts(userId);
+    }, [userId]);
 
     console.log('POSTLIST RENDER');
     return (

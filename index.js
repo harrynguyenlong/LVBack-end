@@ -25,8 +25,8 @@ app.use(cors());
 // handling image direction
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
-const checkAuth = (req, res, next) => {
-    passport.authenticate('jwt', { session: false }, (err, user) => {
+const checkAuth = async (req, res, next) => {
+    await passport.authenticate('jwt', { session: false }, (err, user) => {
         if (err || !user) {
             req.isAuth = false;
             req.userId = undefined;

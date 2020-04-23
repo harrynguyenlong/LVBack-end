@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 // import { Link } from 'react-router-dom';
-import { Tabs, Tab, Fab } from '@material-ui/core';
+import { Tabs, Tab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { UIContext } from '../../context';
 
@@ -29,7 +29,7 @@ const TabBar = () => {
                 centered
                 textColor="primary"
                 value={tabValue}
-                onChange={(event, newValue) => setTabValue(newValue)}
+                onChange={(newValue) => setTabValue(newValue)}
             >
                 <Tab label="Newest" />
                 <Tab label="Top Comments" />

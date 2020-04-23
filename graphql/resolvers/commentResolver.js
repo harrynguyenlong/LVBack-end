@@ -30,7 +30,23 @@ module.exports = {
                 throw new Error('Created comment failed, please try again');
             }
 
+            console.log(comment);
             return comment;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+
+    // get comments by postId
+    comments: async (args) => {
+        try {
+            const comments = await Comment.find({ postId: args.postId });
+            if (!comments) {
+                throw new Error('Get comments failed');
+            }
+
+            return comments;
         } catch (error) {
             console.log(error);
             throw error;

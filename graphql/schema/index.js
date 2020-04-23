@@ -58,8 +58,9 @@ module.exports = buildSchema(`
     }
 
     type RootQuery {
-        posts(type: FilterPostType, limit: Int): [Post!]
+        posts(type: FilterPostType, limit: Int, userId: ID): [Post!]
         user(userId: ID!): User!
+        comments(postId: ID!): [Comment]
     }
 
     type RootMutation {

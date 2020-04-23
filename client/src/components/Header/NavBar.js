@@ -6,7 +6,7 @@ import logo from '../../assets/images/iShare-logo1.png';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 
-import { UIContext, PostContext } from '../../context';
+import { UIContext } from '../../context';
 
 import LoginRegisterForm from '../LoginRegister/LoginRegisterForm';
 

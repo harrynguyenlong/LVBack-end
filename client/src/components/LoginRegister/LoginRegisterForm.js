@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/styles';
 import { Dialog, DialogTitle, IconButton } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PersonIcon from '@material-ui/icons/Person';
 
 import { DropzoneArea } from 'material-ui-dropzone';
@@ -93,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
 
 const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
     const classes = useStyles();
-    const { token, userId, login } = useContext(AuthContext);
+    const { login } = useContext(AuthContext);
     const [isLogin, setIsLogin] = useState(true);
     const [showErrorText, setShowErrorText] = useState(false);
 
@@ -174,7 +173,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     className={classes.formInput}
                                     // value="Viet Tran"
                                     // onChange={() => {}}
-                                    id='email_login'
+                                    id="email_login"
                                     placeholder="Enter your email"
                                     ref={emailLoginRef}
                                 />
@@ -186,7 +185,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     className={classes.formInput}
                                     // value="Viet Tran"
                                     // onChange={() => {}}
-                                    id='password_login'
+                                    id="password_login"
                                     placeholder="Enter your password"
                                     ref={passwordLoginRef}
                                 />

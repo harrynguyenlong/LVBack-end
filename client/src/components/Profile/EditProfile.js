@@ -101,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
     },
     mainTitle: {
         textAlign: 'center',
-        color: theme.palette.common.colorBlack,
+        // color: theme.palette.common.colorBlack,
         fontSize: '18px',
         marginBottom: '20px',
         color: theme.palette.common.colorGreen,
