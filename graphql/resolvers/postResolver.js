@@ -164,7 +164,6 @@ module.exports = {
             let updatePostData;
 
             if (postImageUrl === 'undefined') {
-                console.log('no edit pic');
                 updatePostData = { contentText };
             } else {
                 updatePostData = {
@@ -174,7 +173,6 @@ module.exports = {
                 fs.unlink(post.postImageUrl, (err) => {
                     console.log(err);
                 });
-                console.log('edit pic');
             }
 
             const updatedPost = await Post.findByIdAndUpdate(post._id, updatePostData, {

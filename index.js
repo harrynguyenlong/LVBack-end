@@ -6,6 +6,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const graphqlHTTP = require('express-graphql');
 
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+
 const passport = require('passport');
 require('./graphql/Authentication/passport');
 
@@ -24,6 +28,15 @@ app.use(cors());
 
 // handling image direction
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+
+// Set security HTTP headers
+app.use(helmet());
+
+// Data sanitization against NoSQL query injection, ex: "email": {$gt:""}
+app.use(mongoSanitize());
+
+// Data sanitization against XSS, ex "name": <div id='bad-code'></div>
+app.use(xss());
 
 const checkAuth = async (req, res, next) => {
     await passport.authenticate('jwt', { session: false }, (err, user) => {
