@@ -70,8 +70,8 @@ const useStyles = makeStyles((theme) => ({
 
 const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
     const classes = useStyles();
-    const { token, userId } = useContext(AuthContext);
-    const { addPost, fetchUser, fetchEditPost, fetchUploadImage } = useContext(PostContext);
+    const { token } = useContext(AuthContext);
+    const { fetchEditPost, fetchUploadImage } = useContext(PostContext);
     const [imageUpload, setImageUpload] = useState([]);
     const [content, setContent] = useState('');
     const contentTextRef = useRef();
@@ -80,7 +80,6 @@ const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
 
     const handeChangeImageUpload = (files) => {
         setImageUpload(files);
-        // console.log(files);
     };
 
     const handleSnackbarClose = () => {
@@ -103,68 +102,6 @@ const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
 
             await fetchEditPost(post._id, contentText, postImageUrl, token);
             handleEditPostClose();
-
-            // const imageRes = await fetch('http://localhost:5000/upload-image', {
-            //     method: 'POST',
-            //     headers: {
-            //         Authorization: 'Bearer ' + token,
-            //     },
-            //     body: formData,
-            // });
-
-            // if (imageRes.status !== 200 && imageRes.status !== 201) {
-            //     // console.log('upload image error');
-            //     setIsSnackbarOpen(true);
-            //     return;
-            // }
-
-            // const imageResData = await imageRes.json();
-
-            // const requestBody = {
-            //     query: `
-            //         mutation {
-            //             createPost(
-            //                 contentText: "${contentTextRef.current.value}",
-            //                 postImageUrl: "${imageResData.filePath}"
-            //             ) {
-            //                 _id
-            //                 userId{
-            //                     _id
-            //                     name
-            //                     avatarUrl
-            //                     roles
-            //                 }
-            //                 contentText
-            //                 postImageUrl
-            //                 numberOfLikes
-            //                 numberOfComments
-            //                 createdAt
-            //                 isLiked
-            //             }
-            //         }
-            //     `,
-            // };
-
-            // const postRes = await fetch('http://localhost:5000/graphql', {
-            //     method: 'POST',
-            //     body: JSON.stringify(requestBody),
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         Authorization: 'Bearer ' + token,
-            //     },
-            // });
-
-            // if (postRes.status !== 200 && postRes.status !== 201) {
-            //     // console.log('post error');
-            //     setIsSnackbarOpen(true);
-            //     return;
-            // }
-
-            // const postResData = await postRes.json();
-            // console.log('addpost', postResData.data.createPost);
-            // addPost(postResData.data.createPost);
-            // fetchUser(userId, token);
-            // handleEditPostClose();
         } catch (error) {
             console.log(error);
             setIsSnackbarOpen(true);
@@ -175,7 +112,7 @@ const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
         setContent(post.contentText);
     }, []);
 
-    console.log('EDIT POST RENDER', post);
+    console.log('EDIT POST RENDER');
     return (
         <div className={classes.postForm}>
             <Dialog
@@ -199,16 +136,6 @@ const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
                             </div>
                         </DialogTitle>
                         <DialogContent dividers style={{ minWidth: '600px' }}>
-                            {/* <TextField
-                            autoFocus
-                            multiline
-                            rows="4"
-                            name="content"
-                            label="Content"
-                            variant="outlined"
-                            style={{ width: '100%' }}
-                            ref={contentTextRef}
-                        /> */}
                             <textarea
                                 ref={contentTextRef}
                                 row={4}

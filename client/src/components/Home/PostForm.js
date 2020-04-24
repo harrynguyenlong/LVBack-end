@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
     const classes = useStyles();
     const { token, userId } = useContext(AuthContext);
-    const { addPost, fetchUser } = useContext(PostContext);
+    const { fetchAddPost, fetchUploadImage, fetchUser } = useContext(PostContext);
     const [imageUpload, setImageUpload] = useState([]);
     const contentTextRef = useRef();
 
@@ -87,65 +87,11 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
             const formData = new FormData();
             formData.append('image', imageUpload[0]);
 
-            const imageRes = await fetch('http://localhost:5000/upload-image', {
-                method: 'POST',
-                headers: {
-                    Authorization: 'Bearer ' + token,
-                },
-                body: formData,
-            });
+            const contentText = contentTextRef.current.value;
+            const postImageUrl = await fetchUploadImage(formData, token);
 
-            if (imageRes.status !== 200 && imageRes.status !== 201) {
-                // console.log('upload image error');
-                setIsSnackbarOpen(true);
-                return;
-            }
+            await fetchAddPost(contentText, postImageUrl, token);
 
-            const imageResData = await imageRes.json();
-
-            const requestBody = {
-                query: `
-                    mutation {
-                        createPost(
-                            contentText: "${contentTextRef.current.value}",
-                            postImageUrl: "${imageResData.filePath}"
-                        ) {
-                            _id
-                            userId{
-                                _id
-                                name
-                                avatarUrl
-                                roles
-                            }
-                            contentText
-                            postImageUrl
-                            numberOfLikes
-                            numberOfComments
-                            createdAt
-                            isLiked
-                        }
-                    }
-                `,
-            };
-
-            const postRes = await fetch('http://localhost:5000/graphql', {
-                method: 'POST',
-                body: JSON.stringify(requestBody),
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + token,
-                },
-            });
-
-            if (postRes.status !== 200 && postRes.status !== 201) {
-                // console.log('post error');
-                setIsSnackbarOpen(true);
-                return;
-            }
-
-            const postResData = await postRes.json();
-            console.log('addpost', postResData.data.createPost);
-            addPost(postResData.data.createPost);
             fetchUser(userId, token);
             handlePostFormClose();
         } catch (error) {
@@ -177,16 +123,6 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
                         </div>
                     </DialogTitle>
                     <DialogContent dividers style={{ minWidth: '600px' }}>
-                        {/* <TextField
-                            autoFocus
-                            multiline
-                            rows="4"
-                            name="content"
-                            label="Content"
-                            variant="outlined"
-                            style={{ width: '100%' }}
-                            ref={contentTextRef}
-                        /> */}
                         <textarea
                             ref={contentTextRef}
                             row={4}

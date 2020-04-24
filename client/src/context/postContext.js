@@ -31,14 +31,6 @@ const PostContextProvider = (props) => {
         console.log('edit post', editPost);
     };
 
-    // const updateUserData = useCallback((newUserData) => {
-    //     setUserData(newUserData);
-    // }, []);
-
-    // const getUserData = useCallback(() => {
-    //     return userData;
-    // }, []);
-
     const fetchUser = async (userId, token) => {
         try {
             const requestBody = {
@@ -139,6 +131,54 @@ const PostContextProvider = (props) => {
 
             const imageResData = await imageRes.json();
             return imageResData.filePath;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchAddPost = async (contentText, postImageUrl, token) => {
+        try {
+            const requestBody = {
+                query: `
+                    mutation {
+                        createPost(
+                            contentText: "${contentText}",
+                            postImageUrl: "${postImageUrl}"
+                        ) {
+                            _id
+                            userId{
+                                _id
+                                name
+                                avatarUrl
+                                roles
+                            }
+                            contentText
+                            postImageUrl
+                            numberOfLikes
+                            numberOfComments
+                            createdAt
+                            isLiked
+                        }
+                    }
+                `,
+            };
+
+            const postRes = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+
+            if (postRes.status !== 200 && postRes.status !== 201) {
+                throw new Error('Create new post failed');
+            }
+
+            const postResData = await postRes.json();
+            addPost(postResData.data.createPost);
+            return postResData.data.createPost;
         } catch (error) {
             console.log(error);
         }
@@ -380,6 +420,7 @@ const PostContextProvider = (props) => {
                 fetchDeleteComment,
                 fetchEditPost,
                 fetchUploadImage,
+                fetchAddPost,
             }}
         >
             {props.children}
