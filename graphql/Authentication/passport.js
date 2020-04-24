@@ -65,7 +65,7 @@ passport.use(
         },
         async (payload, done) => {
             try {
-                const user = await User.findById(payload.id);
+                const user = await User.findById(payload.sub);
 
                 // if user does not exists
                 if (!user) {

@@ -15,6 +15,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PostDetail from './PostDetail';
+import EditPost from './EditPost';
 
 import { PostContext } from '../../context';
 
@@ -130,7 +131,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const PostItem = ({ post, userId, token }) => {
+const PostItem = ({
+    post,
+    userId,
+    token,
+    isPostFormOpen,
+    handlePostFormClose,
+    setIsPostFormOpen,
+}) => {
     const classes = useStyles();
     // const [onHover, setOnHover] = useState(false);
     // const { token } = useContext(AuthContext);
@@ -138,6 +146,7 @@ const PostItem = ({ post, userId, token }) => {
     const [isPostDetailOpen, setIsPostDetailOpen] = useState(false);
     const [isDeleteConfirm, setIsDeleteConfirm] = useState(false);
     const [isShowSnackbar, setIsShowSnackbar] = useState(false);
+    const [isEditPost, setIsEditPost] = useState(false);
 
     const handlePostDetailClose = () => {
         setIsPostDetailOpen(false);
@@ -148,6 +157,10 @@ const PostItem = ({ post, userId, token }) => {
 
     const handleDeleteConfirmClose = () => {
         setIsDeleteConfirm(false);
+    };
+
+    const handleEditPostClose = () => {
+        setIsEditPost(false);
     };
 
     const handleDeletePost = async (event, postId) => {
@@ -203,7 +216,10 @@ const PostItem = ({ post, userId, token }) => {
                 </div>
                 {userId && userId === post.userId._id && (
                     <div className={classes.headerIcons}>
-                        <EditIcon className={`${classes.actionIcons} ${classes.editIcon}`} />
+                        <EditIcon
+                            className={`${classes.actionIcons} ${classes.editIcon}`}
+                            onClick={() => setIsEditPost(true)}
+                        />
                         <DeleteIcon
                             className={`${classes.actionIcons} ${classes.deleteIcon}`}
                             style={{
@@ -296,6 +312,15 @@ const PostItem = ({ post, userId, token }) => {
                     classes: { root: classes.snackbar },
                 }}
             />
+
+            {/* Show edit post form */}
+            {isEditPost && (
+                <EditPost
+                    isEditPost={isEditPost}
+                    handleEditPostClose={handleEditPostClose}
+                    post={post}
+                />
+            )}
         </div>
     );
 };

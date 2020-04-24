@@ -20,6 +20,17 @@ const PostContextProvider = (props) => {
         setPosts(filtedPosts);
     };
 
+    const editPost = (updatedPost) => {
+        const tempPost = [...posts];
+        const editPost = tempPost.find(
+            (post) => post._id.toString() === updatedPost._id.toString()
+        );
+        editPost.contentText = updatedPost.contentText;
+        editPost.postImageUrl = updatedPost.postImageUrl;
+        console.log(tempPost);
+        console.log('edit post', editPost);
+    };
+
     // const updateUserData = useCallback((newUserData) => {
     //     setUserData(newUserData);
     // }, []);
@@ -112,7 +123,69 @@ const PostContextProvider = (props) => {
         }
     };
 
-    // const fetchAddPost = async () => {};
+    const fetchUploadImage = async (formData, token) => {
+        try {
+            const imageRes = await fetch('http://localhost:5000/upload-image', {
+                method: 'POST',
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                },
+                body: formData,
+            });
+
+            if (imageRes.status !== 200 && imageRes.status !== 201) {
+                throw new Error('Upload image failed');
+            }
+
+            const imageResData = await imageRes.json();
+            return imageResData.filePath;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchEditPost = async (postId, contentText, postImageUrl, token) => {
+        try {
+            const requestBody = {
+                query: `
+                mutation{
+                    editPost(postId: "${postId}", contentText: "${contentText}", postImageUrl: "${postImageUrl}"){
+                        _id
+                        userId{
+                            _id
+                            name
+                            avatarUrl
+                            roles
+                        }
+                        contentText
+                        postImageUrl
+                        numberOfLikes
+                        numberOfComments
+                        
+                        createdAt
+                    }
+                }
+            `,
+            };
+            const res = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+
+            const resData = await res.json();
+
+            editPost(resData.data.editPost);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const fetchLike = async (postId, token) => {
         try {
@@ -305,6 +378,8 @@ const PostContextProvider = (props) => {
                 fetchAddComment,
                 fetchComments,
                 fetchDeleteComment,
+                fetchEditPost,
+                fetchUploadImage,
             }}
         >
             {props.children}

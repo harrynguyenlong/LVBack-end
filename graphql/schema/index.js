@@ -71,6 +71,7 @@ module.exports = buildSchema(`
         signIn(email: String!, password: String!): Token!
         deletePost(postId: ID!): User!
         deleteComment(commentId: ID!): Comment!
+        editPost(postId: ID!, contentText: String, postImageUrl: String): Post!
     }
 
     schema {

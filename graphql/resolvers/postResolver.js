@@ -145,4 +145,47 @@ module.exports = {
             throw error;
         }
     },
+
+    // edit posts
+    editPost: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+
+            const post = await Post.findById(args.postId);
+
+            if (!post) {
+                throw new Error('Could not found the post');
+            }
+
+            const { contentText, postImageUrl } = args;
+
+            let updatePostData;
+
+            if (postImageUrl === 'undefined') {
+                console.log('no edit pic');
+                updatePostData = { contentText };
+            } else {
+                updatePostData = {
+                    contentText,
+                    postImageUrl,
+                };
+                fs.unlink(post.postImageUrl, (err) => {
+                    console.log(err);
+                });
+                console.log('edit pic');
+            }
+
+            const updatedPost = await Post.findByIdAndUpdate(post._id, updatePostData, {
+                new: true,
+            });
+
+            // console.log(updatedPost);
+            return updatedPost;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
 };

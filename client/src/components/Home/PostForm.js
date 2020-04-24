@@ -74,7 +74,7 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
 
     const handeChangeImageUpload = (files) => {
         setImageUpload(files);
-        console.log(files);
+        // console.log(files);
     };
 
     const handleSnackbarClose = () => {
@@ -84,10 +84,6 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log('submited...');
-            console.log('content text:', contentTextRef.current.value);
-            console.log('image upload', imageUpload);
-
             const formData = new FormData();
             formData.append('image', imageUpload[0]);
 
