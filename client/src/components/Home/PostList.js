@@ -6,7 +6,7 @@ import PostForm from './PostForm';
 
 import AddIcon from '@material-ui/icons/Add';
 
-import { AuthContext, PostContext } from '../../context';
+import { AuthContext, PostContext, UIContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -27,6 +27,7 @@ const PostList = () => {
     const classes = useStyles();
     const { token, userId } = useContext(AuthContext);
     const { posts, fetchPosts } = useContext(PostContext);
+    const { tabValue } = useContext(UIContext);
     const [isPostFormOpen, setIsPostFormOpen] = useState(false);
     // const [posts, setPosts] = useState([]);
 
@@ -35,8 +36,20 @@ const PostList = () => {
     };
 
     useEffect(() => {
-        fetchPosts(userId);
-    }, [userId]);
+        let type = 'NEWEST';
+        switch (tabValue) {
+            case 1:
+                type = 'TOPCOMMENTS';
+                break;
+            case 2:
+                type = 'TOPLIKES';
+                break;
+            default:
+                type = 'NEWEST';
+        }
+        fetchPosts(userId, type);
+        // console.log(tabValue);
+    }, [userId, tabValue]);
 
     console.log('POSTLIST RENDER');
     return (

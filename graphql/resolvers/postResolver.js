@@ -53,8 +53,10 @@ module.exports = {
                     sort = { createdAt: -1 };
                     break;
                 case 'TOPCOMMENTS':
+                    sort = { numberOfComments: -1 };
                     break;
                 case 'TOPLIKES':
+                    sort = { numberOfLikes: -1 };
                     break;
                 default:
                     sort = { createdAt: -1 };

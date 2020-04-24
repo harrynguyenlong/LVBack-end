@@ -21,7 +21,12 @@ const useStyles = makeStyles((theme) => ({
 const TabBar = () => {
     const classes = useStyles();
     const { tabValue, setTabValue } = useContext(UIContext);
-    console.log('TABBAR RENDER');
+
+    const handleChange = (event, newValue) => {
+        setTabValue(newValue);
+    };
+
+    console.log('TABBAR RENDER', tabValue);
     return (
         <div className={classes.container}>
             <Tabs
@@ -29,7 +34,7 @@ const TabBar = () => {
                 centered
                 textColor="primary"
                 value={tabValue}
-                onChange={(newValue) => setTabValue(newValue)}
+                onChange={handleChange}
             >
                 <Tab label="Newest" />
                 <Tab label="Top Comments" />

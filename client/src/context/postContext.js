@@ -71,12 +71,12 @@ const PostContextProvider = (props) => {
         }
     };
 
-    const fetchPosts = async (userId) => {
+    const fetchPosts = async (userId, type) => {
         try {
             const requestBody = {
                 query: `
                 query{
-                    posts(type: NEWEST,limit: 20, userId: "${userId}"){
+                    posts(type: ${type},limit: 20, userId: "${userId}"){
                         _id
                         userId{
                             _id
