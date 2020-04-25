@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     dropzone: {
-        margin: '20px 0',
+        marginTop: '20px',
     },
     button: {
         ...theme.shared.btn,
@@ -61,6 +61,11 @@ const useStyles = makeStyles((theme) => ({
             ...theme.shared.btnActive,
         },
     },
+    validateError: {
+        color: theme.palette.common.colorRed,
+        fontSize: '12px',
+        marginTop: '5px',
+    },
 }));
 
 const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
@@ -69,6 +74,9 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
     const { fetchAddPost, fetchUploadImage, fetchUser } = useContext(PostContext);
     const [imageUpload, setImageUpload] = useState([]);
     const contentTextRef = useRef();
+
+    const [contentValidate, setContentValidate] = useState(true);
+    const [imageValidate, setImageValidate] = useState(true);
 
     const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
@@ -84,10 +92,24 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const contentText = contentTextRef.current.value;
+            if (contentText.length >= 3 && contentText.length < 500) {
+                setContentValidate(true);
+            } else {
+                setContentValidate(false);
+                return;
+            }
+
+            if (!imageUpload[0]) {
+                setImageValidate(false);
+                return;
+            } else {
+                setImageValidate(true);
+            }
+
             const formData = new FormData();
             formData.append('image', imageUpload[0]);
 
-            const contentText = contentTextRef.current.value;
             const postImageUrl = await fetchUploadImage(formData, token);
 
             await fetchAddPost(contentText, postImageUrl, token);
@@ -95,7 +117,7 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
             fetchUser(userId, token);
             handlePostFormClose();
         } catch (error) {
-            console.log(error);
+            // console.log('POST FORM ERROR', error);
             setIsSnackbarOpen(true);
         }
     };
@@ -129,6 +151,11 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
                             placeholder="The text content"
                             className={classes.contentText}
                         />
+                        {!contentValidate && (
+                            <p className={classes.validateError}>
+                                Content must be at least 3 characters and max 500 characters
+                            </p>
+                        )}
                         <div className={classes.dropzone}>
                             <DropzoneArea
                                 onChange={handeChangeImageUpload}
@@ -136,6 +163,9 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
                                 fileLimit={1}
                             />
                         </div>
+                        {!imageValidate && (
+                            <p className={classes.validateError}>Image must be require</p>
+                        )}
                     </DialogContent>
                     <DialogActions style={{ padding: '15px 0' }}>
                         <button className={classes.button} onClick={handlePostFormClose}>
@@ -146,27 +176,27 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
                         </button>
                     </DialogActions>
                 </form>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={isSnackbarOpen}
+                    autoHideDuration={6000}
+                    onClose={handleSnackbarClose}
+                    message="Something went wrong, please try again"
+                    action={
+                        <IconButton
+                            size="small"
+                            aria-label="close"
+                            color="inherit"
+                            onClick={handleSnackbarClose}
+                        >
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
+                    }
+                />
             </Dialog>
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                open={isSnackbarOpen}
-                autoHideDuration={6000}
-                onClose={handleSnackbarClose}
-                message="Something went wrong, please try again"
-                action={
-                    <IconButton
-                        size="small"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={handleSnackbarClose}
-                    >
-                        <CloseIcon fontSize="small" />
-                    </IconButton>
-                }
-            />
         </div>
     );
 };

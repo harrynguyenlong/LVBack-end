@@ -1,6 +1,9 @@
+const HttpError = require('../../utils/httpError');
 const Post = require('../../models/postModel');
 const User = require('../../models/userModel');
-const Like = require('../../models/likeModel');
+const Joi = require('joi');
+const { PostValidate } = require('../validations');
+
 const fs = require('fs');
 
 module.exports = {
@@ -12,6 +15,9 @@ module.exports = {
             }
 
             const { contentText, postImageUrl } = args;
+
+            await Joi.validate(args, PostValidate);
+
             const newPost = {
                 userId: req.userId,
                 contentText,
@@ -34,12 +40,10 @@ module.exports = {
             user.numberOfPosts += 1;
             await user.save();
 
-            console.log('create post server', post);
             post.isLiked = false;
             return post;
         } catch (error) {
-            console.log(error);
-            throw error;
+            return error;
         }
     },
 
@@ -166,12 +170,17 @@ module.exports = {
             let updatePostData;
 
             if (postImageUrl === 'undefined') {
-                updatePostData = { contentText };
+                updatePostData = {
+                    contentText: contentText,
+                    postImageUrl: post.postImageUrl,
+                };
+                await Joi.validate(updatePostData, PostValidate);
             } else {
                 updatePostData = {
                     contentText,
                     postImageUrl,
                 };
+                await Joi.validate(updatePostData, PostValidate);
                 fs.unlink(post.postImageUrl, (err) => {
                     console.log(err);
                 });

@@ -38,6 +38,9 @@ const PostList = () => {
     useEffect(() => {
         let type = 'NEWEST';
         switch (tabValue) {
+            case 0:
+                type = 'NEWEST';
+                break;
             case 1:
                 type = 'TOPCOMMENTS';
                 break;

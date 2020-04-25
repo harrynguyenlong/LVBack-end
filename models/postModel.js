@@ -11,10 +11,13 @@ const postSchema = mongoose.Schema(
         },
         contentText: {
             type: String,
-            maxlength: 500,
+            minLength: [3, 'Content must have more or equal then 3 characters'],
+            maxlength: [500, 'Content must have less or equal then to 500 characters'],
+            // required: [true, 'Content must be required'],
         },
         postImageUrl: {
             type: String,
+            required: [true, 'The post must have image'],
         },
         numberOfLikes: {
             type: Number,

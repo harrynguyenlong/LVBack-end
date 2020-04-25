@@ -66,6 +66,11 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         marginTop: '10px',
     },
+    validateError: {
+        color: theme.palette.common.colorRed,
+        fontSize: '12px',
+        marginTop: '5px',
+    },
 }));
 
 const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
@@ -75,6 +80,9 @@ const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
     const [imageUpload, setImageUpload] = useState([]);
     const [content, setContent] = useState('');
     const contentTextRef = useRef();
+
+    const [contentValidate, setContentValidate] = useState(true);
+    const [imageValidate, setImageValidate] = useState(true);
 
     const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
@@ -90,14 +98,28 @@ const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
         e.preventDefault();
         try {
             const contentText = contentTextRef.current.value;
+
+            if (contentText.length >= 3 && contentText.length < 500) {
+                setContentValidate(true);
+            } else {
+                setContentValidate(false);
+                return;
+            }
+
+            // if (!imageUpload[0]) {
+            //     setImageValidate(false);
+            //     return;
+            // } else {
+            //     setImageValidate(true);
+            // }
+
             let postImageUrl;
-            console.log();
-            console.log(imageUpload[0]);
+
             if (imageUpload[0]) {
                 const formData = new FormData();
                 formData.append('image', imageUpload[0]);
                 postImageUrl = await fetchUploadImage(formData, token);
-                console.log(postImageUrl);
+                // console.log(postImageUrl);
             }
 
             await fetchEditPost(post._id, contentText, postImageUrl, token);
@@ -146,6 +168,11 @@ const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
                                     setContent(e.target.value);
                                 }}
                             />
+                            {!contentValidate && (
+                                <p className={classes.validateError}>
+                                    Content must be at least 3 characters and max 500 characters
+                                </p>
+                            )}
                             <img
                                 src={`http://localhost:5000/${post.postImageUrl}`}
                                 alt="image"
@@ -158,6 +185,9 @@ const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
                                     fileLimit={1}
                                 />
                             </div>
+                            {!imageValidate && (
+                                <p className={classes.validateError}>Image must be require</p>
+                            )}
                         </DialogContent>
                         <DialogActions style={{ padding: '15px 0' }}>
                             <button className={classes.button} onClick={handleEditPostClose}>

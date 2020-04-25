@@ -71,12 +71,12 @@ const PostContextProvider = (props) => {
         }
     };
 
-    const fetchPosts = async (userId, type) => {
+    const fetchPosts = async (userId, type = 'NEWEST', limit = 24) => {
         try {
             const requestBody = {
                 query: `
                 query{
-                    posts(type: ${type},limit: 20, userId: "${userId}"){
+                    posts(type: ${type},limit: ${limit}, userId: "${userId}"){
                         _id
                         userId{
                             _id
@@ -101,6 +101,7 @@ const PostContextProvider = (props) => {
                     'Content-Type': 'application/json',
                 },
             });
+
             if (res.status !== 200 && res.status !== 201) {
                 throw new Error('Failed!');
             }
@@ -172,15 +173,25 @@ const PostContextProvider = (props) => {
                 },
             });
 
-            if (postRes.status !== 200 && postRes.status !== 201) {
-                throw new Error('Create new post failed');
+            const postResData = await postRes.json();
+
+            console.log('postResData', postResData.errors);
+
+            if (postResData.errors) {
+                console.log('CCCC', postResData.errors.message, postResData.errors.field);
+                throw new Error(postResData.errors);
             }
 
-            const postResData = await postRes.json();
+            console.log('NO ERROR');
+            // if (postRes.status !== 200 && postRes.status !== 201) {
+            //     throw new Error('CT Create new post failed');
+            // }
+
             addPost(postResData.data.createPost);
             return postResData.data.createPost;
         } catch (error) {
-            console.log(error);
+            console.log('POST CONTEXT ERROR', error.message, error.field);
+            return new Error(error.message);
         }
     };
 
