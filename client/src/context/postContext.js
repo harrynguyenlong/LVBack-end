@@ -116,9 +116,9 @@ const PostContextProvider = (props) => {
         }
     };
 
-    const fetchUploadImage = async (formData, token) => {
+    const fetchUploadImage = async (formData, token, imageType) => {
         try {
-            const imageRes = await fetch('http://localhost:5000/upload-image', {
+            const imageRes = await fetch('http://localhost:5000/upload-image/' + imageType, {
                 method: 'POST',
                 headers: {
                     Authorization: 'Bearer ' + token,

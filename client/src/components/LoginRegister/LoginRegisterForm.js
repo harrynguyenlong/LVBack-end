@@ -6,7 +6,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import PersonIcon from '@material-ui/icons/Person';
 
 import { DropzoneArea } from 'material-ui-dropzone';
-import { AuthContext } from '../../context';
+import { AuthContext, PostContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
     dialog: {
@@ -93,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
 const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
     const classes = useStyles();
     const { login } = useContext(AuthContext);
+    const { fetchUploadImage } = useContext(PostContext);
     const [isLogin, setIsLogin] = useState(true);
     const [showErrorText, setShowErrorText] = useState(false);
 
@@ -151,30 +152,14 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
 
             login(resp.data.createUser.token, resp.data.createUser.userId);
 
-            let uploadResp = await handleUploadProfilePicture(resp.data.createUser.token);
+            const formData = new FormData();
+            formData.append('image', imageUpload[0]);
+
+            let uploadResp = await fetchUploadImage(formData, resp.data.createUser.token, 'avatar');
 
             handleLoginClose();
         } else {
             // Show that the password mismatch?
-        }
-    };
-
-    const handleUploadProfilePicture = async (token) => {
-        const formData = new FormData();
-        formData.append('image', imageUpload[0]);
-
-        const imageRes = await fetch('http://localhost:5000/upload-image', {
-            method: 'POST',
-            headers: {
-                Authorization: 'Bearer ' + token,
-            },
-            body: formData,
-        });
-
-        if ((imageRes.status >= 200 && imageRes.status <= 201)) {
-            return true;
-        } else {
-            return false;
         }
     };
 

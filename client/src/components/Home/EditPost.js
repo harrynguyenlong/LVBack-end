@@ -118,7 +118,7 @@ const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
             if (imageUpload[0]) {
                 const formData = new FormData();
                 formData.append('image', imageUpload[0]);
-                postImageUrl = await fetchUploadImage(formData, token);
+                postImageUrl = await fetchUploadImage(formData, token, 'post');
                 // console.log(postImageUrl);
             }
 

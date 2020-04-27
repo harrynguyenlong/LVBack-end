@@ -10,7 +10,7 @@ const imageUpload = multer({
     limits: 500000, // 500kb
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, 'uploads/images');
+            cb(null, 'uploads/images/' + req.params.destination);
         },
         filename: (req, file, cb) => {
             const filename = `${req.userId}-${new Date().getTime()}`;
@@ -25,4 +25,6 @@ const imageUpload = multer({
     },
 });
 
-module.exports = imageUpload;
+module.exports = {
+    imageUpload: imageUpload
+};
