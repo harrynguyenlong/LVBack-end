@@ -55,4 +55,41 @@ module.exports = {
             throw error;
         }
     },
+
+    updateUserInformation: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+
+            const userId = req.userId;
+            const newPassword = await bcrypt.hash(args.newPassword, 12);
+            const email = args.email;
+            const name = args.name;
+
+            const updateParams = {
+                password: newPassword,
+                email: email,
+                name: name
+            };
+
+            for(let prop in updateParams) {
+                if (!updateParams[prop]) {
+                    delete updateParams[prop];
+                }
+            };
+
+            const user = await User.findByIdAndUpdate({_id: userId}, updateParams);
+            const updatedUser = await User.findById({_id: userId});
+
+            if (!updatedUser) {
+                throw new Error('User not found');
+            }
+
+            return updatedUser;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
 };
