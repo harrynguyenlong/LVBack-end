@@ -68,7 +68,8 @@ module.exports = buildSchema(`
         createComment(postId: ID!, contentText: String!): Comment!
         likePost(postId: ID!): Post!
         createUser(name: String!, password: String!, email: String!): Token!
-        updateUserInformation(name: String, email: String, newPassword: String): User!
+        updateUserInformation(name: String, email: String): User!
+        updatePassword(newPassword: String!, oldPassword: String!): User!
         signIn(email: String!, password: String!): Token!
         deletePost(postId: ID!): User!
         deleteComment(commentId: ID!): Comment!

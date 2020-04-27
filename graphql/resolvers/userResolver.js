@@ -63,12 +63,10 @@ module.exports = {
             }
 
             const userId = req.userId;
-            const newPassword = await bcrypt.hash(args.newPassword, 12);
             const email = args.email;
             const name = args.name;
 
             const updateParams = {
-                password: newPassword,
                 email: email,
                 name: name
             };
@@ -92,4 +90,33 @@ module.exports = {
             throw error;
         }
     },
+
+    updatePassword: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+            
+            const userId = req.userId;
+            const newPassword = args.newPassword;
+            const oldPassword = args.oldPassword;
+
+            const updateParams = {
+                password: newPassword
+            };
+
+            const user = await User.findById(userId);
+
+            bcrypt.compare(oldPassword, user.password)
+            .then((isMatch) => {
+                console.log(isMatch);
+            })
+            .catch((error) => {
+                throw new Error('Password does not match'); 
+            });
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
 };
