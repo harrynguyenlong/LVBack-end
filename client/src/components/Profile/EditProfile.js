@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -171,18 +171,24 @@ const EditProfile = ({
     const classes = useStyles();
     const theme = useTheme();
 
-    // const [isListSelected, setIsListSelected] = useState(0);
+    useEffect(() => {
+        handleGetUserPosts();
+    }, []);
 
+    // const [isListSelected, setIsListSelected] = useState(0);
     const [imageUpload, setImageUpload] = useState([]);
-    const { fetchEditUserInformation, updateUserPassword } = useContext(PostContext);
+    const { fetchEditUserInformation, updateUserPassword, fetchPosts, posts } = useContext(PostContext);
     const { token, userId } = useContext(AuthContext);
 
     const updateNameRef = useRef(null);
     const updateEmailRef = useRef(null);
-
     const oldPasswordRef = useRef(null);
     const newPasswordRef = useRef(null);
     const confirmedPasswordRef = useRef(null);
+
+    const handleGetUserPosts = async () => {
+        await fetchPosts(userId);
+    };
 
     const handeChangeImageUpload = (files) => {
         setImageUpload(files);
@@ -479,18 +485,12 @@ const EditProfile = ({
                                     <h2 className={classes.mainTitle}>Posts: 120</h2>
                                     {/* <PostsProfile /> */}
                                     <Grid container spacing={2}>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
+                                        {posts &&
+                                            posts.map((post) => (
+                                                <Grid item xs={6} key={post._id}>
+                                                    <PostItem post={post} userId={userId} token={token} />
+                                                </Grid>
+                                            ))}
                                     </Grid>
                                 </div>
                             )}
