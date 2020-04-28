@@ -98,22 +98,24 @@ module.exports = {
             }
             
             const userId = req.userId;
-            const newPassword = args.newPassword;
+            const hashedNewPassword = await bcrypt.hash(args.newPassword, 12);
             const oldPassword = args.oldPassword;
 
             const updateParams = {
-                password: newPassword
+                password: hashedNewPassword,
             };
 
             const user = await User.findById(userId);
 
-            bcrypt.compare(oldPassword, user.password)
-            .then((isMatch) => {
-                console.log(isMatch);
-            })
-            .catch((error) => {
+            const isMatch = await bcrypt.compare(oldPassword, user.password)
+            
+            if (!isMatch) {
                 throw new Error('Password does not match'); 
-            });
+            } else {
+                const updatedUser = await User.findByIdAndUpdate({_id: userId}, updateParams);
+                return updatedUser;
+            }
+
         } catch (error) {
             console.log(error);
             throw error;

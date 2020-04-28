@@ -195,12 +195,12 @@ const PostContextProvider = (props) => {
         }
     };
 
-    const updateUserPassword = async (newPassword, token) => {
+    const updateUserPassword = async (newPassword, oldPassword, token) => {
         try {
             const requestBody = {
                 query: `
                     mutation {
-                        updateUserInformation(newPassword: "${newPassword}") {
+                        updatePassword(newPassword: "${newPassword}", oldPassword: "${oldPassword}") {
                             _id
                             name
                             email
@@ -232,7 +232,7 @@ const PostContextProvider = (props) => {
                 throw new Error(postResData.errors);
             }
 
-            setUserData(postResData.data.updateUserInformation);
+            setUserData(postResData.data.updatePassword);
         } catch (error) {
             console.log('POST CONTEXT ERROR', error.message, error.field);
             return new Error(error.message);

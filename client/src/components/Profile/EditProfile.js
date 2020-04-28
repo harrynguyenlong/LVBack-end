@@ -194,15 +194,20 @@ const EditProfile = ({
         fetchEditUserInformation(updateNameRef.current.value, updateEmailRef.current.value, token);
     };
 
-    const handleUpdateUserPassword = () => {
-        //event.preventDefault();
+    const handleUpdateUserPassword = (event) => {
+        event.preventDefault();
 
         if (!(oldPasswordRef.current.value && newPasswordRef.current.value && confirmedPasswordRef.current.value)) {
             // Update UIs with error that all value must be enterred
             return;
         }
 
-        //if (oldPasswordRef === )
+        if (newPasswordRef.current.value === confirmedPasswordRef.current.value) {
+            updateUserPassword(newPasswordRef.current.value, oldPasswordRef.current.value, token);
+        } else {
+            // Enterred values for newPassword and confirmedPassword don't match
+            return;
+        }
     };
 
     const handleListSelected = (val) => {
@@ -402,7 +407,6 @@ const EditProfile = ({
                                         <input
                                             type="text"
                                             className={classes.formInput}
-                                            value="Viet Tran"
                                             ref={updateNameRef}
                                             onChange={() => {}}
                                         />
@@ -412,7 +416,6 @@ const EditProfile = ({
                                         <input
                                             type="email"
                                             className={classes.formInput}
-                                            value="viet@viet.fi"
                                             ref={updateEmailRef}
                                             onChange={() => {}}
                                         />
@@ -463,7 +466,9 @@ const EditProfile = ({
                                         <input type="password" className={classes.formInput} ref={confirmedPasswordRef}/>
                                     </div>
                                     <div className={classes.formActions}>
-                                        <button className={classes.button}>Save</button>
+                                        <button className={classes.button} onClick={(event) => {
+                                            handleUpdateUserPassword(event);
+                                        }}>Save</button>
                                     </div>
                                 </div>
                             )}
