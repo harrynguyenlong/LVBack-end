@@ -51,6 +51,7 @@ module.exports = {
     posts: async (args, req) => {
         try {
             const limit = args.limit ? args.limit * 1 : 10;
+            const userId = args.userId;
             let sort = {};
             switch (args.type) {
                 case 'NEWEST':
@@ -67,9 +68,17 @@ module.exports = {
                     break;
             }
 
-            const posts = await Post.find().sort(sort).limit(limit);
+            const sortingParams = {
+                userId: userId
+            };
 
-            // console.log('POST', posts);
+            for(let prop in sortingParams) {
+                if (!sortingParams[prop]) {
+                    delete sortingParams[prop];
+                }
+            };
+
+            const posts = await Post.find(sortingParams).sort(sort).limit(limit);
 
             if (!posts) {
                 throw new Error('Get all posts failed, please try again');

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -26,6 +26,7 @@ import { DropzoneArea } from 'material-ui-dropzone';
 import CommentsProfile from './CommentsProfile';
 import LikesProfile from './LikesProfile';
 import PostItem from '../Home/PostItem';
+import { PostContext, AuthContext } from '../../context';
 
 const dummyPost = {
     _id: '1',
@@ -170,12 +171,49 @@ const EditProfile = ({
     const classes = useStyles();
     const theme = useTheme();
 
-    // const [isListSelected, setIsListSelected] = useState(0);
+    useEffect(() => {
+        handleGetUserPosts();
+    }, []);
 
+    // const [isListSelected, setIsListSelected] = useState(0);
     const [imageUpload, setImageUpload] = useState([]);
+    const { fetchEditUserInformation, updateUserPassword, fetchPosts, posts } = useContext(PostContext);
+    const { token, userId } = useContext(AuthContext);
+
+    const updateNameRef = useRef(null);
+    const updateEmailRef = useRef(null);
+    const oldPasswordRef = useRef(null);
+    const newPasswordRef = useRef(null);
+    const confirmedPasswordRef = useRef(null);
+
+    const handleGetUserPosts = async () => {
+        await fetchPosts(userId);
+    };
 
     const handeChangeImageUpload = (files) => {
         setImageUpload(files);
+    };
+
+    const handleUpdateUserInformation = (event) => {
+        event.preventDefault();
+        
+        fetchEditUserInformation(updateNameRef.current.value, updateEmailRef.current.value, token);
+    };
+
+    const handleUpdateUserPassword = (event) => {
+        event.preventDefault();
+
+        if (!(oldPasswordRef.current.value && newPasswordRef.current.value && confirmedPasswordRef.current.value)) {
+            // Update UIs with error that all value must be enterred
+            return;
+        }
+
+        if (newPasswordRef.current.value === confirmedPasswordRef.current.value) {
+            updateUserPassword(newPasswordRef.current.value, oldPasswordRef.current.value, token);
+        } else {
+            // Enterred values for newPassword and confirmedPassword don't match
+            return;
+        }
     };
 
     const handleListSelected = (val) => {
@@ -375,7 +413,7 @@ const EditProfile = ({
                                         <input
                                             type="text"
                                             className={classes.formInput}
-                                            value="Viet Tran"
+                                            ref={updateNameRef}
                                             onChange={() => {}}
                                         />
                                     </div>
@@ -384,7 +422,7 @@ const EditProfile = ({
                                         <input
                                             type="email"
                                             className={classes.formInput}
-                                            value="viet@viet.fi"
+                                            ref={updateEmailRef}
                                             onChange={() => {}}
                                         />
                                     </div>
@@ -410,7 +448,10 @@ const EditProfile = ({
                                         </div>
                                     </div>
                                     <div className={classes.formActions}>
-                                        <button className={classes.button}>Save</button>
+                                        <button className={classes.button} onClick={ (event) => {
+                                            handleUpdateUserInformation(event);
+                                        }  
+                                        }>Save</button>
                                     </div>
                                 </div>
                             )}
@@ -420,18 +461,20 @@ const EditProfile = ({
                                     <h2 className={classes.mainTitle}>Change Your Password</h2>
                                     <div className={classes.formControl}>
                                         <span className={classes.formLabel}>Old Password</span>
-                                        <input type="password" className={classes.formInput} />
+                                        <input type="password" className={classes.formInput} ref={oldPasswordRef}/>
                                     </div>
                                     <div className={classes.formControl}>
                                         <span className={classes.formLabel}>New Password</span>
-                                        <input type="password" className={classes.formInput} />
+                                        <input type="password" className={classes.formInput} ref={newPasswordRef}/>
                                     </div>
                                     <div className={classes.formControl}>
                                         <span className={classes.formLabel}>Confirm Password</span>
-                                        <input type="password" className={classes.formInput} />
+                                        <input type="password" className={classes.formInput} ref={confirmedPasswordRef}/>
                                     </div>
                                     <div className={classes.formActions}>
-                                        <button className={classes.button}>Save</button>
+                                        <button className={classes.button} onClick={(event) => {
+                                            handleUpdateUserPassword(event);
+                                        }}>Save</button>
                                     </div>
                                 </div>
                             )}
@@ -442,18 +485,12 @@ const EditProfile = ({
                                     <h2 className={classes.mainTitle}>Posts: 120</h2>
                                     {/* <PostsProfile /> */}
                                     <Grid container spacing={2}>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
+                                        {posts &&
+                                            posts.map((post) => (
+                                                <Grid item xs={6} key={post._id}>
+                                                    <PostItem post={post} userId={userId} token={token} />
+                                                </Grid>
+                                            ))}
                                     </Grid>
                                 </div>
                             )}

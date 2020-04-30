@@ -1,9 +1,9 @@
 const express = require('express');
-const imageUpload = require('../middlewares/imageUpload');
+const { imageUpload } = require('../middlewares/imageUpload');
 
 const router = express.Router();
 
-router.post('/', imageUpload.single('image'), (req, res, next) => {
+router.post('/:destination', imageUpload.single('image'), (req, res, next) => {
     // console.log('image upload', req.file.path);
 
     if (req.file.path) {

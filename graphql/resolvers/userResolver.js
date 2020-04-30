@@ -55,4 +55,70 @@ module.exports = {
             throw error;
         }
     },
+
+    updateUserInformation: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+
+            const userId = req.userId;
+            const email = args.email;
+            const name = args.name;
+
+            const updateParams = {
+                email: email,
+                name: name
+            };
+
+            for(let prop in updateParams) {
+                if (!updateParams[prop]) {
+                    delete updateParams[prop];
+                }
+            };
+
+            const user = await User.findByIdAndUpdate({_id: userId}, updateParams);
+            const updatedUser = await User.findById({_id: userId});
+
+            if (!updatedUser) {
+                throw new Error('User not found');
+            }
+
+            return updatedUser;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+
+    updatePassword: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+            
+            const userId = req.userId;
+            const hashedNewPassword = await bcrypt.hash(args.newPassword, 12);
+            const oldPassword = args.oldPassword;
+
+            const updateParams = {
+                password: hashedNewPassword,
+            };
+
+            const user = await User.findById(userId);
+
+            const isMatch = await bcrypt.compare(oldPassword, user.password)
+            
+            if (!isMatch) {
+                throw new Error('Password does not match'); 
+            } else {
+                const updatedUser = await User.findByIdAndUpdate({_id: userId}, updateParams);
+                return updatedUser;
+            }
+
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
 };

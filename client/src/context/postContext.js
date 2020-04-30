@@ -116,9 +116,9 @@ const PostContextProvider = (props) => {
         }
     };
 
-    const fetchUploadImage = async (formData, token) => {
+    const fetchUploadImage = async (formData, token, imageType) => {
         try {
-            const imageRes = await fetch('http://localhost:5000/upload-image', {
+            const imageRes = await fetch('http://localhost:5000/upload-image/' + imageType, {
                 method: 'POST',
                 headers: {
                     Authorization: 'Bearer ' + token,
@@ -195,6 +195,94 @@ const PostContextProvider = (props) => {
         }
     };
 
+    const updateUserPassword = async (newPassword, oldPassword, token) => {
+        try {
+            const requestBody = {
+                query: `
+                    mutation {
+                        updatePassword(newPassword: "${newPassword}", oldPassword: "${oldPassword}") {
+                            _id
+                            name
+                            email
+                            avatarUrl
+                            roles
+                            numberOfPosts
+                            numberOfComments
+                            numberOfLikes
+                        }
+                    }
+                `
+            };
+
+            const postRes = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+
+            const postResData = await postRes.json();
+
+            console.log('postResData', postResData.errors);
+
+            if (postResData.errors) {
+                console.log('CCCC', postResData.errors.message, postResData.errors.field);
+                throw new Error(postResData.errors);
+            }
+
+            setUserData(postResData.data.updatePassword);
+        } catch (error) {
+            console.log('POST CONTEXT ERROR', error.message, error.field);
+            return new Error(error.message);
+        }
+    };
+
+    const fetchEditUserInformation = async (name, email, token) => {
+        try {
+            const requestBody = {
+                query: `
+                    mutation {
+                        updateUserInformation(name: "${name}", email: "${email}") {
+                            _id
+                            name
+                            email
+                            avatarUrl
+                            roles
+                            numberOfPosts
+                            numberOfComments
+                            numberOfLikes
+                        }
+                    }
+                `
+            };
+
+            const postRes = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+
+            const postResData = await postRes.json();
+
+            console.log('postResData', postResData.errors);
+
+            if (postResData.errors) {
+                console.log('CCCC', postResData.errors.message, postResData.errors.field);
+                throw new Error(postResData.errors);
+            }
+
+            setUserData(postResData.data.updateUserInformation);
+        } catch (error) {
+            console.log('POST CONTEXT ERROR', error.message, error.field);
+            return new Error(error.message);
+        }
+    };
+
     const fetchEditPost = async (postId, contentText, postImageUrl, token) => {
         try {
             const requestBody = {
@@ -237,6 +325,8 @@ const PostContextProvider = (props) => {
             console.log(error);
         }
     };
+
+
 
     const fetchLike = async (postId, token) => {
         try {
@@ -428,6 +518,8 @@ const PostContextProvider = (props) => {
                 fetchLike,
                 fetchAddComment,
                 fetchComments,
+                fetchEditUserInformation,
+                updateUserPassword,
                 fetchDeleteComment,
                 fetchEditPost,
                 fetchUploadImage,
