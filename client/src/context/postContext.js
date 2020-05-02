@@ -71,12 +71,13 @@ const PostContextProvider = (props) => {
         }
     };
 
-    const fetchPosts = async (userId, type = 'NEWEST', limit = 24) => {
+    const fetchPosts = async (type = 'NEWEST', limit = 24) => {
         try {
+            console.log('This is type', type);
             const requestBody = {
                 query: `
                 query{
-                    posts(type: ${type},limit: ${limit}, userId: "${userId}"){
+                    posts(type: ${type},limit: ${limit}){
                         _id
                         userId{
                             _id
@@ -107,6 +108,8 @@ const PostContextProvider = (props) => {
             }
 
             const resData = await res.json();
+
+            console.log(resData);
 
             if (resData) {
                 setPosts(resData.data.posts);
@@ -211,7 +214,7 @@ const PostContextProvider = (props) => {
                             numberOfLikes
                         }
                     }
-                `
+                `,
             };
 
             const postRes = await fetch('http://localhost:5000/graphql', {
@@ -255,7 +258,7 @@ const PostContextProvider = (props) => {
                             numberOfLikes
                         }
                     }
-                `
+                `,
             };
 
             const postRes = await fetch('http://localhost:5000/graphql', {
@@ -325,8 +328,6 @@ const PostContextProvider = (props) => {
             console.log(error);
         }
     };
-
-
 
     const fetchLike = async (postId, token) => {
         try {

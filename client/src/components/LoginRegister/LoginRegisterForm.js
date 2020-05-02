@@ -134,7 +134,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                     }
                 `,
             };
-    
+
             const postRes = await fetch('http://localhost:5000/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
@@ -148,14 +148,16 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                 return;
             }
 
-            let resp = await postRes.json()
+            let resp = await postRes.json();
 
-            login(resp.data.createUser.token, resp.data.createUser.userId);
+            console.log('AAAAA', resp);
 
-            const formData = new FormData();
-            formData.append('image', imageUpload[0]);
+            // login(resp.data.createUser.token, resp.data.createUser.userId);
 
-            let uploadResp = await fetchUploadImage(formData, resp.data.createUser.token, 'avatar');
+            // const formData = new FormData();
+            // formData.append('image', imageUpload[0]);
+
+            // let uploadResp = await fetchUploadImage(formData, resp.data.createUser.token, 'avatar');
 
             handleLoginClose();
         } else {
@@ -192,8 +194,6 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
         login(token, userId);
         handleLoginClose();
     };
-
-
 
     return (
         <div className={classes.loginRegisterForm}>

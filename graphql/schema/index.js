@@ -47,8 +47,9 @@ module.exports = buildSchema(`
     }
 
     type Token {
-        token: String
-        message: String!
+        token: String!
+        userId: ID!
+        # message: String!
     }
 
     enum FilterPostType {
@@ -58,7 +59,7 @@ module.exports = buildSchema(`
     }
 
     type RootQuery {
-        posts(type: FilterPostType, limit: Int, userId: ID): [Post!]
+        posts(type: FilterPostType, limit: Int): [Post!]
         user(userId: ID!): User!
         comments(postId: ID!): [Comment]
     }
@@ -67,7 +68,7 @@ module.exports = buildSchema(`
         createPost(contentText: String!, postImageUrl: String!): Post!
         createComment(postId: ID!, contentText: String!): Comment!
         likePost(postId: ID!): Post!
-        createUser(name: String!, password: String!, email: String!): Token!
+        createUser(name: String!, password: String!, email: String!): Token
         updateUserInformation(name: String, email: String): User!
         updatePassword(newPassword: String!, oldPassword: String!): User!
         signIn(email: String!, password: String!): Token!
