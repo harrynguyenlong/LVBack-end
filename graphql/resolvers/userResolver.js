@@ -56,6 +56,7 @@ module.exports = {
         }
     },
 
+    // edit user information: name, email, avatar
     editUserInfo: async (args, req) => {
         try {
             if (!req.userId && !req.isAuth) {
@@ -92,6 +93,52 @@ module.exports = {
             });
 
             return updatedUser;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+
+    // edit user password
+    editUserPassword: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+
+            const user = await User.findById(req.userId);
+
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            const { oldPassword, newPassword } = args;
+
+            const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+            let returnObj;
+
+            if (isMatch === false) {
+                returnObj = {
+                    status: 'failed',
+                    message: 'Old password is not correct',
+                };
+            } else {
+                const hashedPassword = await bcrypt.hash(newPassword, 12);
+                const updatedUser = await User.findByIdAndUpdate(req.userId, {
+                    password: hashedPassword,
+                });
+
+                if (!updatedUser) {
+                    throw new Error('Something went wrong while updating password');
+                }
+                returnObj = {
+                    status: 'success',
+                    message: 'Password updated successfully',
+                };
+            }
+
+            return returnObj;
         } catch (error) {
             console.log(error);
             throw error;

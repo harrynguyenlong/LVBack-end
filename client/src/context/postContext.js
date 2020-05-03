@@ -109,6 +109,38 @@ const PostContextProvider = (props) => {
         }
     };
 
+    const fetchEditUserPassword = async (oldPassword, newPassword, token) => {
+        try {
+            const requestBody = {
+                query: `
+                mutation{
+                    editUserPassword(oldPassword: "${oldPassword}", newPassword: "${newPassword}"){
+                        status
+                        message
+                    }
+                }
+            `,
+            };
+            const res = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+
+            const resData = await res.json();
+            return resData.data.editUserPassword;
+            // console.log(resData);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const fetchPosts = async (userId, type = 'NEWEST', limit = 24) => {
         try {
             const requestBody = {
@@ -471,6 +503,7 @@ const PostContextProvider = (props) => {
                 fetchUploadImage,
                 fetchAddPost,
                 fetchEditUserInfo,
+                fetchEditUserPassword,
             }}
         >
             {props.children}

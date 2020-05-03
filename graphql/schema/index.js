@@ -51,6 +51,11 @@ module.exports = buildSchema(`
         message: String!
     }
 
+    type Obj {
+        status: String!
+        message: String!
+    }
+
     enum FilterPostType {
         NEWEST
         TOPCOMMENTS
@@ -73,6 +78,7 @@ module.exports = buildSchema(`
         deleteComment(commentId: ID!): Comment!
         editPost(postId: ID!, contentText: String, postImageUrl: String): Post!
         editUserInfo(name: String, email: String, avatarUrl: String): User!
+        editUserPassword(oldPassword: String!, newPassword: String! ): Obj!
     }
 
     schema {

@@ -114,6 +114,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         marginBottom: '15px',
+        width: '100%',
     },
     formLabel: {
         display: 'inline-block',
@@ -161,6 +162,13 @@ const useStyles = makeStyles((theme) => ({
         width: theme.spacing(14),
         height: theme.spacing(14),
     },
+    errorMessage: {
+        fontSize: '12px',
+        color: theme.palette.common.colorRed,
+        padding: 0,
+        marginLeft: '135px',
+        marginBottom: '15px',
+    },
 }));
 
 const EditProfile = ({
@@ -174,10 +182,17 @@ const EditProfile = ({
     const theme = useTheme();
 
     const { token } = useContext(AuthContext);
-    const { fetchEditUserInfo, fetchUploadImage } = useContext(PostContext);
+    const { fetchEditUserInfo, fetchUploadImage, fetchEditUserPassword } = useContext(PostContext);
 
     const [name, setName] = useState();
     const [email, setEmail] = useState();
+
+    const [isOldPasswordCorrect, setIsOldPasswordCorrect] = useState(true);
+    const [isNewPasswordConfirmMatch, setIsNewPasswordConfirmMatch] = useState(true);
+
+    const oldPasswordRef = useRef();
+    const newPasswordRef = useRef();
+    const cfPasswordRef = useRef();
 
     // const [isListSelected, setIsListSelected] = useState(0);
 
@@ -206,6 +221,31 @@ const EditProfile = ({
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const changePasswordSubmit = async () => {
+        const oldPassword = oldPasswordRef.current.value;
+        const newPassword = newPasswordRef.current.value;
+        const cfPassword = cfPasswordRef.current.value;
+
+        const confirm = newPassword.localeCompare(cfPassword);
+        let res;
+        if (confirm === 0) {
+            // new password and confirm password are match
+            setIsNewPasswordConfirmMatch(true);
+            res = await fetchEditUserPassword(oldPassword, newPassword, token);
+            console.log(res.message);
+            if (res.message === 'Old password is not correct') {
+                setIsOldPasswordCorrect(false);
+            } else {
+                setIsOldPasswordCorrect(true);
+            }
+        } else {
+            setIsNewPasswordConfirmMatch(false);
+        }
+
+        // const res = await fetchEditUserPassword(oldPassword, newPassword, token);
+        // console.log('Edit password res', res);
     };
 
     useEffect(() => {
@@ -412,20 +452,48 @@ const EditProfile = ({
                                         <h2 className={classes.mainTitle}>Change Your Password</h2>
                                         <div className={classes.formControl}>
                                             <span className={classes.formLabel}>Old Password</span>
-                                            <input type="password" className={classes.formInput} />
+
+                                            <input
+                                                type="password"
+                                                className={classes.formInput}
+                                                ref={oldPasswordRef}
+                                            />
                                         </div>
+                                        {!isOldPasswordCorrect && (
+                                            <p className={classes.errorMessage}>
+                                                Old password is not correct
+                                            </p>
+                                        )}
                                         <div className={classes.formControl}>
                                             <span className={classes.formLabel}>New Password</span>
-                                            <input type="password" className={classes.formInput} />
+                                            <input
+                                                type="password"
+                                                className={classes.formInput}
+                                                ref={newPasswordRef}
+                                            />
                                         </div>
                                         <div className={classes.formControl}>
                                             <span className={classes.formLabel}>
                                                 Confirm Password
                                             </span>
-                                            <input type="password" className={classes.formInput} />
+                                            <input
+                                                type="password"
+                                                className={classes.formInput}
+                                                ref={cfPasswordRef}
+                                            />
                                         </div>
+                                        {!isNewPasswordConfirmMatch && (
+                                            <p className={classes.errorMessage}>
+                                                Password does not match
+                                            </p>
+                                        )}
                                         <div className={classes.formActions}>
-                                            <button className={classes.button}>Save</button>
+                                            <button
+                                                className={classes.button}
+                                                onClick={changePasswordSubmit}
+                                            >
+                                                Save
+                                            </button>
                                         </div>
                                     </div>
                                 )}
