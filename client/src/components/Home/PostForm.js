@@ -110,7 +110,7 @@ const PostForm = ({ isPostFormOpen, handlePostFormClose }) => {
             const formData = new FormData();
             formData.append('image', imageUpload[0]);
 
-            const postImageUrl = await fetchUploadImage(formData, token);
+            const postImageUrl = await fetchUploadImage('image', formData, token);
 
             await fetchAddPost(contentText, postImageUrl, token);
 

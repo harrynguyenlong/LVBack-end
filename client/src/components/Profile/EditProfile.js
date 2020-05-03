@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -13,6 +13,8 @@ import {
 } from '@material-ui/core';
 
 import { makeStyles, useTheme } from '@material-ui/styles';
+
+import { AuthContext, PostContext } from '../../context';
 
 import CloseIcon from '@material-ui/icons/Close';
 import PersonIcon from '@material-ui/icons/Person';
@@ -166,9 +168,16 @@ const EditProfile = ({
     handleEditProfileClose,
     isListSelected,
     setIsListSelected,
+    userData,
 }) => {
     const classes = useStyles();
     const theme = useTheme();
+
+    const { token } = useContext(AuthContext);
+    const { fetchEditUserInfo, fetchUploadImage } = useContext(PostContext);
+
+    const [name, setName] = useState();
+    const [email, setEmail] = useState();
 
     // const [isListSelected, setIsListSelected] = useState(0);
 
@@ -182,302 +191,290 @@ const EditProfile = ({
         setIsListSelected(val);
     };
 
+    const changeInfomationSubmit = async () => {
+        console.log('changeInfomationSubmit', name, ' email: ', email);
+        try {
+            let avatarUrl;
+
+            if (imageUpload[0]) {
+                const formData = new FormData();
+                formData.append('image', imageUpload[0]);
+                avatarUrl = await fetchUploadImage('avatar', formData, token);
+            }
+
+            await fetchEditUserInfo(name, email, avatarUrl, token);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        setName(userData.name);
+        setEmail(userData.email);
+    }, []);
+
+    console.log('EDIT PROFILE RENDER', userData);
+
     return (
         <div className={classes.editProfile}>
-            <Dialog open={isEditProfileOpen} onClose={handleEditProfileClose} fullScreen={true}>
-                <DialogTitle
-                    id="customized-dialog-title"
-                    onClose={handleEditProfileClose}
-                    className={classes.dialogTitleWrapper}
-                >
-                    <div className={classes.dialogTitle}>
-                        <div className={classes.headerAvatarContainer}>
-                            <Avatar
-                                src="https://i.ibb.co/BPvgb3V/avatar-viet.jpg"
-                                alt="avatar"
-                                className={classes.headerAvatar}
-                            />
-                            <p className={classes.headerActionText}>Viet Tran</p>
+            {userData && (
+                <Dialog open={isEditProfileOpen} onClose={handleEditProfileClose} fullScreen={true}>
+                    <DialogTitle
+                        id="customized-dialog-title"
+                        onClose={handleEditProfileClose}
+                        className={classes.dialogTitleWrapper}
+                    >
+                        <div className={classes.dialogTitle}>
+                            <div className={classes.headerAvatarContainer}>
+                                <Avatar
+                                    src={'http://localhost:5000/' + userData.avatarUrl}
+                                    alt="avatar"
+                                    className={classes.headerAvatar}
+                                />
+                                <p className={classes.headerActionText}>{userData.name}</p>
+                            </div>
+
+                            <IconButton onClick={handleEditProfileClose}>
+                                <CloseIcon style={{ color: 'white' }} />
+                            </IconButton>
                         </div>
-
-                        <IconButton onClick={handleEditProfileClose}>
-                            <CloseIcon style={{ color: 'white' }} />
-                        </IconButton>
-                    </div>
-                </DialogTitle>
-                <div className={classes.container}>
-                    <Grid container className={classes.gridContainer}>
-                        <Grid item xs={3} className={classes.profileList}>
-                            <List style={{ padding: 0 }}>
-                                <ListItem
-                                    button
-                                    selected={isListSelected === 0}
-                                    onClick={() => handleListSelected(0)}
-                                    style={
-                                        isListSelected === 0
-                                            ? {
-                                                  backgroundColor: theme.palette.common.colorGreen,
-                                                  color: theme.palette.common.colorWhite,
-                                              }
-                                            : null
-                                    }
-                                >
-                                    <ListItemIcon>
-                                        <PersonIcon
-                                            style={
-                                                isListSelected === 0
-                                                    ? {
-                                                          color: theme.palette.common.colorWhite,
-                                                      }
-                                                    : null
-                                            }
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary="Change Infomation"
-                                        classes={{ root: classes.listItemText }}
-                                    />
-                                </ListItem>
-                                <Divider />
-
-                                <ListItem
-                                    button
-                                    selected={isListSelected === 1}
-                                    onClick={() => handleListSelected(1)}
-                                    style={
-                                        isListSelected === 1
-                                            ? {
-                                                  backgroundColor: theme.palette.common.colorGreen,
-                                                  color: theme.palette.common.colorWhite,
-                                              }
-                                            : null
-                                    }
-                                >
-                                    <ListItemIcon>
-                                        <VpnKeyIcon
-                                            style={
-                                                isListSelected === 1
-                                                    ? {
-                                                          color: theme.palette.common.colorWhite,
-                                                      }
-                                                    : null
-                                            }
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary="Change Password"
-                                        classes={{ root: classes.listItemText }}
-                                    />
-                                </ListItem>
-                                <Divider />
-
-                                <ListItem
-                                    button
-                                    selected={isListSelected === 2}
-                                    onClick={() => handleListSelected(2)}
-                                    style={
-                                        isListSelected === 2
-                                            ? {
-                                                  backgroundColor: theme.palette.common.colorGreen,
-                                                  color: theme.palette.common.colorWhite,
-                                              }
-                                            : null
-                                    }
-                                >
-                                    <ListItemIcon>
-                                        <AddAPhotoIcon
-                                            style={
-                                                isListSelected === 2
-                                                    ? {
-                                                          color: theme.palette.common.colorWhite,
-                                                      }
-                                                    : null
-                                            }
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary="My Posts"
-                                        classes={{ root: classes.listItemText }}
-                                    />
-                                </ListItem>
-                                <Divider />
-
-                                {/* <ListItem
-                                    button
-                                    selected={isListSelected === 3}
-                                    onClick={() => handleListSelected(3)}
-                                    style={
-                                        isListSelected === 3
-                                            ? {
-                                                  backgroundColor: theme.palette.common.colorGreen,
-                                                  color: theme.palette.common.colorWhite,
-                                              }
-                                            : null
-                                    }
-                                >
-                                    <ListItemIcon>
-                                        <CommentIcon
-                                            style={
-                                                isListSelected === 3
-                                                    ? {
-                                                          color: theme.palette.common.colorWhite,
-                                                      }
-                                                    : null
-                                            }
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary="Comments"
-                                        classes={{ root: classes.listItemText }}
-                                    />
-                                </ListItem>
-                                <Divider />
-
-                                <ListItem
-                                    button
-                                    selected={isListSelected === 4}
-                                    onClick={() => handleListSelected(4)}
-                                    style={
-                                        isListSelected === 4
-                                            ? {
-                                                  backgroundColor: theme.palette.common.colorGreen,
-                                                  color: theme.palette.common.colorWhite,
-                                              }
-                                            : null
-                                    }
-                                >
-                                    <ListItemIcon>
-                                        <FavoriteIcon
-                                            style={
-                                                isListSelected === 4
-                                                    ? {
-                                                          color: theme.palette.common.colorWhite,
-                                                      }
-                                                    : null
-                                            }
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary="Likes"
-                                        classes={{ root: classes.listItemText }}
-                                    />
-                                </ListItem>
-                                <Divider /> */}
-                            </List>
-                        </Grid>
-                        <Grid item xs={9} className={classes.profileDetail}>
-                            {/* Change infomation */}
-                            {isListSelected === 0 && (
-                                <div className={classes.changeContainer}>
-                                    <h2 className={classes.mainTitle}>Change Your Infomation</h2>
-                                    <div className={classes.formControl}>
-                                        <span className={classes.formLabel}>Name</span>
-                                        <input
-                                            type="text"
-                                            className={classes.formInput}
-                                            value="Viet Tran"
-                                            onChange={() => {}}
-                                        />
-                                    </div>
-                                    <div className={classes.formControl}>
-                                        <span className={classes.formLabel}>Email</span>
-                                        <input
-                                            type="email"
-                                            className={classes.formInput}
-                                            value="viet@viet.fi"
-                                            onChange={() => {}}
-                                        />
-                                    </div>
-                                    <div className={classes.formControl}>
-                                        <span
-                                            className={classes.formLabel}
-                                            style={{ alignSelf: 'flex-start' }}
-                                        ></span>
-                                        <div className={classes.dropzone}>
-                                            <Avatar
-                                                src={'https://i.ibb.co/BPvgb3V/avatar-viet.jpg'}
-                                                alt="current avatar"
-                                                className={classes.avatar}
-                                                style={{ marginBottom: '15px' }}
+                    </DialogTitle>
+                    <div className={classes.container}>
+                        <Grid container className={classes.gridContainer}>
+                            <Grid item xs={3} className={classes.profileList}>
+                                <List style={{ padding: 0 }}>
+                                    <ListItem
+                                        button
+                                        selected={isListSelected === 0}
+                                        onClick={() => handleListSelected(0)}
+                                        style={
+                                            isListSelected === 0
+                                                ? {
+                                                      backgroundColor:
+                                                          theme.palette.common.colorGreen,
+                                                      color: theme.palette.common.colorWhite,
+                                                  }
+                                                : null
+                                        }
+                                    >
+                                        <ListItemIcon>
+                                            <PersonIcon
+                                                style={
+                                                    isListSelected === 0
+                                                        ? {
+                                                              color:
+                                                                  theme.palette.common.colorWhite,
+                                                          }
+                                                        : null
+                                                }
                                             />
-                                            <DropzoneArea
-                                                onChange={handeChangeImageUpload}
-                                                acceptedFiles={['image/*']}
-                                                dropzoneText="Change your avatar image"
-                                                fileLimit={1}
-                                                style={{ fontSize: '11px' }}
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Change Infomation"
+                                            classes={{ root: classes.listItemText }}
+                                        />
+                                    </ListItem>
+                                    <Divider />
+
+                                    <ListItem
+                                        button
+                                        selected={isListSelected === 1}
+                                        onClick={() => handleListSelected(1)}
+                                        style={
+                                            isListSelected === 1
+                                                ? {
+                                                      backgroundColor:
+                                                          theme.palette.common.colorGreen,
+                                                      color: theme.palette.common.colorWhite,
+                                                  }
+                                                : null
+                                        }
+                                    >
+                                        <ListItemIcon>
+                                            <VpnKeyIcon
+                                                style={
+                                                    isListSelected === 1
+                                                        ? {
+                                                              color:
+                                                                  theme.palette.common.colorWhite,
+                                                          }
+                                                        : null
+                                                }
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Change Password"
+                                            classes={{ root: classes.listItemText }}
+                                        />
+                                    </ListItem>
+                                    <Divider />
+
+                                    <ListItem
+                                        button
+                                        selected={isListSelected === 2}
+                                        onClick={() => handleListSelected(2)}
+                                        style={
+                                            isListSelected === 2
+                                                ? {
+                                                      backgroundColor:
+                                                          theme.palette.common.colorGreen,
+                                                      color: theme.palette.common.colorWhite,
+                                                  }
+                                                : null
+                                        }
+                                    >
+                                        <ListItemIcon>
+                                            <AddAPhotoIcon
+                                                style={
+                                                    isListSelected === 2
+                                                        ? {
+                                                              color:
+                                                                  theme.palette.common.colorWhite,
+                                                          }
+                                                        : null
+                                                }
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="My Posts"
+                                            classes={{ root: classes.listItemText }}
+                                        />
+                                    </ListItem>
+                                    <Divider />
+                                </List>
+                            </Grid>
+                            <Grid item xs={9} className={classes.profileDetail}>
+                                {/* Change infomation */}
+                                {isListSelected === 0 && (
+                                    <div className={classes.changeContainer}>
+                                        <h2 className={classes.mainTitle}>
+                                            Change Your Infomation
+                                        </h2>
+                                        <div className={classes.formControl}>
+                                            <span className={classes.formLabel}>Name</span>
+                                            <input
+                                                type="text"
+                                                className={classes.formInput}
+                                                value={name}
+                                                onChange={(e) => {
+                                                    setName(e.target.value);
+                                                }}
                                             />
                                         </div>
+                                        <div className={classes.formControl}>
+                                            <span className={classes.formLabel}>Email</span>
+                                            <input
+                                                type="email"
+                                                className={classes.formInput}
+                                                value={email}
+                                                onChange={(e) => {
+                                                    setEmail(e.target.value);
+                                                }}
+                                            />
+                                        </div>
+                                        <div className={classes.formControl}>
+                                            <span
+                                                className={classes.formLabel}
+                                                style={{ alignSelf: 'flex-start' }}
+                                            ></span>
+                                            <div className={classes.dropzone}>
+                                                <Avatar
+                                                    src={
+                                                        'http://localhost:5000/' +
+                                                        userData.avatarUrl
+                                                    }
+                                                    alt="current avatar"
+                                                    className={classes.avatar}
+                                                    style={{ marginBottom: '15px' }}
+                                                />
+                                                <DropzoneArea
+                                                    onChange={handeChangeImageUpload}
+                                                    acceptedFiles={['image/*']}
+                                                    dropzoneText="Change your avatar image"
+                                                    fileLimit={1}
+                                                    style={{ fontSize: '11px' }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className={classes.formActions}>
+                                            <button
+                                                className={classes.button}
+                                                onClick={changeInfomationSubmit}
+                                            >
+                                                Save
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className={classes.formActions}>
-                                        <button className={classes.button}>Save</button>
+                                )}
+                                {/* Change Password */}
+                                {isListSelected === 1 && (
+                                    <div className={classes.changeContainer}>
+                                        <h2 className={classes.mainTitle}>Change Your Password</h2>
+                                        <div className={classes.formControl}>
+                                            <span className={classes.formLabel}>Old Password</span>
+                                            <input type="password" className={classes.formInput} />
+                                        </div>
+                                        <div className={classes.formControl}>
+                                            <span className={classes.formLabel}>New Password</span>
+                                            <input type="password" className={classes.formInput} />
+                                        </div>
+                                        <div className={classes.formControl}>
+                                            <span className={classes.formLabel}>
+                                                Confirm Password
+                                            </span>
+                                            <input type="password" className={classes.formInput} />
+                                        </div>
+                                        <div className={classes.formActions}>
+                                            <button className={classes.button}>Save</button>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                            {/* Change Password */}
-                            {isListSelected === 1 && (
-                                <div className={classes.changeContainer}>
-                                    <h2 className={classes.mainTitle}>Change Your Password</h2>
-                                    <div className={classes.formControl}>
-                                        <span className={classes.formLabel}>Old Password</span>
-                                        <input type="password" className={classes.formInput} />
-                                    </div>
-                                    <div className={classes.formControl}>
-                                        <span className={classes.formLabel}>New Password</span>
-                                        <input type="password" className={classes.formInput} />
-                                    </div>
-                                    <div className={classes.formControl}>
-                                        <span className={classes.formLabel}>Confirm Password</span>
-                                        <input type="password" className={classes.formInput} />
-                                    </div>
-                                    <div className={classes.formActions}>
-                                        <button className={classes.button}>Save</button>
-                                    </div>
-                                </div>
-                            )}
+                                )}
 
-                            {/* Posts Profile */}
-                            {isListSelected === 2 && (
-                                <div className={classes.changeContainer}>
-                                    <h2 className={classes.mainTitle}>Posts: 120</h2>
-                                    {/* <PostsProfile /> */}
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
+                                {/* Posts Profile */}
+                                {isListSelected === 2 && (
+                                    <div className={classes.changeContainer}>
+                                        <h2 className={classes.mainTitle}>Posts: 120</h2>
+                                        {/* <PostsProfile /> */}
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={6}>
+                                                <PostItem post={dummyPost} />
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <PostItem post={dummyPost} />
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <PostItem post={dummyPost} />
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <PostItem post={dummyPost} />
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <PostItem post={dummyPost} />
-                                        </Grid>
-                                    </Grid>
-                                </div>
-                            )}
+                                    </div>
+                                )}
 
-                            {/* Comments Profile */}
-                            {isListSelected === 3 && (
-                                <div className={classes.changeContainer}>
-                                    <h2 className={classes.mainTitle}>Comments</h2>
-                                    <CommentsProfile />
-                                </div>
-                            )}
+                                {/* Comments Profile */}
+                                {isListSelected === 3 && (
+                                    <div className={classes.changeContainer}>
+                                        <h2 className={classes.mainTitle}>Comments</h2>
+                                        <CommentsProfile />
+                                    </div>
+                                )}
 
-                            {/* Likes Profile */}
-                            {isListSelected === 4 && (
-                                <div className={classes.changeContainer}>
-                                    <h2 className={classes.mainTitle}>Likes</h2>
-                                    <LikesProfile />
-                                </div>
-                            )}
+                                {/* Likes Profile */}
+                                {isListSelected === 4 && (
+                                    <div className={classes.changeContainer}>
+                                        <h2 className={classes.mainTitle}>Likes</h2>
+                                        <LikesProfile />
+                                    </div>
+                                )}
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </div>
-                <div style={{ height: '1px', backgroundColor: theme.palette.common.colorGreen }} />
-            </Dialog>
+                    </div>
+                    <div
+                        style={{ height: '1px', backgroundColor: theme.palette.common.colorGreen }}
+                    />
+                </Dialog>
+            )}
         </div>
     );
 };

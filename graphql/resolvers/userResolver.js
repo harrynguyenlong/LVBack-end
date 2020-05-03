@@ -1,7 +1,7 @@
 const User = require('../../models/userModel');
 const jwttoken = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const passport = require('passport');
+const fs = require('fs');
 
 module.exports = {
     createUser: async (args, req) => {
@@ -50,6 +50,48 @@ module.exports = {
             }
 
             return user;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+
+    editUserInfo: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+
+            const user = await User.findById(req.userId);
+
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            let updatedUserData;
+
+            if (args.avatarUrl === 'undefined' || !args.avatarUrl) {
+                updatedUserData = {
+                    name: args.name,
+                    email: args.email,
+                    avatarUrl: user.avatarUrl,
+                };
+            } else {
+                updatedUserData = {
+                    name: args.name,
+                    email: args.email,
+                    avatarUrl: args.avatarUrl,
+                };
+                fs.unlink(user.avatarUrl, (err) => {
+                    console.log(err);
+                });
+            }
+
+            const updatedUser = await User.findByIdAndUpdate(req.userId, updatedUserData, {
+                new: true,
+            });
+
+            return updatedUser;
         } catch (error) {
             console.log(error);
             throw error;

@@ -28,6 +28,7 @@ app.use(cors());
 
 // handling image direction
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+app.use('/uploads/avatars', express.static(path.join('uploads', 'avatars')));
 
 // Set security HTTP headers
 app.use(helmet());
@@ -55,7 +56,7 @@ const checkAuth = async (req, res, next) => {
 // graphql
 app.use('/auth', auth);
 
-app.use('/upload-image', checkAuth, uploadRoute);
+app.use('/upload', checkAuth, uploadRoute);
 
 app.use(
     '/graphql',

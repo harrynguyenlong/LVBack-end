@@ -71,6 +71,44 @@ const PostContextProvider = (props) => {
         }
     };
 
+    const fetchEditUserInfo = async (name, email, avatarUrl, token) => {
+        try {
+            const requestBody = {
+                query: `
+                mutation{
+                    editUserInfo(name: "${name}", email: "${email}", avatarUrl: "${avatarUrl}"){
+                        _id
+                        name
+                        email
+                        avatarUrl
+                        roles
+                        numberOfPosts
+                        numberOfComments
+                        numberOfLikes
+                    }
+                }
+            `,
+            };
+            const res = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+
+            const resData = await res.json();
+
+            setUserData(resData.data.editUserInfo);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const fetchPosts = async (userId, type = 'NEWEST', limit = 24) => {
         try {
             const requestBody = {
@@ -116,9 +154,9 @@ const PostContextProvider = (props) => {
         }
     };
 
-    const fetchUploadImage = async (formData, token) => {
+    const fetchUploadImage = async (type, formData, token) => {
         try {
-            const imageRes = await fetch('http://localhost:5000/upload-image', {
+            const imageRes = await fetch(`http://localhost:5000/upload/${type}`, {
                 method: 'POST',
                 headers: {
                     Authorization: 'Bearer ' + token,
@@ -432,6 +470,7 @@ const PostContextProvider = (props) => {
                 fetchEditPost,
                 fetchUploadImage,
                 fetchAddPost,
+                fetchEditUserInfo,
             }}
         >
             {props.children}

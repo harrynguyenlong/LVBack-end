@@ -72,6 +72,7 @@ module.exports = buildSchema(`
         deletePost(postId: ID!): User!
         deleteComment(commentId: ID!): Comment!
         editPost(postId: ID!, contentText: String, postImageUrl: String): Post!
+        editUserInfo(name: String, email: String, avatarUrl: String): User!
     }
 
     schema {

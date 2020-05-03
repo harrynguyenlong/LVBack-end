@@ -75,14 +75,18 @@ const Banner = ({ userData }) => {
         setIsEditProfileOpen(false);
     };
 
-    console.log('BANNER RENDER');
+    console.log('BANNER RENDER', userData);
 
     return (
         <div className={classes.banner}>
             {userData && (
                 <div className={classes.container}>
                     <div className={classes.imageContainer}>
-                        <Avatar src={userData.avatarUrl} alt="avatar" className={classes.avatar} />
+                        <Avatar
+                            src={'http://localhost:5000/' + userData.avatarUrl}
+                            alt="avatar"
+                            className={classes.avatar}
+                        />
                     </div>
                     <div className={classes.infoContainer}>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
@@ -154,14 +158,15 @@ const Banner = ({ userData }) => {
                             </div>
                         </div>
                     </div>
+                    <EditProfile
+                        isEditProfileOpen={isEditProfileOpen}
+                        handleEditProfileClose={handleEditProfileClose}
+                        isListSelected={isListSelected}
+                        setIsListSelected={setIsListSelected}
+                        userData={userData}
+                    />
                 </div>
             )}
-            <EditProfile
-                isEditProfileOpen={isEditProfileOpen}
-                handleEditProfileClose={handleEditProfileClose}
-                isListSelected={isListSelected}
-                setIsListSelected={setIsListSelected}
-            />
         </div>
     );
 };
