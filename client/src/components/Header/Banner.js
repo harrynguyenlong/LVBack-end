@@ -75,7 +75,7 @@ const Banner = ({ userData }) => {
         setIsEditProfileOpen(false);
     };
 
-    console.log('BANNER RENDER', userData);
+    console.log('BANNER RENDER');
 
     return (
         <div className={classes.banner}>

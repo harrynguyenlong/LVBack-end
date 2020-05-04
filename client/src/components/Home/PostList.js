@@ -50,7 +50,10 @@ const PostList = () => {
             default:
                 type = 'NEWEST';
         }
-        fetchPosts(userId, type);
+        const getPosts = async () => {
+            await fetchPosts(userId, type);
+        };
+        getPosts();
         // console.log(tabValue);
     }, [userId, tabValue]);
 

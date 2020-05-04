@@ -24,9 +24,7 @@ import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 // import CommentIcon from '@material-ui/icons/Comment';
 
 import { DropzoneArea } from 'material-ui-dropzone';
-// import PostsProfile from './PostsProfile';
-import CommentsProfile from './CommentsProfile';
-import LikesProfile from './LikesProfile';
+import PostsProfile from './PostsProfile';
 import PostItem from '../Home/PostItem';
 
 const dummyPost = {
@@ -181,11 +179,17 @@ const EditProfile = ({
     const classes = useStyles();
     const theme = useTheme();
 
-    const { token } = useContext(AuthContext);
-    const { fetchEditUserInfo, fetchUploadImage, fetchEditUserPassword } = useContext(PostContext);
+    const { token, userId } = useContext(AuthContext);
+    const {
+        fetchEditUserInfo,
+        fetchUploadImage,
+        fetchEditUserPassword,
+        fetchPostsByUser,
+    } = useContext(PostContext);
 
     const [name, setName] = useState();
     const [email, setEmail] = useState();
+    const [myPosts, setMyPosts] = useState([]);
 
     const [isOldPasswordCorrect, setIsOldPasswordCorrect] = useState(true);
     const [isNewPasswordConfirmMatch, setIsNewPasswordConfirmMatch] = useState(true);
@@ -251,9 +255,14 @@ const EditProfile = ({
     useEffect(() => {
         setName(userData.name);
         setEmail(userData.email);
-    }, []);
+        const getMyPosts = async () => {
+            const resMyPosts = await fetchPostsByUser(userId, token);
+            setMyPosts(resMyPosts);
+        };
+        getMyPosts();
+    }, [fetchPostsByUser]);
 
-    console.log('EDIT PROFILE RENDER', userData);
+    console.log('EDIT PROFILE RENDER');
 
     return (
         <div className={classes.editProfile}>
@@ -501,38 +510,22 @@ const EditProfile = ({
                                 {/* Posts Profile */}
                                 {isListSelected === 2 && (
                                     <div className={classes.changeContainer}>
-                                        <h2 className={classes.mainTitle}>Posts: 120</h2>
+                                        <h2 className={classes.mainTitle}>
+                                            My Posts: {myPosts && myPosts.length}
+                                        </h2>
                                         {/* <PostsProfile /> */}
                                         <Grid container spacing={2}>
-                                            <Grid item xs={6}>
-                                                <PostItem post={dummyPost} />
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <PostItem post={dummyPost} />
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <PostItem post={dummyPost} />
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <PostItem post={dummyPost} />
-                                            </Grid>
+                                            {myPosts &&
+                                                myPosts.map((post) => (
+                                                    <Grid item xs={6} key={post._id}>
+                                                        <PostItem
+                                                            post={post}
+                                                            userId={userId}
+                                                            token={token}
+                                                        />
+                                                    </Grid>
+                                                ))}
                                         </Grid>
-                                    </div>
-                                )}
-
-                                {/* Comments Profile */}
-                                {isListSelected === 3 && (
-                                    <div className={classes.changeContainer}>
-                                        <h2 className={classes.mainTitle}>Comments</h2>
-                                        <CommentsProfile />
-                                    </div>
-                                )}
-
-                                {/* Likes Profile */}
-                                {isListSelected === 4 && (
-                                    <div className={classes.changeContainer}>
-                                        <h2 className={classes.mainTitle}>Likes</h2>
-                                        <LikesProfile />
                                     </div>
                                 )}
                             </Grid>

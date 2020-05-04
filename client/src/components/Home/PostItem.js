@@ -207,7 +207,10 @@ const PostItem = ({
     return (
         <div className={classes.postItem}>
             <div className={classes.postHeader}>
-                <Avatar src={post.userId.avatarUrl} alt={post.userId.name} />
+                <Avatar
+                    src={'http://localhost:5000/' + post.userId.avatarUrl}
+                    alt={post.userId.name}
+                />
                 <div style={{ paddingLeft: '10px', margin: 0, width: '100%', height: '100%' }}>
                     <h2 className={classes.headerTitle}>{post.userId.name}</h2>
                     <span className={classes.headerDate}>

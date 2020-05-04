@@ -64,6 +64,7 @@ module.exports = buildSchema(`
 
     type RootQuery {
         posts(type: FilterPostType, limit: Int, userId: ID): [Post!]
+        postsByUser(userId: ID!): [Post!]
         user(userId: ID!): User!
         comments(postId: ID!): [Comment]
     }

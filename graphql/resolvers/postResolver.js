@@ -94,6 +94,41 @@ module.exports = {
         }
     },
 
+    // get all posts by user Id
+    postsByUser: async (args, req) => {
+        try {
+            if (!req.userId && !req.isAuth) {
+                throw new Error('Unauthenticated');
+            }
+
+            if (args.userId.toString() !== req.userId.toString()) {
+                throw new Error('User not match');
+            }
+
+            const posts = await Post.find({ userId: req.userId });
+
+            if (!posts) {
+                throw new Error('Get all posts by User failed, please try again');
+            }
+
+            posts.map((post) => {
+                const isLike = post.userLikeIds.find((item) => {
+                    return item._id.toString() === req.userId.toString();
+                });
+                if (isLike) {
+                    return (post.isLiked = true);
+                } else {
+                    return (post.isLiked = false);
+                }
+            });
+
+            return posts;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+
     // delete post
     deletePost: async (args, req) => {
         try {

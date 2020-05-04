@@ -4,6 +4,7 @@ export const PostContext = createContext();
 
 const PostContextProvider = (props) => {
     const [posts, setPosts] = useState([]);
+    const [myPosts, setMyPosts] = useState([]);
     const [userData, setUserData] = useState();
 
     const addPost = (post) => {
@@ -181,6 +182,50 @@ const PostContextProvider = (props) => {
             if (resData) {
                 setPosts(resData.data.posts);
             }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchPostsByUser = async (userId, token) => {
+        try {
+            const requestBody = {
+                query: `
+                query{
+                    postsByUser(userId: "${userId}"){
+                        _id
+                        userId{
+                            _id
+                            name
+                            avatarUrl
+                            roles
+                        }
+                        contentText
+                        postImageUrl
+                        numberOfLikes
+                        numberOfComments
+                        isLiked
+                        createdAt
+                    }
+                }
+            `,
+            };
+            const res = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+
+            const resData = await res.json();
+
+            return resData.data.postsByUser;
         } catch (error) {
             console.log(error);
         }
@@ -504,6 +549,7 @@ const PostContextProvider = (props) => {
                 fetchAddPost,
                 fetchEditUserInfo,
                 fetchEditUserPassword,
+                fetchPostsByUser,
             }}
         >
             {props.children}
