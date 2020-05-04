@@ -114,9 +114,11 @@ module.exports = {
                     email: args.email,
                     avatarUrl: args.avatarUrl,
                 };
-                fs.unlink(user.avatarUrl, (err) => {
-                    console.log(err);
-                });
+                if (user.avatarUrl) {
+                    fs.unlink(user.avatarUrl, (err) => {
+                        console.log(err);
+                    });
+                }
             }
 
             const updatedUser = await User.findByIdAndUpdate(req.userId, updatedUserData, {

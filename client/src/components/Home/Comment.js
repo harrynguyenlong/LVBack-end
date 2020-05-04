@@ -38,19 +38,15 @@ const useStyles = makeStyles((theme) => ({
 
 const Comment = ({ comment, userId, token, deleteComment }) => {
     const classes = useStyles();
-    // const { userId } = useContext(AuthContext);
-
-    // const handleDeleteComment = async (id) => {
-    //     console.log('delete', id);
-    //     const res = await fetchDeleteComment(id, token);
-    //     console.log('delete comment res', res);
-    // };
 
     console.log('COMMENT RENDER');
     return (
         <li className={classes.comment}>
             <div style={{ marginRight: '10px' }}>
-                <Avatar src={comment.userId.avatarUrl} alt={comment.userId.name} />
+                <Avatar
+                    src={'http://localhost:5000/' + comment.userId.avatarUrl}
+                    alt={comment.userId.name}
+                />
             </div>
             <div className={classes.content}>
                 <p className={classes.contentText}>

@@ -31,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
         // border: `2px solid ${theme.palette.common.colorGreen}`,
         width: theme.spacing(18),
         height: theme.spacing(18),
+        fontSize: '70px',
+        fontWeight: 'bold',
     },
     info: {
         display: 'flex',
@@ -84,7 +86,7 @@ const Banner = ({ userData }) => {
                     <div className={classes.imageContainer}>
                         <Avatar
                             src={'http://localhost:5000/' + userData.avatarUrl}
-                            alt="avatar"
+                            alt={userData.name}
                             className={classes.avatar}
                         />
                     </div>

@@ -20,26 +20,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import PersonIcon from '@material-ui/icons/Person';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
-// import FavoriteIcon from '@material-ui/icons/Favorite';
-// import CommentIcon from '@material-ui/icons/Comment';
 
 import { DropzoneArea } from 'material-ui-dropzone';
-import PostsProfile from './PostsProfile';
-import PostItem from '../Home/PostItem';
 
-const dummyPost = {
-    _id: '1',
-    userId: {
-        name: 'Viet Tran',
-        avatarUrl: 'https://i.ibb.co/BPvgb3V/avatar-viet.jpg',
-    },
-    contentText:
-        'this is content of the post. this is content of the post. this is content of the post. this is content of the post',
-    postImageUrl: 'http://placekitten.com/400/400',
-    numberOfLikes: 14,
-    numberOfComments: 9,
-    createdAt: '01.04.2020',
-};
+import PostItem from '../Home/PostItem';
 
 const useStyles = makeStyles((theme) => ({
     dialogTitleWrapper: {
@@ -159,6 +143,8 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         width: theme.spacing(14),
         height: theme.spacing(14),
+        fontSize: '50px',
+        fontWeight: 'bold',
     },
     errorMessage: {
         fontSize: '12px',
@@ -247,9 +233,6 @@ const EditProfile = ({
         } else {
             setIsNewPasswordConfirmMatch(false);
         }
-
-        // const res = await fetchEditUserPassword(oldPassword, newPassword, token);
-        // console.log('Edit password res', res);
     };
 
     useEffect(() => {
@@ -277,7 +260,7 @@ const EditProfile = ({
                             <div className={classes.headerAvatarContainer}>
                                 <Avatar
                                     src={'http://localhost:5000/' + userData.avatarUrl}
-                                    alt="avatar"
+                                    alt={userData.name}
                                     className={classes.headerAvatar}
                                 />
                                 <p className={classes.headerActionText}>{userData.name}</p>
@@ -432,7 +415,7 @@ const EditProfile = ({
                                                         'http://localhost:5000/' +
                                                         userData.avatarUrl
                                                     }
-                                                    alt="current avatar"
+                                                    alt={userData.name}
                                                     className={classes.avatar}
                                                     style={{ marginBottom: '15px' }}
                                                 />

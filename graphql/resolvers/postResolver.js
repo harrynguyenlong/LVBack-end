@@ -69,23 +69,23 @@ module.exports = {
 
             const posts = await Post.find().sort(sort).limit(limit);
 
-            // console.log('POST', posts);
-
             if (!posts) {
                 throw new Error('Get all posts failed, please try again');
             }
 
-            posts.map((post) => {
-                // console.log('userLikeIds', post.userLikeIds);
-                const isLike = post.userLikeIds.find((item) => {
-                    return item._id.toString() === args.userId.toString();
+            if (args.userId) {
+                posts.map((post) => {
+                    // console.log('userLikeIds', post.userLikeIds);
+                    const isLike = post.userLikeIds.find((item) => {
+                        return item._id.toString() === args.userId.toString();
+                    });
+                    if (isLike) {
+                        return (post.isLiked = true);
+                    } else {
+                        return (post.isLiked = false);
+                    }
                 });
-                if (isLike) {
-                    return (post.isLiked = true);
-                } else {
-                    return (post.isLiked = false);
-                }
-            });
+            }
 
             return posts;
         } catch (error) {

@@ -5,8 +5,8 @@ import { Dialog, DialogTitle, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import PersonIcon from '@material-ui/icons/Person';
 
-import { DropzoneArea } from 'material-ui-dropzone';
-import { AuthContext, PostContext } from '../../context';
+// import { DropzoneArea } from 'material-ui-dropzone';
+import { AuthContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
     dialog: {
@@ -99,7 +99,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [showErrorText, setShowErrorText] = useState(false);
 
-    const [imageUpload, setImageUpload] = useState([]);
+    // const [imageUpload, setImageUpload] = useState([]);
 
     const emailLoginRef = useRef();
     const passwordLoginRef = useRef();
@@ -111,10 +111,6 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
 
     const [isErrorEmailExist, setIsErrorEmailExist] = useState(true);
     const [isErrorPasswordNotMatch, setErrorPasswordNotMatch] = useState(true);
-
-    const handeChangeImageUpload = (files) => {
-        setImageUpload(files);
-    };
 
     const handleToggleLogin = () => {
         setIsLogin((isLogin) => !isLogin);
@@ -173,31 +169,6 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
             console.log('error');
         }
     };
-
-    // const handleUploadProfilePicture = async (token) => {
-    //     try {
-    //         const formData = new FormData();
-    //         formData.append('image', imageUpload[0]);
-    //         console.log('abc');
-    //         const imageRes = await fetch('http://localhost:5000/upload/avatar', {
-    //             method: 'POST',
-    //             headers: {
-    //                 Authorization: 'Bearer ' + token,
-    //             },
-    //             body: formData,
-    //         });
-
-    //         if (imageRes.status !== 200 && imageRes.status !== 201) {
-    //             throw new Error('Upload image failed');
-    //         }
-
-    //         const imageResData = await imageRes.json();
-    //         console.log('IMAGE RES DATA', imageResData);
-    //         return imageResData.filePath;
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -335,16 +306,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                             {!isErrorPasswordNotMatch && (
                                 <p className={classes.errorInfo}>Password not match</p>
                             )}
-                            {/* <div className={classes.formControl}>
-                                <DropzoneArea
-                                    onChange={handeChangeImageUpload}
-                                    acceptedFiles={['image/*']}
-                                    dropzoneText="Select avatar image"
-                                    fileLimit={1}
-                                    style={{ fontSize: '11px' }}
-                                    dropzoneClass={classes.dropzone}
-                                />
-                            </div> */}
+
                             <button
                                 className={classes.button}
                                 onClick={(event) => {

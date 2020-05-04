@@ -65,6 +65,8 @@ const useStyles = makeStyles((theme) => ({
     avatar: {
         width: theme.spacing(4),
         height: theme.spacing(4),
+        fontSize: '18px',
+        fontWeight: 'bold',
     },
     actionText: {
         marginLeft: '5px',
@@ -121,7 +123,7 @@ const NavBar = ({ token, logout, userData, userId }) => {
                             <div className={classes.avatarContainer}>
                                 <Avatar
                                     src={'http://localhost:5000/' + userData.avatarUrl}
-                                    alt="avatar"
+                                    alt={userData.name}
                                     className={classes.avatar}
                                 />
                                 <p className={classes.actionText}>{userData.name}</p>

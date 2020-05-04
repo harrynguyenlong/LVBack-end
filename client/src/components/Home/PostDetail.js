@@ -261,7 +261,10 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, u
                             </Grid>
                             <Grid item xs={5} className={classes.infoContainer}>
                                 <div className={classes.postHeader}>
-                                    <Avatar src={post.userId.avatarUrl} alt={post.userId.name} />
+                                    <Avatar
+                                        src={'http://localhost:5000/' + post.userId.avatarUrl}
+                                        alt={post.userId.name}
+                                    />
                                     <div
                                         style={{
                                             paddingLeft: '10px',
@@ -314,10 +317,10 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, u
                                 </div>
                                 {token && (
                                     <div className={classes.commentForm}>
-                                        <Avatar
-                                            src={post.userId.avatarUrl}
+                                        {/* <Avatar
+                                            src={'http://localhost:5000/' + post.userId.avatarUrl}
                                             alt={post.userId.name}
-                                        />
+                                        /> */}
                                         <div className={classes.commentInputContainer}>
                                             <input
                                                 type="text"
