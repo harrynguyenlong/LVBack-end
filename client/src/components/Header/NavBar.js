@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const NavBar = ({ token, logout, userData }) => {
+const NavBar = ({ token, logout, userData, userId }) => {
     const classes = useStyles();
     const { setTabValue } = useContext(UIContext);
     // const { token, logout } = useContext(AuthContext);
@@ -132,7 +132,7 @@ const NavBar = ({ token, logout, userData }) => {
                             </div>
                         </React.Fragment>
                     )}
-                    {!token && (
+                    {(!token || !userId) && (
                         <div className={classes.authContainer} onClick={() => setLoginOpen(true)}>
                             <LockOpenIcon />
                             <p className={classes.actionText}>Login</p>

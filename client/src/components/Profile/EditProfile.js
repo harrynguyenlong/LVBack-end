@@ -260,7 +260,7 @@ const EditProfile = ({
             setMyPosts(resMyPosts);
         };
         getMyPosts();
-    }, [fetchPostsByUser]);
+    }, []);
 
     console.log('EDIT PROFILE RENDER');
 

@@ -11,13 +11,15 @@ const Header = () => {
 
     useEffect(() => {
         console.log('header effect run');
-        fetchUser(userId, token);
+        if (userId && token) {
+            fetchUser(userId, token);
+        }
     }, [userId, token]);
 
     console.log('HEADER RENDER');
     return (
         <header>
-            <NavBar token={token} logout={logout} userData={userData} />
+            <NavBar token={token} logout={logout} userData={userData} userId={userId} />
             {token && userId && <Banner userData={userData} />}
         </header>
     );

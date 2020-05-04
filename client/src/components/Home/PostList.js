@@ -54,7 +54,7 @@ const PostList = () => {
             await fetchPosts(userId, type);
         };
         getPosts();
-        // console.log(tabValue);
+        console.log('POSTS', posts);
     }, [userId, tabValue]);
 
     console.log('POSTLIST RENDER');

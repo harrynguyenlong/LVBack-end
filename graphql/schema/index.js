@@ -47,7 +47,8 @@ module.exports = buildSchema(`
     }
 
     type Token {
-        token: String
+        token: String!
+        userId: ID!
         message: String!
     }
 

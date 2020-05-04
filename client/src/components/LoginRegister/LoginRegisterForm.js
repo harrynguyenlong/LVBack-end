@@ -6,7 +6,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import PersonIcon from '@material-ui/icons/Person';
 
 import { DropzoneArea } from 'material-ui-dropzone';
-import { AuthContext } from '../../context';
+import { AuthContext, PostContext } from '../../context';
 
 const useStyles = makeStyles((theme) => ({
     dialog: {
@@ -88,6 +88,9 @@ const useStyles = makeStyles((theme) => ({
     errorInfo: {
         ...theme.shared.errorInfo,
     },
+    registerError: {
+        ...theme.shared.errorInfo,
+    },
 }));
 
 const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
@@ -106,6 +109,9 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
     const confirmedPasswordSignUpRef = useRef(null);
     const nameSignUpRef = useRef(null);
 
+    const [isErrorEmailExist, setIsErrorEmailExist] = useState(true);
+    const [isErrorPasswordNotMatch, setErrorPasswordNotMatch] = useState(true);
+
     const handeChangeImageUpload = (files) => {
         setImageUpload(files);
     };
@@ -116,67 +122,82 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
 
     const handleSignUp = async (event) => {
         event.preventDefault();
+        try {
+            let email = emailSignUpRef.current.value;
+            let name = nameSignUpRef.current.value;
+            let password = passwordSignUpRef.current.value;
+            let confirmedPassword = confirmedPasswordSignUpRef.current.value;
 
-        let email = emailSignUpRef.current.value;
-        let name = nameSignUpRef.current.value;
-        let password = passwordSignUpRef.current.value;
-        let confirmedPassword = passwordSignUpRef.current.value;
-
-        if (password === confirmedPassword) {
-            const requestBody = {
-                query: `
+            const confirm = password.localeCompare(confirmedPassword);
+            if (confirm === 0) {
+                const requestBody = {
+                    query: `
                     mutation {
                         createUser(name: "${name}", password:"${password}", email:"${email}") {
                             token 
+                            userId
                             message
                         }
                     }
                 `,
-            };
-    
-            const postRes = await fetch('http://localhost:5000/graphql', {
-                method: 'POST',
-                body: JSON.stringify(requestBody),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+                };
 
-            if (!(postRes.status >= 200 && postRes.status <= 201)) {
-                // Some error happend - Show banner?
+                const postRes = await fetch('http://localhost:5000/graphql', {
+                    method: 'POST',
+                    body: JSON.stringify(requestBody),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                let resp = await postRes.json();
+
+                console.log('add user', resp);
+
+                if (resp.data.createUser.message === 'email already exists') {
+                    setIsErrorEmailExist(false);
+                    return;
+                }
+
+                if (resp.data.createUser.token && resp.data.createUser.userId) {
+                    login(resp.data.createUser.token, resp.data.createUser.userId);
+                }
+
+                handleLoginClose();
+            } else {
+                // Show that the password mismatch?
+                setErrorPasswordNotMatch(false);
                 return;
             }
-
-            let resp = await postRes.json()
-
-            login(resp.data.createUser.token, resp.data.createUser.userId);
-
-            let uploadResp = await handleUploadProfilePicture(resp.data.createUser.token);
-
-            handleLoginClose();
-        } else {
-            // Show that the password mismatch?
+        } catch (error) {
+            console.log('error');
         }
     };
 
-    const handleUploadProfilePicture = async (token) => {
-        const formData = new FormData();
-        formData.append('image', imageUpload[0]);
+    // const handleUploadProfilePicture = async (token) => {
+    //     try {
+    //         const formData = new FormData();
+    //         formData.append('image', imageUpload[0]);
+    //         console.log('abc');
+    //         const imageRes = await fetch('http://localhost:5000/upload/avatar', {
+    //             method: 'POST',
+    //             headers: {
+    //                 Authorization: 'Bearer ' + token,
+    //             },
+    //             body: formData,
+    //         });
 
-        const imageRes = await fetch('http://localhost:5000/upload-image', {
-            method: 'POST',
-            headers: {
-                Authorization: 'Bearer ' + token,
-            },
-            body: formData,
-        });
+    //         if (imageRes.status !== 200 && imageRes.status !== 201) {
+    //             throw new Error('Upload image failed');
+    //         }
 
-        if ((imageRes.status >= 200 && imageRes.status <= 201)) {
-            return true;
-        } else {
-            return false;
-        }
-    };
+    //         const imageResData = await imageRes.json();
+    //         console.log('IMAGE RES DATA', imageResData);
+    //         return imageResData.filePath;
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -207,8 +228,6 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
         login(token, userId);
         handleLoginClose();
     };
-
-
 
     return (
         <div className={classes.loginRegisterForm}>
@@ -268,14 +287,6 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                             <button
                                 className={classes.button}
                                 onClick={(event) => {
-                                    // const token =
-                                    //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlOTMxNDU4OTA4MTJmM2UwYmJhOGZjNiIsImVtYWlsIjoia2l0QGtpdC5maSIsIm5hbWUiOiJLaXQiLCJpYXQiOjE1ODY3MDIxNzN9.an8zU1z2TOEnguwlPy7Cexc9dLZJ8KWBFPSDvx2-0XQ';
-                                    // const user = {
-                                    //     userId: '5e93145890812f3e0bba8fc6',
-                                    //     name: 'Kit',
-                                    //     avatarUrl: '',
-                                    // };
-                                    // login(token, user);
                                     handleLogin(event);
                                 }}
                             >
@@ -302,6 +313,9 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     ref={emailSignUpRef}
                                 />
                             </div>
+                            {!isErrorEmailExist && (
+                                <p className={classes.errorInfo}>This email already exists</p>
+                            )}
                             <div className={classes.formControl}>
                                 <input
                                     type="password"
@@ -318,7 +332,10 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     ref={confirmedPasswordSignUpRef}
                                 />
                             </div>
-                            <div className={classes.formControl}>
+                            {!isErrorPasswordNotMatch && (
+                                <p className={classes.errorInfo}>Password not match</p>
+                            )}
+                            {/* <div className={classes.formControl}>
                                 <DropzoneArea
                                     onChange={handeChangeImageUpload}
                                     acceptedFiles={['image/*']}
@@ -327,13 +344,11 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                                     style={{ fontSize: '11px' }}
                                     dropzoneClass={classes.dropzone}
                                 />
-                            </div>
+                            </div> */}
                             <button
                                 className={classes.button}
                                 onClick={(event) => {
                                     handleSignUp(event);
-                                    // login('this is dummy token', '5e89d609098dcb277f87d1ed');
-                                    // handleLoginClose();
                                 }}
                             >
                                 Create New Account

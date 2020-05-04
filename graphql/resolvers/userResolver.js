@@ -1,33 +1,64 @@
 const User = require('../../models/userModel');
-const jwttoken = require('jsonwebtoken');
+const JWT = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
+
+const signToken = (user) => {
+    return JWT.sign(
+        {
+            iss: 'iShare',
+            sub: user._id,
+            iat: new Date().getTime(), // current time
+            exp: new Date().setDate(new Date().getDate() + 1), // current time + 1 day ahead
+        },
+        process.env.JWT_SECRET
+    );
+};
 
 module.exports = {
     createUser: async (args, req) => {
         try {
-            let { name, password, email } = args;
-            password = await bcrypt.hash(password, 12);
-            let newUser = {
-                name,
-                email,
-                password,
-            };
+            const { name, password, email } = args;
 
-            const user = await User.create(newUser);
+            // check email is exist
+            const isEmailExist = await User.findOne({ email: email });
 
-            newUser.id = user.id;
+            console.log('email exist', isEmailExist);
 
-            let token = jwttoken.sign(newUser, 'secretKey', { expiresIn: '1d' });
+            let resToken;
 
-            if (!user) {
-                throw new Error('Created user failed, please try again');
+            // if email is NOT exist
+            if (!isEmailExist) {
+                const hashedPassword = await bcrypt.hash(password, 12);
+                const newUser = {
+                    name,
+                    email,
+                    password: hashedPassword,
+                };
+
+                const user = await User.create(newUser);
+
+                if (!user) {
+                    throw new Error('Created user failed, please try again');
+                }
+
+                const token = signToken(user);
+
+                resToken = {
+                    token,
+                    userId: user._id,
+                    message: 'Created user successfully',
+                };
+            } else {
+                console.log('email is exist');
+                resToken = {
+                    token: '',
+                    userId: '',
+                    message: 'email already exists',
+                };
             }
 
-            return {
-                token,
-                message: 'User created successfully!',
-            };
+            return resToken;
         } catch (error) {
             return {
                 message: 'User created failed!',

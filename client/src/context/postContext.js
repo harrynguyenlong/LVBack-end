@@ -4,7 +4,7 @@ export const PostContext = createContext();
 
 const PostContextProvider = (props) => {
     const [posts, setPosts] = useState([]);
-    const [myPosts, setMyPosts] = useState([]);
+
     const [userData, setUserData] = useState();
 
     const addPost = (post) => {
@@ -178,6 +178,8 @@ const PostContextProvider = (props) => {
             }
 
             const resData = await res.json();
+
+            console.log('POSTS RESDAGA', resData.data.posts);
 
             if (resData) {
                 setPosts(resData.data.posts);
