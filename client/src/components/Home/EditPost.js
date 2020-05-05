@@ -174,7 +174,7 @@ const EditPost = ({ isEditPost, handleEditPostClose, post }) => {
                                 </p>
                             )}
                             <img
-                                src={`http://localhost:5000/${post.postImageUrl}`}
+                                src={`https://env-2591407.jelastic.metropolia.fi/${post.postImageUrl}`}
                                 alt="image"
                                 className={classes.image}
                             />

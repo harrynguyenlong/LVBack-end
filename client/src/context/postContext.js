@@ -51,7 +51,7 @@ const PostContextProvider = (props) => {
                 `,
             };
 
-            const resUser = await fetch('http://localhost:5000/graphql', {
+            const resUser = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -90,7 +90,7 @@ const PostContextProvider = (props) => {
                 }
             `,
             };
-            const res = await fetch('http://localhost:5000/graphql', {
+            const res = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -122,7 +122,7 @@ const PostContextProvider = (props) => {
                 }
             `,
             };
-            const res = await fetch('http://localhost:5000/graphql', {
+            const res = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -165,7 +165,7 @@ const PostContextProvider = (props) => {
                 }
             `,
             };
-            const res = await fetch('http://localhost:5000/graphql', {
+            const res = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -212,7 +212,7 @@ const PostContextProvider = (props) => {
                 }
             `,
             };
-            const res = await fetch('http://localhost:5000/graphql', {
+            const res = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -235,13 +235,16 @@ const PostContextProvider = (props) => {
 
     const fetchUploadImage = async (type, formData, token) => {
         try {
-            const imageRes = await fetch(`http://localhost:5000/upload/${type}`, {
-                method: 'POST',
-                headers: {
-                    Authorization: 'Bearer ' + token,
-                },
-                body: formData,
-            });
+            const imageRes = await fetch(
+                `https://env-2591407.jelastic.metropolia.fi/upload/${type}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        Authorization: 'Bearer ' + token,
+                    },
+                    body: formData,
+                }
+            );
 
             if (imageRes.status !== 200 && imageRes.status !== 201) {
                 throw new Error('Upload image failed');
@@ -281,7 +284,7 @@ const PostContextProvider = (props) => {
                 `,
             };
 
-            const postRes = await fetch('http://localhost:5000/graphql', {
+            const postRes = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -335,7 +338,7 @@ const PostContextProvider = (props) => {
                 }
             `,
             };
-            const res = await fetch('http://localhost:5000/graphql', {
+            const res = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -378,7 +381,7 @@ const PostContextProvider = (props) => {
                 }
             `,
             };
-            const res = await fetch('http://localhost:5000/graphql', {
+            const res = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -429,7 +432,7 @@ const PostContextProvider = (props) => {
                 }
             `,
             };
-            const res = await fetch('http://localhost:5000/graphql', {
+            const res = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -474,7 +477,7 @@ const PostContextProvider = (props) => {
                 }
             `,
             };
-            const res = await fetch('http://localhost:5000/graphql', {
+            const res = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {
@@ -510,7 +513,7 @@ const PostContextProvider = (props) => {
                 }
             `,
             };
-            const res = await fetch('http://localhost:5000/graphql', {
+            const res = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
                 headers: {

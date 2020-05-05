@@ -85,7 +85,7 @@ const Banner = ({ userData }) => {
                 <div className={classes.container}>
                     <div className={classes.imageContainer}>
                         <Avatar
-                            src={'http://localhost:5000/' + userData.avatarUrl}
+                            src={'https://env-2591407.jelastic.metropolia.fi/' + userData.avatarUrl}
                             alt={userData.name}
                             className={classes.avatar}
                         />

@@ -254,7 +254,10 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, u
                         <Grid container>
                             <Grid item xs={7} className={classes.imageContainer}>
                                 <img
-                                    src={'http://localhost:5000/' + post.postImageUrl}
+                                    src={
+                                        'https://env-2591407.jelastic.metropolia.fi/' +
+                                        post.postImageUrl
+                                    }
                                     alt="post"
                                     className={classes.image}
                                 />
@@ -262,7 +265,10 @@ const PostDetail = ({ isPostDetailOpen, handlePostDetailClose, postItem, edit, u
                             <Grid item xs={5} className={classes.infoContainer}>
                                 <div className={classes.postHeader}>
                                     <Avatar
-                                        src={'http://localhost:5000/' + post.userId.avatarUrl}
+                                        src={
+                                            'https://env-2591407.jelastic.metropolia.fi/' +
+                                            post.userId.avatarUrl
+                                        }
                                         alt={post.userId.name}
                                     />
                                     <div

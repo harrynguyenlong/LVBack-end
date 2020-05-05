@@ -122,7 +122,10 @@ const NavBar = ({ token, logout, userData, userId }) => {
                         <React.Fragment>
                             <div className={classes.avatarContainer}>
                                 <Avatar
-                                    src={'http://localhost:5000/' + userData.avatarUrl}
+                                    src={
+                                        'https://env-2591407.jelastic.metropolia.fi/' +
+                                        userData.avatarUrl
+                                    }
                                     alt={userData.name}
                                     className={classes.avatar}
                                 />

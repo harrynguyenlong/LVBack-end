@@ -138,7 +138,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
                 `,
                 };
 
-                const postRes = await fetch('http://localhost:5000/graphql', {
+                const postRes = await fetch('https://env-2591407.jelastic.metropolia.fi/graphql', {
                     method: 'POST',
                     body: JSON.stringify(requestBody),
                     headers: {
@@ -175,7 +175,7 @@ const LoginRegisterForm = ({ loginOpen, handleLoginClose }) => {
         const email = emailLoginRef.current.value;
         const password = passwordLoginRef.current.value;
 
-        const response = await fetch('http://localhost:5000/auth/login', {
+        const response = await fetch('https://env-2591407.jelastic.metropolia.fi/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),

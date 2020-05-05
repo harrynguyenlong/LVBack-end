@@ -259,7 +259,10 @@ const EditProfile = ({
                         <div className={classes.dialogTitle}>
                             <div className={classes.headerAvatarContainer}>
                                 <Avatar
-                                    src={'http://localhost:5000/' + userData.avatarUrl}
+                                    src={
+                                        'https://env-2591407.jelastic.metropolia.fi/' +
+                                        userData.avatarUrl
+                                    }
                                     alt={userData.name}
                                     className={classes.headerAvatar}
                                 />
@@ -412,7 +415,7 @@ const EditProfile = ({
                                             <div className={classes.dropzone}>
                                                 <Avatar
                                                     src={
-                                                        'http://localhost:5000/' +
+                                                        'https://env-2591407.jelastic.metropolia.fi/' +
                                                         userData.avatarUrl
                                                     }
                                                     alt={userData.name}

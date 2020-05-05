@@ -182,14 +182,17 @@ const PostItem = ({
             `,
             };
 
-            const resDeletePost = await fetch('http://localhost:5000/graphql', {
-                method: 'POST',
-                body: JSON.stringify(requestBody),
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + token,
-                },
-            });
+            const resDeletePost = await fetch(
+                'https://env-2591407.jelastic.metropolia.fi/graphql',
+                {
+                    method: 'POST',
+                    body: JSON.stringify(requestBody),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + token,
+                    },
+                }
+            );
 
             if (resDeletePost.status !== 200 && resDeletePost.status !== 201) {
                 throw new Error('Delete post failed');
@@ -208,7 +211,7 @@ const PostItem = ({
         <div className={classes.postItem}>
             <div className={classes.postHeader}>
                 <Avatar
-                    src={'http://localhost:5000/' + post.userId.avatarUrl}
+                    src={'https://env-2591407.jelastic.metropolia.fi/' + post.userId.avatarUrl}
                     alt={post.userId.name}
                 />
                 <div style={{ paddingLeft: '10px', margin: 0, width: '100%', height: '100%' }}>
@@ -236,7 +239,7 @@ const PostItem = ({
             </div>
             <div className={classes.imageContainer}>
                 <img
-                    src={'http://localhost:5000/' + post.postImageUrl}
+                    src={'https://env-2591407.jelastic.metropolia.fi/' + post.postImageUrl}
                     alt="post"
                     className={classes.postImage}
                     onClick={() => {

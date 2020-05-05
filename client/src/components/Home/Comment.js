@@ -44,7 +44,7 @@ const Comment = ({ comment, userId, token, deleteComment }) => {
         <li className={classes.comment}>
             <div style={{ marginRight: '10px' }}>
                 <Avatar
-                    src={'http://localhost:5000/' + comment.userId.avatarUrl}
+                    src={'https://env-2591407.jelastic.metropolia.fi/' + comment.userId.avatarUrl}
                     alt={comment.userId.name}
                 />
             </div>
