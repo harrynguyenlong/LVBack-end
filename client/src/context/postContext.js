@@ -179,8 +179,6 @@ const PostContextProvider = (props) => {
 
             const resData = await res.json();
 
-            console.log('POSTS RESDAGA', resData.data.posts);
-
             if (resData) {
                 setPosts(resData.data.posts);
             }

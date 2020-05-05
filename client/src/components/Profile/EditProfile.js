@@ -243,7 +243,7 @@ const EditProfile = ({
             setMyPosts(resMyPosts);
         };
         getMyPosts();
-    }, []);
+    }, [fetchPostsByUser]);
 
     console.log('EDIT PROFILE RENDER');
 
@@ -500,10 +500,10 @@ const EditProfile = ({
                                             My Posts: {myPosts && myPosts.length}
                                         </h2>
                                         {/* <PostsProfile /> */}
-                                        <Grid container spacing={2}>
+                                        <Grid container spacing={5} justify="center">
                                             {myPosts &&
                                                 myPosts.map((post) => (
-                                                    <Grid item xs={6} key={post._id}>
+                                                    <Grid item xs={5} key={post._id}>
                                                         <PostItem
                                                             post={post}
                                                             userId={userId}
